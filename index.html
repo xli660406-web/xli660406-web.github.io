@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一言先 · 个人主页</title>
+<meta name="description" content="一言先（李育晓）的个人主页：水利水电工程大一在读，关注 AIGC 视频，喜欢打乒乓球。">
+<meta name="theme-color" content="#08080a">
+<link rel="icon" href="data:,">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<a class="skip" href="#main">跳到正文</a>
+
+<!-- 背景：三层景深（最远的光斑 → 中景光晕 → 网格与颗粒） -->
+<div class="bg" aria-hidden="true">
+  <div class="bg__far" data-depth="0.10">
+    <span class="blob blob--1"></span>
+    <span class="blob blob--2"></span>
+    <span class="blob blob--3"></span>
+  </div>
+  <div class="bg__mid" data-depth="0.26">
+    <span class="glow glow--1"></span>
+    <span class="glow glow--2"></span>
+  </div>
+  <div class="bg__grid"></div>
+  <div class="bg__noise"></div>
+</div>
+
+<div class="spotlight" aria-hidden="true"></div>
+
+<header class="nav" id="nav">
+  <div class="wrap nav__inner">
+    <a class="nav__brand" href="#top">一言先</a>
+    <nav class="nav__links" aria-label="页面导航">
+      <a href="#about">关于</a>
+      <a href="#skills">技能</a>
+      <a href="#projects">在折腾</a>
+      <a href="#contact">联系</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero" id="top">
+    <div class="wrap">
+      <p class="hero__eyebrow reveal">李育晓 · 水利水电工程 · 大一在读</p>
+
+      <h1 class="hero__name">
+        <span class="line"><span class="line__in reveal" style="--d:.05s">一言先</span></span>
+      </h1>
+
+      <p class="hero__tagline reveal" style="--d:.25s">
+        水利水电工程专业大一在读，最近迷上了 AIGC 视频。
+      </p>
+
+      <p class="hero__typed reveal" style="--d:.35s" aria-live="polite">
+        <span class="hero__typed-text" id="typed"></span><span class="caret" aria-hidden="true">▍</span>
+      </p>
+
+      <div class="hero__cta reveal" style="--d:.45s">
+        <a class="btn btn--primary" href="#projects">看看我在折腾什么</a>
+        <a class="btn" href="#contact">联系我</a>
+      </div>
+
+      <div class="hero__scroll reveal" style="--d:.6s" aria-hidden="true">
+        <span>向下浏览</span>
+        <span class="hero__scroll-line"></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="wrap">
+      <p class="section__index reveal">01</p>
+      <h2 class="section__title reveal" style="--d:.06s">关于我</h2>
+      <div class="section__body">
+        <p class="lead reveal" style="--d:.12s">
+          我是李育晓，网名「一言先」，水利水电工程专业大一在读。
+        </p>
+        <p class="reveal" style="--d:.18s">
+          最近在关注 AIGC 视频——LTX-Video、通义万相 Wan 2.2、MiniMax 这些开源视频生成模型，
+          每次出新版本都想弄明白它到底能做出什么。平时喜欢打乒乓球。
+          这个网站是我自己动手做的第一个小东西，以后学到什么就往上面加。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="skills">
+    <div class="wrap">
+      <p class="section__index reveal">02</p>
+      <h2 class="section__title reveal" style="--d:.06s">技能</h2>
+      <div class="section__body">
+        <dl class="skills">
+          <div class="skills__group reveal">
+            <dt>专业</dt>
+            <dd>
+              <span class="tag">水利水电工程（大一在读）</span>
+            </dd>
+          </div>
+          <div class="skills__group reveal" style="--d:.08s">
+            <dt>兴趣方向</dt>
+            <dd>
+              <span class="tag">AIGC 视频</span>
+              <span class="tag">开源模型</span>
+              <span class="tag">LTX-Video</span>
+              <span class="tag">通义万相 Wan 2.2</span>
+              <span class="tag">MiniMax</span>
+            </dd>
+          </div>
+          <div class="skills__group reveal" style="--d:.16s">
+            <dt>在学 / 在玩</dt>
+            <dd>
+              <span class="tag">网页制作（HTML / CSS 入门）</span>
+              <span class="tag">GitHub</span>
+              <span class="tag">乒乓球</span>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="projects">
+    <div class="wrap">
+      <p class="section__index reveal">03</p>
+      <h2 class="section__title reveal" style="--d:.06s">最近在折腾</h2>
+      <div class="section__body">
+        <div class="cards">
+          <article class="card reveal">
+            <p class="card__meta">兴趣方向 · 2026</p>
+            <h3 class="card__title">AIGC 视频</h3>
+            <p class="card__desc">
+              最近看得最多的方向：MiniMax、LTX-Video、通义万相 Wan 2.2 这类视频生成模型，
+              想搞清楚它们各自擅长做什么样的画面。
+            </p>
+            <p class="card__tags"><span class="tag tag--sm">视频生成</span><span class="tag tag--sm">开源模型</span></p>
+          </article>
+
+          <article class="card reveal" style="--d:.08s">
+            <p class="card__meta">个人项目 · 2026</p>
+            <h3 class="card__title">这个网站</h3>
+            <p class="card__desc">
+              页面是三个文件搭起来的：一个 HTML、一个样式表、一个脚本，没有框架也没有外部依赖，
+              双击就能打开。是我第一次自己动手做网页。
+            </p>
+            <p class="card__tags"><span class="tag tag--sm">HTML</span><span class="tag tag--sm">CSS</span></p>
+          </article>
+
+          <article class="card reveal" style="--d:.16s">
+            <p class="card__meta">爱好 · 一直在打</p>
+            <h3 class="card__title">乒乓球</h3>
+            <p class="card__desc">
+              除了电脑，花时间最多的事。想约球随时找我。
+            </p>
+            <p class="card__tags"><span class="tag tag--sm">运动</span></p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--contact" id="contact">
+    <div class="wrap">
+      <p class="section__index reveal">04</p>
+      <h2 class="section__title reveal" style="--d:.06s">联系我</h2>
+      <div class="section__body">
+        <p class="lead reveal" style="--d:.12s">想聊聊 AIGC 视频、想约球，或者别的什么事，写信给我。</p>
+
+        <a class="mail reveal" style="--d:.18s" href="mailto:lyxicl@qq.com" id="mailLink">
+          lyxicl@qq.com
+        </a>
+
+        <div class="hero__cta reveal" style="--d:.24s">
+          <button class="btn btn--primary" id="copyMail" type="button">复制邮箱</button>
+          <a class="btn" href="https://github.com/xli660406-web" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+
+        <p class="reveal" style="--d:.3s">
+          另一个邮箱：xli660406@gmail.com ｜ 抖音：@xiao18777430100
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <span>© <span id="year">2026</span> 一言先（李育晓）</span>
+    <span class="footer__dim">本站为静态页面，无跟踪、无广告。</span>
+  </div>
+</footer>
+
+<a class="sticky-mail" href="mailto:lyxicl@qq.com" aria-label="给我发邮件">✉ 联系我</a>
+
+<script src="assets/main.js" defer></script>
+</body>
+</html>
