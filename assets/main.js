@@ -6,7 +6,7 @@
   'use strict';
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var isNarrow = window.matchMedia('(max-width: 760px)').matches;
+  var narrowMQ = window.matchMedia('(max-width: 760px)');   // 实时判断，窗口缩放/手机横竖屏切换后跟着变
 
   /* --- 1. 滚动淡入 --------------------------------------------------------- */
   var revealItems = document.querySelectorAll('.reveal');
@@ -36,7 +36,7 @@
 
     if (nav) nav.classList.toggle('is-scrolled', y > 24);
 
-    if (!reduceMotion && !isNarrow) {
+    if (!reduceMotion && !narrowMQ.matches) {
       layers.forEach(function (layer) {
         var depth = parseFloat(layer.getAttribute('data-depth')) || 0;
         layer.style.transform = 'translate3d(0,' + (y * depth).toFixed(2) + 'px,0)';
@@ -61,7 +61,7 @@
   var spotlight = document.querySelector('.spotlight');
   var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-  if (spotlight && finePointer && !reduceMotion && !isNarrow) {
+  if (spotlight && finePointer && !reduceMotion && !narrowMQ.matches) {
     var move = function (x, y) {
       spotlight.style.setProperty('--mx', x + 'px');
       spotlight.style.setProperty('--my', y + 'px');
@@ -113,11 +113,41 @@
         window.setTimeout(function () { copyBtn.textContent = '复制邮箱'; }, 2200);
       };
 
+      // 老办法：造一个看不见的输入框，选中后调用系统的复制命令。
+      // 新版剪贴板接口只在"安全环境"下可用，直接用 file:// 打开或老浏览器里会失效，
+      // 所以下面留了一条兜底，实在不行就把邮箱选中让你自己按 Ctrl+C。
+      var legacyCopy = function (text) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.top = '-1000px';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+        document.body.removeChild(ta);
+        return ok;
+      };
+
+      var fallback = function () {
+        if (legacyCopy(address)) { done(true); return; }
+        if (mailLink && window.getSelection) {
+          var range = document.createRange();
+          range.selectNodeContents(mailLink);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+        copyBtn.textContent = '已选中，按 Ctrl+C 复制';
+        window.setTimeout(function () { copyBtn.textContent = '复制邮箱'; }, 3200);
+      };
+
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(address).then(function () { done(true); },
-          function () { done(false); });
+        navigator.clipboard.writeText(address).then(function () { done(true); }, fallback);
       } else {
-        done(false);
+        fallback();
       }
     });
   }

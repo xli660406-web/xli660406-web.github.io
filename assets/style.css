@@ -529,7 +529,10 @@ main { position: relative; z-index: 2; }
 @media (max-width: 760px) {
   body { font-size: 16px; }
   .wrap { width: min(100% - 2.2rem, var(--max)); }
-  .nav__links { display: none; }
+  /* 手机上也保留导航：字缩小、间距收紧，四个入口依然点得到 */
+  .nav__inner { height: 60px; gap: .6rem; }
+  .nav__brand { font-size: .88rem; }
+  .nav__links { gap: .85rem; font-size: .72rem; letter-spacing: 0; }
   .blob { filter: blur(52px); opacity: .38; animation: none; }
   .glow { display: none; }
   .spotlight { display: none; }
