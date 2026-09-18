@@ -362,7 +362,9 @@ main { position: relative; z-index: 2; }
   letter-spacing: -.025em;
   line-height: 1.1;
 }
+/* 正文保持 62ch 的舒适阅读宽度，作品区的卡片想铺满整栏 */
 .section__body { max-width: 62ch; }
+#projects .section__body { max-width: 100%; }
 
 .lead {
   font-size: clamp(1.05rem, 1.9vw, 1.28rem);
@@ -403,17 +405,18 @@ main { position: relative; z-index: 2; }
 .tag:hover { color: var(--fg); border-color: rgba(217, 200, 161, .4); }
 .tag--sm { font-size: .76rem; padding: .22rem .65rem; }
 
-/* 作品卡片：鼠标移上去轻轻浮起 */
+/* 作品卡片：图在上、字在下；鼠标移上去轻轻浮起 */
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   gap: 1.1rem;
 }
-/* 卡片是单数时（比如三张），最后一张横跨整行，避免它孤零零占半行 */
-.cards > .card:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .card {
   position: relative;
-  padding: 1.7rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 16px;
   background: linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, .012));
@@ -426,6 +429,30 @@ main { position: relative; z-index: 2; }
   box-shadow: 0 30px 70px -40px rgba(0, 0, 0, .95),
               0 0 0 1px rgba(217, 200, 161, .06) inset;
 }
+
+/* 卡片配图：统一 16:10，三张卡片高矮一致。
+   底色是给"图还没下载完"那一刻准备的，避免页面先空一块再弹开 */
+.card__media {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #0c0c11;
+  border-bottom: 1px solid var(--line);
+}
+.card__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .8s var(--ease);
+}
+.card:hover .card__media img { transform: scale(1.03); }
+/* 老浏览器不认识 aspect-ratio 时，用 padding 撑出同样的高度 */
+@supports not (aspect-ratio: 16 / 10) {
+  .card__media { height: 0; padding-bottom: 62.5%; }
+  .card__media img { position: absolute; inset: 0; height: auto; }
+}
+
+.card__body { padding: 1.35rem 1.5rem 1.5rem; }
 .card__meta {
   margin: 0 0 .7rem;
   font-size: .76rem;
