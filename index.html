@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>枫言枫语 · 个人主页</title>
-<meta name="description" content="枫言枫语（李育晓）的个人主页：水利水电工程大一在读，关注 AIGC 视频，喜欢打乒乓球。">
+<meta name="description" content="枫言枫语（李育晓）的个人主页：水利水电工程大一在读，关注 AIGC 视频，喜欢打乒乓球和听音乐。">
 <meta name="theme-color" content="#08080a">
 <!-- 网页图标：内嵌的矢量小标记（网名第一字"一"，右侧那道香槟金是本站的点缀色），
      不额外请求文件，断网也在 -->
@@ -40,6 +40,7 @@
       <a href="#about">关于</a>
       <a href="#skills">技能</a>
       <a href="#projects">在折腾</a>
+      <a href="#music">音乐</a>
       <a href="#contact">联系</a>
     </nav>
   </div>
@@ -55,11 +56,7 @@
         <span class="line"><span class="line__in reveal" style="--d:.05s">枫言枫语</span></span>
       </h1>
 
-      <p class="hero__tagline reveal" style="--d:.25s">
-        水利水电工程专业大一在读，最近迷上了 AIGC 视频。
-      </p>
-
-      <p class="hero__typed reveal" style="--d:.35s" aria-live="polite">
+      <p class="hero__typed reveal" style="--d:.25s" aria-live="polite">
         <span class="hero__typed-text" id="typed"></span><span class="caret" aria-hidden="true">▍</span>
       </p>
 
@@ -85,7 +82,7 @@
         </p>
         <p class="reveal" style="--d:.18s">
           最近在关注 AIGC 视频——LTX-Video、通义万相 Wan 2.2、MiniMax 这些开源视频生成模型，
-          每次出新版本都想弄明白它到底能做出什么。平时喜欢打乒乓球。
+          每次出新版本都想弄明白它到底能做出什么。平时喜欢打乒乓球，也爱听音乐。
           这个网站是我自己动手做的第一个小东西，以后学到什么就往上面加。
         </p>
       </div>
@@ -120,6 +117,7 @@
               <span class="tag">网页制作（HTML / CSS 入门）</span>
               <span class="tag">GitHub</span>
               <span class="tag">乒乓球</span>
+              <span class="tag">音乐</span>
             </dd>
           </div>
         </dl>
@@ -184,9 +182,80 @@
     </div>
   </section>
 
-  <section class="section section--contact" id="contact">
+  <section class="section" id="music">
     <div class="wrap">
       <p class="section__index reveal">04</p>
+      <h2 class="section__title reveal" style="--d:.06s">音乐墙</h2>
+      <div class="section__body">
+        <p class="lead reveal" style="--d:.12s">
+          平时听的一些专辑。鼠标停在某一列上，它就会停下来让你看清。
+        </p>
+      </div>
+    </div>
+
+    <!-- 音乐墙：一份列表（下面这些 <li>），脚本会把它铺成好几列并上下循环滑动。
+         图片都在 assets/img/ 里，从 music-01.jpg 开始排。
+         改歌名：把 <b> 里的字换成歌名，<i> 里的字换成歌手。
+         换封面：用同名文件覆盖，尺寸 400×400（正方形）最省事。 -->
+    <div class="wall" id="musicWall" aria-label="常听专辑封面墙">
+      <div class="wall__col">
+        <ol class="wall__track" id="wallList">
+          <li class="tile">
+            <img src="assets/img/music-01.jpg" alt="专辑封面占位图 1" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>待填歌名 01</b><i>待填歌手</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-02.jpg" alt="专辑封面占位图 2" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>待填歌名 02</b><i>待填歌手</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-03.jpg" alt="专辑封面占位图 3" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>待填歌名 03</b><i>待填歌手</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-04.jpg" alt="专辑封面占位图 4" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>待填歌名 04</b><i>待填歌手</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-05.jpg" alt="专辑封面占位图 5" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>待填歌名 05</b><i>待填歌手</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-06.jpg" alt="专辑封面占位图 6" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>待填歌名 06</b><i>待填歌手</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-07.jpg" alt="专辑封面占位图 7" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>待填歌名 07</b><i>待填歌手</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-08.jpg" alt="专辑封面占位图 8" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>待填歌名 08</b><i>待填歌手</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-09.jpg" alt="专辑封面占位图 9" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>待填歌名 09</b><i>待填歌手</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-10.jpg" alt="专辑封面占位图 10" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>待填歌名 10</b><i>待填歌手</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-11.jpg" alt="专辑封面占位图 11" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>待填歌名 11</b><i>待填歌手</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-12.jpg" alt="专辑封面占位图 12" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>待填歌名 12</b><i>待填歌手</i></span>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--contact" id="contact">
+    <div class="wrap">
+      <p class="section__index reveal">05</p>
       <h2 class="section__title reveal" style="--d:.06s">联系我</h2>
       <div class="section__body">
         <p class="lead reveal" style="--d:.12s">想聊聊 AIGC 视频、想约球，或者别的什么事，写信给我。</p>

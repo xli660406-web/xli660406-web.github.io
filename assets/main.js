@@ -77,7 +77,7 @@
 
   /* --- 4. 打字机：轮流显示几个标签 ----------------------------------------- */
   var typedEl = document.getElementById('typed');
-  var phrases = ['水利水电工程大一在读', '在关注 AIGC 视频', '喜欢打乒乓球', '本名李育晓'];
+  var phrases = ['水利水电工程大一在读', '在关注 AIGC 视频', '喜欢打乒乓球', '喜欢听音乐', '本名李育晓'];
 
   if (typedEl && !reduceMotion) {
     var pIndex = 0, cIndex = 0, deleting = false;
@@ -152,7 +152,61 @@
     });
   }
 
-  /* --- 6. 页脚年份 --------------------------------------------------------- */
+  /* --- 6. 音乐墙：把一份列表铺成几列，上下循环滑动 -------------------------
+     页面上只写了"一列"的封面（好维护：改歌只改那一处）。
+     这里把它复制成好几列，每列换一个起始位置、换一个速度、有的往上有的往下，
+     免得几列同时停在同一个封面上，看起来像复制粘贴。
+     每列的内容都放两份：滚动到一半正好接上开头，所以看不出接缝。           */
+  var wall = document.getElementById('musicWall');
+  var wallList = document.getElementById('wallList');
+
+  if (wall && wallList && wallList.children.length) {
+    var COLUMNS = [
+      { down: false, dur: 54 },
+      { down: true,  dur: 68 },
+      { down: false, dur: 80 },
+      { down: true,  dur: 60 },
+      { down: false, dur: 72 }
+    ];
+    var tiles = Array.prototype.slice.call(wallList.children);
+    var count = tiles.length;
+
+    // 每列从列表的不同位置开头，保证同一时刻相邻两列看到的不是同一张封面
+    var shifted = function (offset) {
+      var out = [];
+      for (var i = 0; i < count; i++) {
+        out.push(tiles[(i + offset) % count]);
+      }
+      return out;
+    };
+
+    var buildTrack = function (offset, down, dur) {
+      var track = document.createElement('ol');
+      track.className = 'wall__track' + (down ? ' wall__track--down' : '');
+      track.style.animationDuration = dur + 's';
+      // 起始时间错开：不让所有列同时从"第一张封面"出发
+      track.style.animationDelay = '-' + (dur * (offset % count) / count).toFixed(2) + 's';
+      var order = shifted(offset);
+      for (var copy = 0; copy < 2; copy++) {
+        order.forEach(function (li) { track.appendChild(li.cloneNode(true)); });
+      }
+      return track;
+    };
+
+    // 第一列用页面里本来写好的那份（就是列表的原始顺序），再补一份同样的，循环才无缝
+    var step = Math.max(1, Math.round(count / COLUMNS.length));
+    wallList.style.animationDuration = COLUMNS[0].dur + 's';
+    shifted(0).forEach(function (li) { wallList.appendChild(li.cloneNode(true)); });
+
+    for (var c = 1; c < COLUMNS.length; c++) {
+      var col = document.createElement('div');
+      col.className = 'wall__col';
+      col.appendChild(buildTrack(step * c, COLUMNS[c].down, COLUMNS[c].dur));
+      wall.appendChild(col);
+    }
+  }
+
+  /* --- 7. 页脚年份 --------------------------------------------------------- */
   var year = document.getElementById('year');
   if (year) year.textContent = String(new Date().getFullYear());
 })();

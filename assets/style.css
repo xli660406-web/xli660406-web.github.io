@@ -263,13 +263,6 @@ main { position: relative; z-index: 2; }
   color: transparent;
 }
 
-.hero__tagline {
-  margin: 1.8rem 0 0;
-  max-width: 34ch;
-  font-size: clamp(1rem, 1.9vw, 1.22rem);
-  color: var(--fg-dim);
-}
-
 .hero__typed {
   margin: 1.4rem 0 0;
   font-size: clamp(.95rem, 1.6vw, 1.05rem);
@@ -473,6 +466,92 @@ main { position: relative; z-index: 2; }
 }
 .card__tags { margin: 0; display: flex; flex-wrap: wrap; gap: .4rem; }
 
+/* --------------------------------------------------------------------------
+   音乐墙：一列一列上下循环滑动
+   - 每列里是同一份专辑列表的副本，滚动到一半时正好接上开头，所以看不出接缝
+   - 列数由媒体查询控制（宽屏 5 列 → 手机 2 列），脚本负责铺列
+   - 鼠标停在哪一列上，那一列就暂停
+   -------------------------------------------------------------------------- */
+.wall {
+  --gap: clamp(.6rem, 1.1vw, 1rem);
+  display: flex;
+  gap: var(--gap);
+  width: 100%;
+  height: clamp(360px, 56vh, 600px);
+  margin-top: clamp(2rem, 4.5vw, 3.2rem);
+  /* 两侧留一点边距：让封面墙比正文宽、但不贴着屏幕边（贴着边看起来像被切掉） */
+  padding-inline: clamp(1.1rem, 3.2vw, 3.5rem);
+  overflow: hidden;                       /* 列外面露头的部分切掉 */
+  /* 上下边缘化开，像从页面里长出来、又淡出去 */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 11%, #000 89%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 11%, #000 89%, transparent);
+}
+
+/* 脚本没跑起来时：只有一列，可以自己上下滚，内容一样看得到 */
+.wall { overflow-y: auto; overflow-x: hidden; }
+.js .wall { overflow-y: hidden; }
+
+/* max-width 是给"脚本没跑起来"准备的兜底：那时只有一列，
+   没有这个宽度上限，一张封面会被拉得跟屏幕一样大 */
+.wall__col { flex: 1 1 0; min-width: 0; max-width: 360px; }
+
+.wall__track {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  animation: wall-scroll 60s linear infinite;
+  will-change: transform;
+}
+.wall__track--down { animation-direction: reverse; }
+.wall__col:hover .wall__track,
+.wall__col:active .wall__track,
+.wall__col:focus-within .wall__track { animation-play-state: paused; }
+
+/* 走完一半正好是一份完整列表，接回开头看不出跳 */
+@keyframes wall-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(0, -50%, 0); }
+}
+
+.tile {
+  position: relative;
+  margin: 0 0 var(--gap);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0c0c11;                    /* 图还没加载出来时的底色 */
+  transition: transform .6s var(--ease), border-color .6s var(--ease),
+              box-shadow .6s var(--ease);
+}
+.tile img { display: block; width: 100%; height: auto; }
+.tile:hover {
+  transform: translateY(-6px);
+  border-color: rgba(217, 200, 161, .42);
+  box-shadow: 0 26px 60px -38px rgba(0, 0, 0, .95);
+}
+
+.tile__cap {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .1rem;
+  padding: .55rem .65rem .5rem;
+  font-size: .76rem;
+  line-height: 1.35;
+  color: var(--fg);
+  background: linear-gradient(to top, rgba(6, 6, 9, .94), rgba(6, 6, 9, .5) 60%, transparent);
+}
+.tile__cap b { font-weight: 600; letter-spacing: -.01em; }
+.tile__cap i { font-style: normal; font-size: .72rem; color: var(--fg-dim); }
+
+/* 列数：宽屏铺满，窄屏一列列减，手机只留两列 */
+@media (max-width: 1500px) { .wall__col:nth-child(n+6) { display: none; } }
+@media (max-width: 1150px) { .wall__col:nth-child(n+5) { display: none; } }
+@media (max-width: 900px)  { .wall__col:nth-child(n+4) { display: none; } }
+
 /* 联系区 */
 .section--contact .section__body { max-width: 100%; }
 .mail {
@@ -566,6 +645,11 @@ main { position: relative; z-index: 2; }
   .hero { padding-top: 6rem; }
   .skills__group { grid-template-columns: 1fr; gap: .5rem; }
   .sticky-mail { padding: .5rem .85rem; font-size: .78rem; }
+  /* 音乐墙：手机只留两列，格子缩小一点，滑动照常 */
+  .wall { --gap: .55rem; height: clamp(300px, 58vh, 440px); }
+  .wall__col:nth-child(n+3) { display: none; }
+  .tile__cap { padding: .5rem .55rem .45rem; font-size: .72rem; }
+  .tile__cap i { font-size: .68rem; }
 }
 
 /* --------------------------------------------------------------------------
@@ -581,4 +665,7 @@ main { position: relative; z-index: 2; }
   .reveal, .js .reveal { opacity: 1; transform: none; filter: none; }
   .bg__far, .bg__mid { transform: none !important; }
   .spotlight { display: none; }
+  /* 音乐墙：不滑动，改成能自己上下滚 */
+  .wall__track { animation: none !important; transform: none !important; }
+  .wall { overflow-y: auto; -webkit-mask-image: none; mask-image: none; }
 }
