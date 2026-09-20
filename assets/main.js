@@ -171,6 +171,38 @@
     var count = tiles.length;
     var currentCols = 0;
 
+    /* 点击封面去听：链接不是一张一张手写的，而是拿封面下面那两行字
+       （歌名 + 歌手）现算一个搜索地址——以后加歌、改名，链接自动跟着变，
+       不会出现写错或者点开是死链的情况。想换平台只改下面这一行。       */
+    var SEARCH = 'https://music.163.com/#/search/m/?type=1&s=';
+    var withListenLink = function (li) {
+      var song = li.querySelector('.tile__cap b');
+      var artist = li.querySelector('.tile__cap i');
+      var query = [
+        (song && song.textContent.trim()) || '',
+        (artist && artist.textContent.trim()) || ''
+      ].join(' ').trim();
+      if (!query) return;
+
+      var link = document.createElement('a');
+      link.className = 'tile__link';
+      link.href = SEARCH + encodeURIComponent(query);
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.title = '去听：' + query;
+      link.setAttribute('aria-label', '去听：' + query);
+
+      var badge = document.createElement('span');
+      badge.className = 'tile__play';
+      badge.textContent = '去听 ▸';
+
+      // 把封面和歌名那两行搬进链接里，整张封面就都能点了
+      while (li.firstChild) link.appendChild(li.firstChild);
+      link.appendChild(badge);
+      li.appendChild(link);
+    };
+    tiles.forEach(withListenLink);   // 先给原列表加工，各列的克隆会自动带上
+
     // 列数按屏幕宽度定：宽屏 5 列，窄了逐级减到 2 列（列少时每列分到的封面更多）
     var colsForWidth = function () {
       var w = window.innerWidth;

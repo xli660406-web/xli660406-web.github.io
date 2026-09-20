@@ -534,6 +534,29 @@ main { position: relative; z-index: 2; }
   box-shadow: 0 26px 60px -38px rgba(0, 0, 0, .95);
 }
 
+/* 整张封面就是一个链接（脚本按"歌名 + 歌手"生成搜索地址）：点它去听 */
+.tile__link { display: block; color: inherit; text-decoration: none; }
+.tile__link:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+
+/* 右上角的小角标：鼠标移上去（或键盘选中）才露出来，触屏设备上一直显示 */
+.tile__play {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  padding: .22rem .5rem;
+  border-radius: 999px;
+  font-size: .68rem;
+  letter-spacing: .02em;
+  color: #0b0b0f;
+  background: var(--accent);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity .35s var(--ease), transform .35s var(--ease);
+}
+.tile:hover .tile__play,
+.tile:focus-within .tile__play { opacity: 1; transform: none; }
+@media (hover: none) { .tile__play { opacity: 1; transform: none; } }
+
 .tile__cap {
   position: absolute;
   left: 0; right: 0; bottom: 0;
