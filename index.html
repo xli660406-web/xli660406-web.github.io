@@ -39,7 +39,7 @@
     <nav class="nav__links" aria-label="页面导航">
       <a href="#about">关于</a>
       <a href="#skills">技能</a>
-      <a href="#projects">在折腾</a>
+      <a href="#projects">项目</a>
       <a href="#music">音乐</a>
       <a href="#contact">联系</a>
     </nav>
@@ -61,7 +61,7 @@
       </p>
 
       <div class="hero__cta reveal" style="--d:.45s">
-        <a class="btn btn--primary" href="#projects">看看我在折腾什么</a>
+        <a class="btn btn--primary" href="#projects">看看我在做什么</a>
         <a class="btn" href="#contact">联系我</a>
       </div>
 
@@ -81,9 +81,9 @@
           我是李育晓，网名「枫言枫语」，水利水电工程专业大一在读。
         </p>
         <p class="reveal" style="--d:.18s">
-          最近在关注 AIGC 视频——LTX-Video、通义万相 Wan 2.2、MiniMax 这些开源视频生成模型，
-          每次出新版本都想弄明白它到底能做出什么。平时喜欢打乒乓球，也爱听音乐。
-          这个网站是我自己动手做的第一个小东西，以后学到什么就往上面加。
+          AIGC 视频是我关注的方向：LTX-Video、通义万相 Wan 2.2、MiniMax 这些开源视频生成模型
+          我都了解过，清楚它们各自擅长什么样的画面。平时喜欢打乒乓球，也爱听音乐。
+          这个网站是我做的第一个网页作品，之后会持续更新。
         </p>
       </div>
     </div>
@@ -112,7 +112,7 @@
             </dd>
           </div>
           <div class="skills__group reveal" style="--d:.16s">
-            <dt>在学 / 在玩</dt>
+            <dt>学习与尝试</dt>
             <dd>
               <span class="tag">网页制作（HTML / CSS 入门）</span>
               <span class="tag">GitHub</span>
@@ -128,7 +128,7 @@
   <section class="section" id="projects">
     <div class="wrap">
       <p class="section__index reveal">03</p>
-      <h2 class="section__title reveal" style="--d:.06s">最近在折腾</h2>
+      <h2 class="section__title reveal" style="--d:.06s">项目与兴趣</h2>
       <div class="section__body">
         <div class="cards">
           <article class="card reveal">
@@ -140,8 +140,8 @@
               <p class="card__meta">兴趣方向 · 2026</p>
               <h3 class="card__title">AIGC 视频</h3>
               <p class="card__desc">
-                最近看得最多的方向：MiniMax、LTX-Video、通义万相 Wan 2.2 这类视频生成模型，
-                想搞清楚它们各自擅长做什么样的画面。
+                关注的方向：MiniMax、LTX-Video、通义万相 Wan 2.2 这类视频生成模型，
+                了解它们各自擅长呈现什么样的画面。
               </p>
               <p class="card__tags"><span class="tag tag--sm">视频生成</span><span class="tag tag--sm">开源模型</span></p>
             </div>
@@ -156,8 +156,8 @@
               <p class="card__meta">个人项目 · 2026</p>
               <h3 class="card__title">这个网站</h3>
               <p class="card__desc">
-                页面是三个文件搭起来的：一个 HTML、一个样式表、一个脚本，没有框架也没有外部依赖，
-                双击就能打开。是我第一次自己动手做网页。
+                页面由三个文件构成：一个 HTML、一份样式表、一个脚本，没有框架，也没有外部依赖，
+                双击即可打开。这是我第一次动手做的网页。
               </p>
               <p class="card__tags"><span class="tag tag--sm">HTML</span><span class="tag tag--sm">CSS</span></p>
             </div>
@@ -169,10 +169,10 @@
                    width="1200" height="750" loading="lazy" decoding="async">
             </div>
             <div class="card__body">
-              <p class="card__meta">爱好 · 一直在打</p>
+              <p class="card__meta">爱好 · 长期坚持</p>
               <h3 class="card__title">乒乓球</h3>
               <p class="card__desc">
-                除了电脑，花时间最多的事。想约球随时找我。
+                除了电脑之外投入最多的事。欢迎约球。
               </p>
               <p class="card__tags"><span class="tag tag--sm">运动</span></p>
             </div>
@@ -188,12 +188,13 @@
       <h2 class="section__title reveal" style="--d:.06s">音乐墙</h2>
       <div class="section__body">
         <p class="lead reveal" style="--d:.12s">
-          平时听的一些专辑。鼠标停在某一列上，它就会停下来让你看清。
+          平时常听的专辑。鼠标停留在某一列上，该列会暂停，便于看清封面。
         </p>
       </div>
     </div>
 
-    <!-- 音乐墙：一份列表（下面这些 <li>），脚本会把它铺成好几列并上下循环滑动。
+    <!-- 音乐墙：一份按顺序排好的列表（下面这些 <li>），脚本按顺序分给几列、每列各走各的。
+         每一列拿到的专辑互不重复，所以屏幕上不会同时出现两张一样的封面。
          图片都在 assets/img/ 里，从 music-01.jpg 开始排。
          改歌名：把 <b> 里的字换成歌名，<i> 里的字换成歌手。
          换封面：用同名文件覆盖，尺寸 400×400（正方形）最省事。 -->
@@ -201,52 +202,104 @@
       <div class="wall__col">
         <ol class="wall__track" id="wallList">
           <li class="tile">
-            <img src="assets/img/music-01.jpg" alt="专辑封面占位图 1" width="400" height="400" loading="lazy" decoding="async">
-            <span class="tile__cap"><b>待填歌名 01</b><i>待填歌手</i></span>
+            <img src="assets/img/music-01.jpg" alt="专辑封面：Kiss Me（松下優也）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>Kiss Me</b><i>松下優也</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-02.jpg" alt="专辑封面占位图 2" width="400" height="400" loading="lazy" decoding="async">
-            <span class="tile__cap"><b>待填歌名 02</b><i>待填歌手</i></span>
+            <img src="assets/img/music-02.jpg" alt="专辑封面：The Waiting Game（Steve Gibbons Band）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>The Waiting Game</b><i>Steve Gibbons Band</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-03.jpg" alt="专辑封面占位图 3" width="400" height="400" loading="lazy" decoding="async">
-            <span class="tile__cap"><b>待填歌名 03</b><i>待填歌手</i></span>
+            <img src="assets/img/music-03.jpg" alt="专辑封面：You Are Not Alone（Michael Jackson）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>You Are Not Alone</b><i>Michael Jackson</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-04.jpg" alt="专辑封面占位图 4" width="400" height="400" loading="lazy" decoding="async">
-            <span class="tile__cap"><b>待填歌名 04</b><i>待填歌手</i></span>
+            <img src="assets/img/music-04.jpg" alt="专辑封面：そばにいるね（青山テルマ feat. SoulJa）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>そばにいるね</b><i>青山テルマ feat. SoulJa</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-05.jpg" alt="专辑封面占位图 5" width="400" height="400" loading="lazy" decoding="async">
-            <span class="tile__cap"><b>待填歌名 05</b><i>待填歌手</i></span>
+            <img src="assets/img/music-05.jpg" alt="专辑封面：一笑倾城（汪苏泷）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>一笑倾城</b><i>汪苏泷</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-06.jpg" alt="专辑封面占位图 6" width="400" height="400" loading="lazy" decoding="async">
-            <span class="tile__cap"><b>待填歌名 06</b><i>待填歌手</i></span>
+            <img src="assets/img/music-06.jpg" alt="专辑封面：不值得（梦飞船）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>不值得</b><i>梦飞船</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-07.jpg" alt="专辑封面占位图 7" width="400" height="400" loading="lazy" decoding="async">
-            <span class="tile__cap"><b>待填歌名 07</b><i>待填歌手</i></span>
+            <img src="assets/img/music-07.jpg" alt="专辑封面：出现又离开（梁博）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>出现又离开</b><i>梁博</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-08.jpg" alt="专辑封面占位图 8" width="400" height="400" loading="lazy" decoding="async">
-            <span class="tile__cap"><b>待填歌名 08</b><i>待填歌手</i></span>
+            <img src="assets/img/music-08.jpg" alt="专辑封面：半点心（草蜢）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>半点心</b><i>草蜢</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-09.jpg" alt="专辑封面占位图 9" width="400" height="400" loading="lazy" decoding="async">
-            <span class="tile__cap"><b>待填歌名 09</b><i>待填歌手</i></span>
+            <img src="assets/img/music-09.jpg" alt="专辑封面：又是黄昏（Beyond）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>又是黄昏</b><i>Beyond</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-10.jpg" alt="专辑封面占位图 10" width="400" height="400" loading="lazy" decoding="async">
-            <span class="tile__cap"><b>待填歌名 10</b><i>待填歌手</i></span>
+            <img src="assets/img/music-10.jpg" alt="专辑封面：多余的解释（许嵩）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>多余的解释</b><i>许嵩</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-11.jpg" alt="专辑封面占位图 11" width="400" height="400" loading="lazy" decoding="async">
-            <span class="tile__cap"><b>待填歌名 11</b><i>待填歌手</i></span>
+            <img src="assets/img/music-11.jpg" alt="专辑封面：很想一生跟你走（张学友）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>很想一生跟你走</b><i>张学友</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-12.jpg" alt="专辑封面占位图 12" width="400" height="400" loading="lazy" decoding="async">
-            <span class="tile__cap"><b>待填歌名 12</b><i>待填歌手</i></span>
+            <img src="assets/img/music-12.jpg" alt="专辑封面：认真的雪（薛之谦）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>认真的雪</b><i>薛之谦</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-13.jpg" alt="专辑封面：天下第一流（张学友）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>天下第一流</b><i>张学友</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-14.jpg" alt="专辑封面：Summertime（Beyoncé / Diddy）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>Summertime</b><i>Beyoncé / Diddy</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-15.jpg" alt="专辑封面：最后的一班渡轮（蔡国权）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>最后的一班渡轮</b><i>蔡国权</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-16.jpg" alt="专辑封面：Fall In Love（RAMZI）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>Fall In Love</b><i>RAMZI</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-17.jpg" alt="专辑封面：Volar（侧田）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>Volar</b><i>侧田</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-18.jpg" alt="专辑封面：Reason（吴建豪）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>Reason</b><i>吴建豪</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-19.jpg" alt="专辑封面：Slowly（Rain）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>Slowly</b><i>Rain</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-20.jpg" alt="专辑封面：Come Back To Me（宇多田ヒカル）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>Come Back To Me</b><i>宇多田ヒカル</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-21.jpg" alt="专辑封面：Cry no more（加藤ミリヤ）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>Cry no more</b><i>加藤ミリヤ</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-22.jpg" alt="专辑封面：Call On Me（Janet Jackson）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>Call On Me</b><i>Janet Jackson</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-23.jpg" alt="专辑封面：昨迟人（许志安）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>昨迟人</b><i>许志安</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-24.jpg" alt="专辑封面：风继续吹（张国荣）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>风继续吹</b><i>张国荣</i></span>
+          </li>
+          <li class="tile">
+            <img src="assets/img/music-25.jpg" alt="专辑封面：Bleeding Love（Leona Lewis）" width="400" height="400" loading="lazy" decoding="async">
+            <span class="tile__cap"><b>Bleeding Love</b><i>Leona Lewis</i></span>
           </li>
         </ol>
       </div>
@@ -258,7 +311,7 @@
       <p class="section__index reveal">05</p>
       <h2 class="section__title reveal" style="--d:.06s">联系我</h2>
       <div class="section__body">
-        <p class="lead reveal" style="--d:.12s">想聊聊 AIGC 视频、想约球，或者别的什么事，写信给我。</p>
+        <p class="lead reveal" style="--d:.12s">如果想聊聊 AIGC 视频、约球，或者别的事情，欢迎写信给我。</p>
 
         <a class="mail reveal" style="--d:.18s" href="mailto:lyxicl@qq.com" id="mailLink">
           lyxicl@qq.com

@@ -152,58 +152,63 @@
     });
   }
 
-  /* --- 6. 音乐墙：把一份列表铺成几列，上下循环滑动 -------------------------
-     页面上只写了"一列"的封面（好维护：改歌只改那一处）。
-     这里把它复制成好几列，每列换一个起始位置、换一个速度、有的往上有的往下，
-     免得几列同时停在同一个封面上，看起来像复制粘贴。
-     每列的内容都放两份：滚动到一半正好接上开头，所以看不出接缝。           */
+  /* --- 6. 音乐墙：把封面分给几列，每列各走各的上下循环滑动 -----------------
+     页面上只写了一份"按顺序排的列表"（好维护：改歌只改那一处），这里把它按
+     顺序分给各列：第 1 张→第 1 列、第 2 张→第 2 列……转回来再放第 6 张。
+
+     ⚠️ 关键：每一列装的必须是**不同的专辑**（互不重叠）。
+     第一版是"每列都装同一份 25 张、只是起点不同"，只要各列快慢一错开，屏幕上
+     就会同时冒出两张一样的封面；现在从结构上就重叠不了，怎么错开都不会重复。
+     每列再放两份自己的内容：滚到一半正好接上开头，看不出接缝。             */
   var wall = document.getElementById('musicWall');
   var wallList = document.getElementById('wallList');
 
   if (wall && wallList && wallList.children.length) {
-    var COLUMNS = [
-      { down: false, dur: 54 },
-      { down: true,  dur: 68 },
-      { down: false, dur: 80 },
-      { down: true,  dur: 60 },
-      { down: false, dur: 72 }
-    ];
+    // 每列"每张封面走完要几秒"和方向（false=往上，true=往下）：快慢不同才不像复制粘贴
+    var SPEEDS = [4.5, 5.67, 6.67, 5, 6];
+    var DIRS = [false, true, false, true, false];
     var tiles = Array.prototype.slice.call(wallList.children);
     var count = tiles.length;
+    var currentCols = 0;
 
-    // 每列从列表的不同位置开头，保证同一时刻相邻两列看到的不是同一张封面
-    var shifted = function (offset) {
-      var out = [];
-      for (var i = 0; i < count; i++) {
-        out.push(tiles[(i + offset) % count]);
-      }
-      return out;
+    // 列数按屏幕宽度定：宽屏 5 列，窄了逐级减到 2 列（列少时每列分到的封面更多）
+    var colsForWidth = function () {
+      var w = window.innerWidth;
+      if (w > 1150) return 5;
+      if (w > 900) return 4;
+      if (w > 760) return 3;
+      return 2;
     };
 
-    var buildTrack = function (offset, down, dur) {
-      var track = document.createElement('ol');
-      track.className = 'wall__track' + (down ? ' wall__track--down' : '');
-      track.style.animationDuration = dur + 's';
-      // 起始时间错开：不让所有列同时从"第一张封面"出发
-      track.style.animationDelay = '-' + (dur * (offset % count) / count).toFixed(2) + 's';
-      var order = shifted(offset);
-      for (var copy = 0; copy < 2; copy++) {
-        order.forEach(function (li) { track.appendChild(li.cloneNode(true)); });
+    var build = function (cols) {
+      wall.textContent = '';                 // 重新铺列（原来的列表已经存在 tiles 里）
+      for (var c = 0; c < cols; c++) {
+        var mine = [];
+        for (var i = c; i < count; i += cols) mine.push(tiles[i]);
+
+        var track = document.createElement('ol');
+        track.className = 'wall__track' + (DIRS[c] ? ' wall__track--down' : '');
+        // 一列里放两份自己的封面，滚到一半正好接上开头
+        for (var copy = 0; copy < 2; copy++) {
+          mine.forEach(function (li) { track.appendChild(li.cloneNode(true)); });
+        }
+        track.style.animationDuration = Math.round(SPEEDS[c % SPEEDS.length] * mine.length) + 's';
+
+        var col = document.createElement('div');
+        col.className = 'wall__col';
+        col.appendChild(track);
+        wall.appendChild(col);
       }
-      return track;
     };
 
-    // 第一列用页面里本来写好的那份（就是列表的原始顺序），再补一份同样的，循环才无缝
-    var step = Math.max(1, Math.round(count / COLUMNS.length));
-    wallList.style.animationDuration = COLUMNS[0].dur + 's';
-    shifted(0).forEach(function (li) { wallList.appendChild(li.cloneNode(true)); });
-
-    for (var c = 1; c < COLUMNS.length; c++) {
-      var col = document.createElement('div');
-      col.className = 'wall__col';
-      col.appendChild(buildTrack(step * c, COLUMNS[c].down, COLUMNS[c].dur));
-      wall.appendChild(col);
-    }
+    var sync = function () {
+      var cols = colsForWidth();
+      if (cols === currentCols) return;
+      currentCols = cols;
+      build(cols);
+    };
+    sync();
+    window.addEventListener('resize', sync, { passive: true });
   }
 
   /* --- 7. 页脚年份 --------------------------------------------------------- */
