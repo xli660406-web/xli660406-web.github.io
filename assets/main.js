@@ -173,8 +173,14 @@
 
     /* 点击封面去听：链接不是一张一张手写的，而是拿封面下面那两行字
        （歌名 + 歌手）现算一个搜索地址——以后加歌、改名，链接自动跟着变，
-       不会出现写错或者点开是死链的情况。想换平台只改下面这一行。       */
-    var SEARCH = 'https://music.163.com/#/search/m/?type=1&s=';
+       不会出现写错或者点开是死链的情况。想换平台只改下面这一行。
+
+       ⚠️ 为什么是 B 站而不是网易云 / QQ 音乐：那两家网页版会把搜索结果
+       挡在"扫码登录"弹窗后面（2026-09-20 实测截图 /tmp/site1.png 网易云、
+       /tmp/qq_search.png QQ 音乐），访客不登录就看不到歌；B 站搜索页免登录
+       就能看结果（实测截图 /tmp/bili_search.png 宽屏、/tmp/bili_mobile.png
+       手机尺寸），所以选它。链接是"搜索页"，不是某一首歌，永不会失效。   */
+    var SEARCH = 'https://search.bilibili.com/all?keyword=';
     var withListenLink = function (li) {
       var song = li.querySelector('.tile__cap b');
       var artist = li.querySelector('.tile__cap i');
@@ -189,8 +195,8 @@
       link.href = SEARCH + encodeURIComponent(query);
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
-      link.title = '去听：' + query;
-      link.setAttribute('aria-label', '去听：' + query);
+      link.title = '去听：' + query + '（B 站搜索）';
+      link.setAttribute('aria-label', '去听：' + query + '（B 站搜索）');
 
       var badge = document.createElement('span');
       badge.className = 'tile__play';
