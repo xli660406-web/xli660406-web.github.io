@@ -404,6 +404,11 @@ main { position: relative; z-index: 2; }
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   gap: 1.1rem;
 }
+/* 宽屏固定三列：这样"横跨整行"的那张卡片才知道自己占几格
+   （用 auto-fit 的话列数是自动算的，横跨整行的卡片会把同一行挤歪） */
+@media (min-width: 1000px) {
+  .cards { grid-template-columns: repeat(3, 1fr); }
+}
 .card {
   position: relative;
   display: flex;
@@ -439,10 +444,30 @@ main { position: relative; z-index: 2; }
   transition: transform .8s var(--ease);
 }
 .card:hover .card__media img { transform: scale(1.03); }
+/* 整行大卡片：图在左、字在右。手机上还是一列（图在上、字在下），
+   因为窄屏左右分栏会把字挤成一条线 */
+.card--wide { grid-column: 1 / -1; }
+/* 大卡片配图是正方形：手机上图在上（正方形），电脑上图在左（高度跟着文字走），
+   两种情况下裁掉的都很少 */
+.card--wide .card__media { aspect-ratio: 1 / 1; }
+@media (min-width: 761px) {
+  .card--wide { flex-direction: row; }
+  .card--wide .card__media {
+    flex: 0 0 42%;
+    width: 42%;
+    aspect-ratio: auto;          /* 高度交给右边的文字决定，图跟着拉伸铺满 */
+    border-bottom: 0;
+    border-right: 1px solid var(--line);
+  }
+  .card--wide .card__body { padding: 1.6rem 1.8rem 1.7rem; }
+}
 /* 老浏览器不认识 aspect-ratio 时，用 padding 撑出同样的高度 */
 @supports not (aspect-ratio: 16 / 10) {
   .card__media { height: 0; padding-bottom: 62.5%; }
   .card__media img { position: absolute; inset: 0; height: auto; }
+  /* 大卡片不参与这套：它靠右边文字的高度撑着 */
+  .card--wide .card__media { height: auto; padding-bottom: 0; }
+  .card--wide .card__media img { position: static; height: 100%; }
 }
 
 .card__body { padding: 1.35rem 1.5rem 1.5rem; }
@@ -465,6 +490,31 @@ main { position: relative; z-index: 2; }
   color: var(--fg-dim);
 }
 .card__tags { margin: 0; display: flex; flex-wrap: wrap; gap: .4rem; }
+
+/* 卡片里的"注意事项"：左边一道香槟金的竖线，跟正文区分开，
+   但不喊不叫——访客扫一眼就知道这段是坑，不是介绍 */
+.card__note {
+  margin: 0 0 1.1rem;
+  padding: .6rem .8rem;
+  border-left: 2px solid rgba(217, 200, 161, .5);
+  border-radius: 0 10px 10px 0;
+  background: rgba(217, 200, 161, .05);
+  font-size: .8rem;
+  line-height: 1.65;
+  color: var(--fg-dim);
+}
+/* 卡片里的出处/署名一行：比正文更小更淡，链接照样看得见 */
+.card__credit {
+  margin: 0 0 1.1rem;
+  font-size: .76rem;
+  line-height: 1.6;
+  color: var(--fg-mute);
+}
+.card__credit a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 
 /* --------------------------------------------------------------------------
    音乐墙：几张封面分给几列，每列各走各的（有的往上、有的往下、快慢也不同）
