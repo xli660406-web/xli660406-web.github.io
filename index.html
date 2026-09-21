@@ -350,8 +350,14 @@
   <div class="picker__card" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
     <p class="picker__title" id="pickerTitle">用哪个软件听？</p>
     <p class="picker__song" id="pickerSong"></p>
-    <p class="picker__hint">点平台名会打开对应 App（歌名会自动复制好，进去粘贴就能搜到）；没装的会打开它的网页。</p>
+    <p class="picker__hint">点平台名会试着打开你手机里的 App（歌名会自动复制好，进去粘贴就能搜到）；唤不起来就用下面那行网页。</p>
     <ul class="picker__list" id="pickerList"></ul>
+    <!-- 点过平台名之后才出现的兜底：微信、QQ 这类自带浏览器不给跳 App，
+         点了会一点反应都没有，所以永远留一步"用网页打开"给访客自己点 -->
+    <p class="picker__note" id="pickerNote" hidden>
+      <span id="pickerNoteText"></span> · 没反应？
+      <a id="pickerNoteLink" href="https://search.bilibili.com/all?keyword=" target="_blank" rel="noopener noreferrer">点这里用网页打开</a>
+    </p>
     <a class="picker__fallback" id="pickerBili" href="https://search.bilibili.com/all?keyword=" target="_blank" rel="noopener noreferrer">
       这些都没装？去 B 站搜（免登录，能直接看）
     </a>

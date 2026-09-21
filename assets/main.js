@@ -307,9 +307,15 @@
     } catch (err) { /* 复制不了就算了 */ }
   }
 
-  /* 唤起 App：手机上点平台名走这里。唤不起（没装）就退回这个平台的网页，
-     所以不管装没装，点一下都有结果，不会卡在空白页上。 */
-  function openInApp(platform, webUrl) {
+  /* 唤起 App：手机上点平台名走这里。
+     ⚠️ 2026-09-21 用户实测"点网易云、QQ 音乐没反应"之后改的，两个坑：
+       1) 必须在这一下点击里同步跳，挪进 setTimeout 再跳 iPhone 就不认了；
+       2) 唤起成不成功，网页这边**测不出来**：微信、QQ 这类自带浏览器直接禁止
+          网页跳 App，点了就是一点动静都没有。所以这里只负责"试着唤起"，
+          兜底交给下面那行一直显示着的文字链接，不再自己掐 1.6 秒去判断
+          ——之前那套判断会被浏览器的 pagehide 误伤，变成既不跳 App 也不跳
+          网页的死路，用户遇到的就是这个。 */
+  function launchApp(platform, webUrl) {
     if (isAndroid && platform.pkg) {
       /* 安卓浏览器的标准写法：App 没装时，浏览器自己会去 S.browser_fallback_url，
          不用我们掐时间判断——这段是照网易云自己网页里的写法抄的 */
@@ -321,18 +327,28 @@
       return;
     }
 
-    // iPhone 等：先试协议；1.6 秒后还停在这一页，说明没起来 → 退回网页
-    var left = false;
-    var markLeft = function () { left = true; };
-    document.addEventListener('visibilitychange', markLeft);
-    window.addEventListener('pagehide', markLeft);
+    /* iPhone 等：直接把地址换成 App 的协议。App 起来了整页会被切到后台；
+       起不来的话浏览器通常什么都不做——没关系，面板还开着，下面那行提示还在。 */
     window.location.href = platform.app;
-    window.setTimeout(function () {
-      document.removeEventListener('visibilitychange', markLeft);
-      window.removeEventListener('pagehide', markLeft);
-      if (left || document.hidden) return;   // App 起来了，页面被切到后台，什么都不用做
-      window.location.href = webUrl;
-    }, 1600);
+  }
+
+  /* 「没反应？点这里用网页打开」那一行：点平台名的同时同步显示出来。
+     它是个真的链接（用户自己点，浏览器不会拦），所以永远点得动，不会再出现
+     "点了什么都不发生"的死路。 */
+  var note = document.getElementById('pickerNote');
+  var noteText = document.getElementById('pickerNoteText');
+  var noteLink = document.getElementById('pickerNoteLink');
+
+  function showNote(platform, webUrl) {
+    if (!note || !noteText || !noteLink) return;
+    noteText.textContent = '正在试着打开「' + platform.name + '」';
+    noteLink.href = webUrl;
+    noteLink.setAttribute('aria-label', '用网页打开' + platform.name + '，搜索：' + currentQuery);
+    note.hidden = false;
+  }
+
+  function hideNote() {
+    if (note) note.hidden = true;
   }
 
   function closePicker() {
@@ -371,6 +387,7 @@
   function openPicker(query, label, trigger) {
     if (!picker || !pickerList || !query) return false;
     openedFrom = trigger || null;
+    hideNote();                                // 面板重新打开，先把上一次的提示清掉
     fillPicker(query, label);
     picker.hidden = false;
     document.body.style.overflow = 'hidden';   // 面板开着，后面那页别跟着上下滑
@@ -420,12 +437,18 @@
         if (platform.app && noHover) {
           e.preventDefault();
           copyQuery();                       // 歌名先复制好，进 App 直接粘贴
-          closePicker();
-          openInApp(platform, a.href);
+          showNote(platform, a.href);        // 先摆好兜底，再试唤起
+          launchApp(platform, a.href);       // 别挪进 setTimeout：晚了浏览器不让跳
+          /* 面板故意不关：App 没起来时，那行"用网页打开"要留在屏幕上给用户点 */
         } else {
           closePicker();
         }
       });
+    }
+
+    /* 点了那行兜底链接 = 用户不打算等 App 了，直接把面板收掉 */
+    if (noteLink) {
+      noteLink.addEventListener('click', function () { closePicker(); });
     }
 
     document.addEventListener('keydown', function (e) {
