@@ -1095,7 +1095,7 @@ body.is-zoomed { overflow: hidden; }
 /* 「时间与成本」那四条数字：宽屏一行四个，手机两行 */
 .stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 1rem;
   margin: 1.5rem 0 1.9rem;
   padding: 0;

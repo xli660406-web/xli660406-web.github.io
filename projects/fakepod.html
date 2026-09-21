@@ -108,6 +108,7 @@
       <li>自己下单打了 PCB（板厚 1.0 mm，这是原作者特别强调的，打错了装不进去）。</li>
       <li>自己焊接：板上的阻容大多是 0402 封装，肉眼几乎看不清，得配钢网和加热台。</li>
       <li>照着原作者的 BOM 在淘宝配齐元件（屏幕、DAC、陀螺仪、电池、外壳这些）。</li>
+      <li>外壳用原项目给的 3D 模型文件，找嘉立创打印的（模型不是我画的）。</li>
       <li>自己刷固件：先用一键烧录工具写进去，之后再用小程序做蓝牙 OTA。</li>
     </ul>
     <p class="doc__source">
@@ -118,6 +119,7 @@
   <section class="doc__section doc__section--wide reveal">
     <h2>时间与成本</h2>
     <ul class="stats">
+      <li><span class="stats__num">7 天</span><span class="stats__label">等板（打板 + 快递）</span></li>
       <li><span class="stats__num">1 天</span><span class="stats__label">焊接 + 烧录</span></li>
       <li><span class="stats__num">≈¥120</span><span class="stats__label">整机成本</span></li>
       <li><span class="stats__num">¥0</span><span class="stats__label">打板 + 外壳</span></li>
@@ -127,14 +129,14 @@
       <tbody>
         <tr><th>屏幕</th><td>2.0 英寸 460×460 AMOLED：<b>¥56</b>，整台机器里最贵的一件</td></tr>
         <tr><th>PCB 打板</th><td>嘉立创打板：<b>免费</b>（¥0）</td></tr>
-        <tr><th>外壳</th><td>嘉立创 3D 打印：¥5，正好有券，<b>实付 ¥0</b></td></tr>
+        <tr><th>外壳</th><td>拿原项目给的模型文件去嘉立创 3D 打印：¥5，正好有券，<b>实付 ¥0</b></td></tr>
         <tr><th>其余元件</th><td>主控、DAC、电池和板上的小元件：合计约 <b>¥64</b></td></tr>
         <tr><th>合计</th><td>整机约 <b>¥120</b></td></tr>
       </tbody>
     </table>
     <p class="doc__source">
-      时间按焊接加烧录算，一天之内做完；钱是我自己记的账，是约数，不是原项目页面的数据。
-      打板和外壳能白嫖，是因为赶上了嘉立创的免费打板和优惠券。
+      打板等了 7 天（排队 + 快递），板子到手之后焊接加烧录一天做完，从下单到能出声大约 8 天；
+      钱是我自己记的账，是约数，不是原项目页面的数据。打板和外壳能白嫖，是因为赶上了嘉立创的免费打板和优惠券。
     </p>
   </section>
 
@@ -172,7 +174,8 @@
           <p class="step__num">第 2 步</p>
           <h3 class="step__title">刷锡膏</h3>
           <p>钢网对准、锡膏刮平，再上焊台用 190 ℃ 回流焊。锡膏是我自己调的，
-             这次调得偏稀，涂上去不太好控制——太稀容易连锡，太干又推不动。</p>
+             这次调得偏稀，涂上去不太好控制——太稀容易连锡，太干又推不动，
+             后来把锡膏重新调好、整块板重刷了一遍才往下焊。</p>
         </div>
       </li>
 
@@ -186,8 +189,8 @@
         <div class="step__body">
           <p class="step__num">第 3 步</p>
           <h3 class="step__title">装进外壳</h3>
-          <p>焊完、洗净、测试通过，再装壳。外壳不是买的成品，是拿嘉立创 3D 打印的
-             （5 元，正好有券，实付 0 元）。这张是拆开的样子（这台上还没装电池）：
+          <p>焊完、洗净、测试通过，再装壳。外壳不是买的成品，是拿<b>原项目给的模型文件</b>
+             在嘉立创 3D 打印的（5 元，正好有券，实付 0 元）。这张是拆开的样子（这台上还没装电池）：
              从上往下是外壳、主板、2.0 英寸方形屏幕，屏幕和主板之间只靠一条软的排线连着。</p>
         </div>
       </li>
@@ -234,6 +237,7 @@
     <p>
       原项目：<a class="doc__link" href="https://oshwhub.com/planevina/fakepodnano-lossless-audioplayer" target="_blank" rel="noopener noreferrer">FAKE_POD_NANO 无损音频播放器 · planevina（立创开源硬件平台）</a><br>
       协议：CC BY-NC-SA 3.0——标注出处即可参考使用，不要拿去卖，改动后也要用同样的协议开源。
+      我这台用到的图纸、固件和外壳模型文件也都来自原项目，我做的只有焊接、装配、配元件和刷机。
       <br>这个页面上的配图是我自己拍的实拍照片，没有搬运原作者的图片；想要图纸和固件，请直接去原项目页面下载。
     </p>
   </section>
