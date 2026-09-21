@@ -934,6 +934,163 @@ main { position: relative; z-index: 2; }
 }
 
 .doc__section { max-width: 68ch; margin-top: 2.7rem; }
+/* 照片墙那一节要铺满整栏（正文仍然是 68ch 的阅读宽度） */
+.doc__section--wide { max-width: none; }
+
+/* 项目详情页里的"实拍照片墙"：两列瀑布流，手机上一列。
+   照片是竖构图还是横构图都能放，靠 columns 自己排，不用裁成统一比例 */
+.gallery { columns: 2; column-gap: 1.1rem; margin-top: 1.2rem; max-width: none; }
+.gallery figure {
+  break-inside: avoid;
+  margin: 0 0 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0c0c11;
+}
+.gallery img { display: block; width: 100%; height: auto; }
+.gallery figcaption {
+  padding: .6rem .85rem .7rem;
+  border-top: 1px solid var(--line-soft);
+  font-size: .74rem;
+  line-height: 1.55;
+  color: var(--fg-mute);
+}
+@media (max-width: 640px) {
+  .gallery { columns: 1; }
+}
+
+/* 照片：点一下能放大看（放大镜逻辑在 main.js 第 8 段） */
+.shot {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  background: none;
+  cursor: zoom-in;
+  line-height: 0;
+}
+.shot img { width: 100%; height: auto; transition: transform .5s var(--ease); }
+.shot:hover img { transform: scale(1.02); }
+.shot:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+/* 右上角那枚"点开放大"的小圆标：鼠标悬停才浮出来，触屏设备一直显示 */
+.shot::after {
+  content: "+";
+  position: absolute;
+  top: .6rem;
+  right: .6rem;
+  display: grid;
+  place-items: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  border: 1px solid rgba(217, 200, 161, .45);
+  border-radius: 50%;
+  background: rgba(10, 10, 14, .72);
+  color: var(--accent);
+  font-size: .95rem;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity .35s var(--ease);
+}
+.shot:hover::after,
+.shot:focus-visible::after { opacity: 1; }
+@media (hover: none) {
+  .shot::after { opacity: 1; }
+}
+
+/* 制作过程：一条金色时间线，一步一张照片 */
+.steps { list-style: none; margin: 1.8rem 0 0; padding: 0; }
+.step {
+  position: relative;
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  padding: 0 0 2.4rem 2.3rem;
+}
+.step::before {                     /* 竖线 */
+  content: "";
+  position: absolute;
+  left: .45rem;
+  top: .7rem;
+  bottom: -.1rem;
+  width: 1px;
+  background: linear-gradient(to bottom, rgba(217, 200, 161, .5), rgba(217, 200, 161, .1));
+}
+.step:last-child::before { display: none; }
+.step::after {                      /* 金色节点 */
+  content: "";
+  position: absolute;
+  left: .12rem;
+  top: .62rem;
+  width: .7rem;
+  height: .7rem;
+  border-radius: 50%;
+  border: 1px solid rgba(217, 200, 161, .8);
+  background: #0a0a0e;
+  box-shadow: 0 0 0 5px rgba(217, 200, 161, .05);
+}
+.step__media { flex: 0 0 45%; max-width: 45%; }
+.step__num {
+  margin: 0 0 .35rem;
+  font-size: .7rem;
+  letter-spacing: .2em;
+  color: var(--accent);
+}
+.step__title { margin: 0 0 .55rem; font-size: 1.04rem; font-weight: 650; }
+.step__body { padding-top: .1rem; }
+.step__body p { margin: 0; color: var(--fg-dim); font-size: .94rem; }
+@media (max-width: 760px) {
+  .step { flex-direction: column; gap: .95rem; padding-left: 1.7rem; }
+  .step__media { flex: none; width: 100%; max-width: none; }
+  .step::before { left: .3rem; }
+  .step::after { left: 0; }
+}
+
+/* 点开看大图的那层黑色遮罩 */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: none;
+  padding: 3.2rem 1.2rem 1.6rem;
+  background: rgba(4, 4, 6, .95);
+  backdrop-filter: blur(8px);
+}
+.lightbox.is-open { display: flex; align-items: center; justify-content: center; }
+.lightbox__inner { margin: 0; max-width: 100%; text-align: center; }
+.lightbox__inner img {
+  width: auto;
+  max-width: min(100%, 1100px);
+  max-height: 76vh;
+  margin: 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.lightbox__inner figcaption {
+  max-width: 58ch;
+  margin: .95rem auto 0;
+  font-size: .82rem;
+  line-height: 1.6;
+  color: var(--fg-dim);
+}
+.lightbox__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2.7rem;
+  height: 2.7rem;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(14, 14, 19, .85);
+  color: var(--fg);
+  font-size: 1rem;
+  cursor: pointer;
+}
+.lightbox__close:hover { color: var(--accent); border-color: rgba(217, 200, 161, .5); }
+body.is-zoomed { overflow: hidden; }
 .doc__section h2 {
   margin: 0 0 .9rem;
   font-size: 1.14rem;

@@ -456,7 +456,71 @@
     });
   }
 
-  /* --- 8. 页脚年份 --------------------------------------------------------- */
+  /* --- 8. 项目详情页：点照片看大图 -----------------------------------------
+     只对带 .shot 的按钮生效（目前用在 FAKE_POD_NANO 详情页的制作过程与成品图上）。
+     没有这段脚本时，照片照常显示，只是点不开——不影响阅读。
+     关闭方式给三种：右上角 ✕、点照片以外的黑底、按 Esc；关掉之后焦点回到原来那张。 */
+  var shots = Array.prototype.slice.call(document.querySelectorAll('.shot'));
+
+  if (shots.length) {
+    var lightbox = document.createElement('div');
+    lightbox.className = 'lightbox';
+    lightbox.setAttribute('role', 'dialog');
+    lightbox.setAttribute('aria-modal', 'true');
+    lightbox.setAttribute('aria-label', '放大看照片');
+    lightbox.innerHTML =
+      '<button class="lightbox__close" type="button" aria-label="关闭">✕</button>' +
+      '<figure class="lightbox__inner"><img alt=""><figcaption></figcaption></figure>';
+    document.body.appendChild(lightbox);
+
+    var bigImg = lightbox.querySelector('img');
+    var bigCap = lightbox.querySelector('figcaption');
+    var closeBtn = lightbox.querySelector('.lightbox__close');
+    var lastShot = null;
+
+    function openBox(shot) {
+      var thumb = shot.querySelector('img');
+      var fig = shot.closest('figure');
+      var cap = fig ? fig.querySelector('figcaption') : null;
+      /* 照片下面的说明优先：时间线里没有 figure，就退回按钮上的 data-cap；再没有才用 alt */
+      var text = (cap && cap.textContent) || shot.getAttribute('data-cap') ||
+                 (thumb ? thumb.getAttribute('alt') : '');
+
+      bigImg.src = thumb.currentSrc || thumb.src;
+      bigImg.alt = thumb.alt || '';
+      bigCap.textContent = text || '';
+      bigCap.style.display = text ? '' : 'none';
+
+      lastShot = shot;
+      lightbox.classList.add('is-open');
+      document.body.classList.add('is-zoomed');
+      closeBtn.focus();
+    }
+
+    function closeBox() {
+      lightbox.classList.remove('is-open');
+      document.body.classList.remove('is-zoomed');
+      bigImg.removeAttribute('src');
+      if (lastShot) lastShot.focus();
+      lastShot = null;
+    }
+
+    shots.forEach(function (shot) {
+      shot.addEventListener('click', function () { openBox(shot); });
+    });
+
+    closeBtn.addEventListener('click', closeBox);
+    lightbox.addEventListener('click', function (e) {
+      if (e.target === lightbox) closeBox();     // 点黑底关掉，点照片本身不关
+    });
+    document.addEventListener('keydown', function (e) {
+      if (lightbox.classList.contains('is-open') && (e.key === 'Escape' || e.keyCode === 27)) {
+        closeBox();
+      }
+    });
+  }
+
+  /* --- 9. 页脚年份 --------------------------------------------------------- */
   var year = document.getElementById('year');
   if (year) year.textContent = String(new Date().getFullYear());
 })();
