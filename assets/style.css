@@ -628,6 +628,9 @@ main { position: relative; z-index: 2; }
   grid-template-columns: 1fr 1fr;
   gap: .5rem;
 }
+/* 平台是单数个时（现在是 5 个），最后那个按钮占满整行，不留一个孤零零的半格 */
+.picker__list > li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+
 .picker__btn {
   display: block;
   padding: .85rem .6rem;

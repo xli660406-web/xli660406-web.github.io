@@ -247,17 +247,23 @@
      听歌软件，所以改成"点封面 → 先问用哪个软件"。
 
      下面 PLATFORMS 就是全部可选平台，一行一个：
-       name = 按钮上的字；url = 搜索地址的前半段（后面自动接上「歌名 歌手」）。
+       name = 按钮上的字；
+       url  = 搜索地址，中间的 {q} 会被换成「歌名 歌手」。
+              没有 {q} 的（比如汽水音乐）就直接打开那个地址，不带搜索词。
      想加平台、去掉平台、换名字，改这张表就行，改完刷新页面生效。
      为什么不加"打开 App"那种特殊跳转：那属于各家 App 私有的协议，写错了
      访客手机上会弹出"打不开"甚至一片空白；而直接用各家的搜索网页，装了 App
      的手机通常会自己进 App（这些平台自己做了这个跳转），没装的也能看到网页。
      面板里的按钮都是开新标签：万一对面要登录或要下载 App，关掉标签就回到本站。 */
   var PLATFORMS = [
-    { name: '网易云音乐',  url: 'https://music.163.com/#/search/m/?s=' },
-    { name: 'QQ 音乐',     url: 'https://y.qq.com/n/ryqq/search?w=' },
-    { name: '酷狗音乐',    url: 'https://m.kugou.com/search?keyword=' },
-    { name: 'Apple Music', url: 'https://music.apple.com/cn/search?term=' }
+    { name: '网易云音乐',  url: 'https://music.163.com/#/search/m/?s={q}' },
+    { name: 'QQ 音乐',     url: 'https://y.qq.com/n/ryqq/search?w={q}' },
+    { name: '酷狗音乐',    url: 'https://m.kugou.com/search?keyword={q}' },
+    /* 汽水音乐（2026-09-21 实测）：没有给听众用的网页版搜索——官网 qishui.douyin.com
+       只有下载页，music.douyin.com 是给音乐人/合作方用的平台，所以这里只能把人送到
+       官网；手机上装了 App 的一般会直接进 App，没装的会看到下载页。 */
+    { name: '汽水音乐',    url: 'https://qishui.douyin.com/' },
+    { name: 'Apple Music', url: 'https://music.apple.com/cn/search?term={q}' }
   ];
 
   /* B 站：不用装任何东西、不用登录就能看结果，留给"这些都没装"的访客兜底
@@ -290,7 +296,9 @@
       var li = document.createElement('li');
       var a = document.createElement('a');
       a.className = 'picker__btn';
-      a.href = platform.url + encodeURIComponent(query);
+      a.href = platform.url.indexOf('{q}') >= 0
+        ? platform.url.replace('{q}', encodeURIComponent(query))
+        : platform.url;
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
       a.textContent = platform.name;
