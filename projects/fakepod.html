@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAKE_POD_NANO 无损音乐播放器（复刻）· 枫言枫语</title>
+<meta name="description" content="复刻自 planevina 开源项目的 ESP32-S3 无损音乐播放器：CS43131 HIFI 版，自己的打板、焊接、配元件与刷固件记录。">
+<meta name="theme-color" content="#08080a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d0d12'/%3E%3Crect x='12' y='28' width='14' height='8' rx='4' fill='%23d9c8a1'/%3E%3Crect x='26' y='28' width='26' height='8' rx='4' fill='%23ececee'/%3E%3C/svg%3E">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="../assets/style.css?v=20260921g">
+</head>
+<body>
+
+<a class="skip" href="#main">跳到正文</a>
+
+<div class="bg" aria-hidden="true">
+  <div class="bg__far" data-depth="0.10">
+    <span class="blob blob--1"></span>
+    <span class="blob blob--2"></span>
+    <span class="blob blob--3"></span>
+  </div>
+  <div class="bg__mid" data-depth="0.26">
+    <span class="glow glow--1"></span>
+    <span class="glow glow--2"></span>
+  </div>
+  <div class="bg__grid"></div>
+  <div class="bg__noise"></div>
+</div>
+
+<header class="nav" id="nav">
+  <div class="wrap nav__inner">
+    <a class="nav__brand" href="../index.html">枫言枫语</a>
+    <nav class="nav__links" aria-label="页面导航">
+      <a href="../index.html#projects">← 回到项目</a>
+    </nav>
+  </div>
+</header>
+
+<main class="doc wrap" id="main">
+  <p class="doc__meta reveal">复刻项目 · 2026</p>
+  <h1 class="doc__title reveal" style="--d:.06s">FAKE_POD_NANO 无损音乐播放器</h1>
+  <p class="doc__lead reveal" style="--d:.12s">
+    一台模仿 iPod Nano 外观的小播放器。我用原作者开源出来的资料自己打板、自己焊接、
+    按他的 BOM 在淘宝配元件、自己刷固件做出了这台机器——<b>我做的是 HIFI 版，用的是 CS43131 这颗 DAC</b>。
+  </p>
+
+  <figure class="doc__figure reveal" style="--d:.18s">
+    <img src="../assets/img/project-fakepod.jpg" alt="示意插画：一台竖向小播放器，方屏上画着音频波形，机身下半是仿 iPod 的圆形转盘"
+         width="1200" height="1200" decoding="async">
+    <figcaption>示意图，我的实拍照片还在补。</figcaption>
+  </figure>
+
+  <section class="doc__section reveal">
+    <h2>硬件配置</h2>
+    <table class="spec">
+      <tbody>
+        <tr><th>主控</th><td>ESP32-S3，负责驱动 QSPI 屏幕、解码音频、跑界面</td></tr>
+        <tr><th>屏幕</th><td>鱼鹰光电 2.0 英寸 460×460 QSPI AMOLED——比普通 LCD 更省电、显示效果更好</td></tr>
+        <tr><th>DAC（我这台）</th><td>CS43131：信噪比 130 dB，自带耳机输出，大多数耳机可以直接推</td></tr>
+        <tr><th>DAC（另一版）</th><td>PCM5102A：信噪比 112 dB，不需要 MCK 时钟，默认是 LINE OUT，接音响更合适</td></tr>
+        <tr><th>传感器</th><td>QMI8658 六轴陀螺仪，用来做手势切歌</td></tr>
+        <tr><th>存储</th><td>内置 TF 卡槽，音乐放在卡里</td></tr>
+        <tr><th>电源</th><td>TP4055 充电管理 + 603035 锂电池，约 600 mAh</td></tr>
+      </tbody>
+    </table>
+    <p class="doc__source">
+      以上参数摘自原项目页面（2026-09-21 抓取），不是我猜的；更完整的资料（图纸、固件、BOM）请去下面的原项目页面看。
+    </p>
+  </section>
+
+  <section class="doc__section reveal">
+    <h2>它能做什么</h2>
+    <ul>
+      <li><b>无损音乐播放</b>：支持 MP3 与 FLAC，最高 96 kHz 采样率、24 bit 位宽；界面仿 iPod Nano，能读取并显示歌曲内嵌的封面。</li>
+      <li><b>拾音频谱</b>：共 5 种样式，带实时节拍检测，屏幕会跟着音乐动。</li>
+      <li><b>MJPEG 动画播放</b>：460×460、15 帧/秒，可以把自己做的动画放进去（附件里有转换工具）。</li>
+      <li><b>图片相册</b>：显示 460×460 的 JPEG 图片。</li>
+      <li><b>文本阅读器</b>：能看 UTF-8 编码的 txt。</li>
+      <li><b>蓝牙传歌与升级</b>：通过小程序做蓝牙 OTA 升级、发送图片。</li>
+      <li><b>当电脑的 USB 声卡</b>（原项目 2025-07-24 更新加入）：把播放器插到电脑上就能当外置声卡用，屏幕还会显示背景图和频谱——注意这个模式需要单独刷固件。</li>
+    </ul>
+  </section>
+
+  <section class="doc__section reveal">
+    <h2>已知的限制</h2>
+    <ul>
+      <li>歌曲封面不能太大：原作者的说明是别超过 400 KB、尺寸建议不超过 500×500，否则播放器读不动。</li>
+      <li>TF 卡里的音乐要按文件夹放进 <code>music</code> 目录，而且只认一层文件夹，嵌套的更深的目录扫不到。</li>
+      <li>一旦生成了播放列表文件，之后进音乐就会直接读列表、不再重新扫描 TF 卡——新加的歌要重新扫描才会出现。</li>
+      <li>MJPEG 动画和相册都是 460×460，超过这个尺寸的素材要先转好。</li>
+      <li>USB 声卡模式和播放器模式是两套固件，要来回切就得重新刷。</li>
+    </ul>
+  </section>
+
+  <section class="doc__section reveal">
+    <h2>两个我想先说清楚的坑</h2>
+    <p class="note">
+      这块 AMOLED 屏幕很脆弱，边上没有任何保护，装配时压到就会坏，装的时候宁可慢一点；
+      另外不要带电插拔——耳机、TF 卡、USB 线都一样，插拔前先关机。
+    </p>
+  </section>
+
+  <section class="doc__section reveal">
+    <h2>我在这个项目里做了什么</h2>
+    <ul>
+      <li>自己下单打了 PCB（板厚 1.0 mm，这是原作者特别强调的，打错了装不进去）。</li>
+      <li>自己焊接：板上的阻容大多是 0402 封装，肉眼几乎看不清，得配钢网和加热台。</li>
+      <li>照着原作者的 BOM 在淘宝配齐元件（屏幕、DAC、陀螺仪、电池、外壳这些）。</li>
+      <li>自己刷固件：先用一键烧录工具写进去，之后再用小程序做蓝牙 OTA。</li>
+    </ul>
+    <p class="doc__source">
+      设计、固件、图纸都是原作者做的，这部分我会一直写清楚；我加进去的是动手的部分和上面那两个坑的经验。
+    </p>
+  </section>
+
+  <section class="doc__section reveal">
+    <h2>出处与协议</h2>
+    <p>
+      原项目：<a class="doc__link" href="https://oshwhub.com/planevina/fakepodnano-lossless-audioplayer" target="_blank" rel="noopener noreferrer">FAKE_POD_NANO 无损音频播放器 · planevina（立创开源硬件平台）</a><br>
+      协议：CC BY-NC-SA 3.0——标注出处即可参考使用，不要拿去卖，改动后也要用同样的协议开源。
+      <br>这个页面上的图是我自己画或自己拍的，没有搬运原作者的图片；想要图纸和固件，请直接去原项目页面下载。
+    </p>
+  </section>
+
+  <p class="doc__foot reveal">
+    <a class="doc__link" href="../index.html#projects">← 回到首页的项目区</a>
+  </p>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <span>© <span id="year">2026</span> 枫言枫语（李育晓）</span>
+    <span class="footer__dim">本站为静态页面，无跟踪、无广告。</span>
+  </div>
+</footer>
+
+<script src="../assets/main.js?v=20260921g" defer></script>
+</body>
+</html>

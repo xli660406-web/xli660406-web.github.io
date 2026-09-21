@@ -12,7 +12,7 @@
 <script>document.documentElement.classList.add('js');</script>
 <!-- ?v= 是"版本号"：改了样式或脚本就把日期加一位，浏览器就会去拿新的，
      不会拿手机里存的旧文件（不然改了也看不到效果） -->
-<link rel="stylesheet" href="assets/style.css?v=20260921f">
+<link rel="stylesheet" href="assets/style.css?v=20260921g">
 </head>
 <body>
 
@@ -139,12 +139,14 @@
                把这张示意图换掉即可。 -->
           <article class="card card--wide reveal">
             <div class="card__media">
-              <img src="assets/img/project-fakepod.jpg" alt="示意插画：一台竖向小播放器，方屏上画着音频波形，机身下半是仿 iPod 的圆形转盘"
-                   width="1200" height="1200" loading="lazy" decoding="async">
+              <a href="projects/fakepod.html">
+                <img src="assets/img/project-fakepod.jpg" alt="示意插画：一台竖向小播放器，方屏上画着音频波形，机身下半是仿 iPod 的圆形转盘"
+                     width="1200" height="1200" loading="lazy" decoding="async">
+              </a>
             </div>
             <div class="card__body">
               <p class="card__meta">复刻项目 · 2026</p>
-              <h3 class="card__title">FAKE_POD_NANO 播放器</h3>
+              <h3 class="card__title"><a href="projects/fakepod.html">FAKE_POD_NANO 播放器</a></h3>
               <p class="card__desc">
                 自己打板、自己焊接、照原作者的 BOM 从淘宝配元件、自己刷固件，做出一台仿 iPod Nano 的无损播放器。
                 我这台是 HIFI 版：ESP32-S3 主控 + 2.0 英寸 460×460 AMOLED 屏，CS43131 DAC——信噪比 130 dB，
@@ -166,6 +168,7 @@
                 别拿去卖、改动后也要同样开源；图纸和固件请到原项目页面下载）。焊接、装配和调试是我自己做的。
               </p>
               <p class="card__tags"><span class="tag tag--sm">ESP32-S3</span><span class="tag tag--sm">焊接</span><span class="tag tag--sm">无损音频</span></p>
+              <p class="card__more"><a href="projects/fakepod.html">看详情：硬件配置、能做什么、两个坑 →</a></p>
             </div>
           </article>
 
@@ -403,6 +406,6 @@
   </div>
 </div>
 
-<script src="assets/main.js?v=20260921f" defer></script>
+<script src="assets/main.js?v=20260921g" defer></script>
 </body>
 </html>

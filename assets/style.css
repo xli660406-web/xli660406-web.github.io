@@ -515,6 +515,18 @@ main { position: relative; z-index: 2; }
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+/* 卡片最下面那句"看详情"：整张卡片里唯一明确的行动指引，所以给足颜色 */
+.card__more {
+  margin: 1.1rem 0 0;
+  padding-top: .9rem;
+  border-top: 1px solid var(--line-soft);
+  font-size: .82rem;
+}
+.card__more a { color: var(--accent); }
+.card__more a:hover { color: var(--fg); }
+/* 标题和配图都可以点进详情页，鼠标移上去给个暗示 */
+.card__title a:hover,
+.card__media a:hover { color: var(--accent); }
 
 /* --------------------------------------------------------------------------
    音乐墙：几张封面分给几列，每列各走各的（有的往上、有的往下、快慢也不同）
@@ -868,8 +880,8 @@ main { position: relative; z-index: 2; }
 }
 
 /* --------------------------------------------------------------------------
-   尊重系统设置：关掉动画的人，看到的应该是安静的页面
-   -------------------------------------------------------------------------- */
+  尊重系统设置：关掉动画的人，看到的应该是安静的页面
+  -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
@@ -883,4 +895,99 @@ main { position: relative; z-index: 2; }
   /* 音乐墙：不滑动，改成能自己上下滚 */
   .wall__track { animation: none !important; transform: none !important; }
   .wall { overflow-y: auto; -webkit-mask-image: none; mask-image: none; }
+}
+
+/* --------------------------------------------------------------------------
+   项目详情页（projects/*.html）：一页只讲一个项目
+   - 正文限制在 68ch：一行太长眼睛会走丢
+   - 小标题之间留足间距，读起来像一篇文章，而不是一堆标签
+   -------------------------------------------------------------------------- */
+.doc { padding: 7.5rem 0 4rem; }
+.doc__meta {
+  margin: 0 0 .6rem;
+  font-size: .76rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+.doc__title {
+  margin: 0 0 1rem;
+  font-size: clamp(1.7rem, 4.2vw, 2.5rem);
+  line-height: 1.25;
+  letter-spacing: -.01em;
+}
+.doc__lead { max-width: 62ch; margin: 0 0 2rem; color: var(--fg-dim); }
+
+.doc__figure {
+  margin: 0 0 2.5rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #0c0c11;
+}
+.doc__figure img { width: 100%; height: auto; }
+.doc__figure figcaption {
+  padding: .7rem 1rem;
+  border-top: 1px solid var(--line-soft);
+  font-size: .76rem;
+  color: var(--fg-mute);
+}
+
+.doc__section { max-width: 68ch; margin-top: 2.7rem; }
+.doc__section h2 {
+  margin: 0 0 .9rem;
+  font-size: 1.14rem;
+  font-weight: 650;
+}
+.doc__section p { margin: 0 0 1rem; color: var(--fg-dim); }
+.doc__section ul { margin: 0 0 1rem; padding-left: 1.15rem; color: var(--fg-dim); }
+.doc__section li { margin: .5rem 0; }
+.doc__section b { color: var(--fg); }
+.doc__section code {
+  padding: .1rem .35rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: .85em;
+}
+.doc__source { font-size: .78rem; color: var(--fg-mute); }
+.doc__link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.doc__link:hover { color: var(--fg); }
+.doc__foot { max-width: 68ch; margin: 3rem 0 0; font-size: .86rem; }
+
+/* 参数表：左列名目、右列说明；手机上自动堆成上下两行 */
+.spec {
+  width: 100%;
+  margin: 0 0 1rem;
+  border-collapse: collapse;
+  font-size: .9rem;
+}
+.spec th, .spec td {
+  padding: .6rem .2rem;
+  border-bottom: 1px solid var(--line-soft);
+  text-align: left;
+  vertical-align: top;
+}
+.spec th {
+  width: 9rem;
+  padding-right: 1rem;
+  color: var(--fg-mute);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.spec td { color: var(--fg-dim); }
+@media (max-width: 560px) {
+  .spec th, .spec td { display: block; width: auto; white-space: normal; }
+  .spec th { padding-bottom: .15rem; border-bottom: 0; }
+  .spec td { padding-top: 0; }
+}
+
+/* 详情页里的"注意事项"：和作品卡片上那块同一套长相 */
+.doc .note {
+  margin: 0 0 1rem;
+  padding: .7rem .9rem;
+  border-left: 2px solid rgba(217, 200, 161, .5);
+  border-radius: 0 10px 10px 0;
+  background: rgba(217, 200, 161, .05);
+  font-size: .86rem;
+  line-height: 1.7;
 }
