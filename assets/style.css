@@ -1091,6 +1091,38 @@ main { position: relative; z-index: 2; }
 }
 .lightbox__close:hover { color: var(--accent); border-color: rgba(217, 200, 161, .5); }
 body.is-zoomed { overflow: hidden; }
+
+/* 「时间与成本」那四条数字：宽屏一行四个，手机两行 */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin: 1.5rem 0 1.9rem;
+  padding: 0;
+  list-style: none;
+}
+.stats li {
+  padding: .1rem 0 .1rem 1rem;
+  border-left: 1px solid rgba(217, 200, 161, .38);
+}
+.stats__num {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 650;
+  line-height: 1.25;
+  color: var(--fg);
+}
+.stats__label {
+  display: block;
+  margin-top: .25rem;
+  font-size: .74rem;
+  letter-spacing: .04em;
+  color: var(--fg-mute);
+}
+@media (max-width: 640px) {
+  .stats { grid-template-columns: repeat(2, 1fr); gap: 1.2rem 1rem; }
+  .stats__num { font-size: 1.28rem; }
+}
 .doc__section h2 {
   margin: 0 0 .9rem;
   font-size: 1.14rem;

@@ -61,7 +61,8 @@
         <tr><th>DAC（另一版）</th><td>PCM5102A：信噪比 112 dB，不需要 MCK 时钟，默认是 LINE OUT，接音响更合适</td></tr>
         <tr><th>传感器</th><td>QMI8658 六轴陀螺仪，用来做手势切歌</td></tr>
         <tr><th>存储</th><td>内置 TF 卡槽，音乐放在卡里</td></tr>
-        <tr><th>电源</th><td>TP4055 充电管理 + 603035 锂电池，约 600 mAh</td></tr>
+        <tr><th>电源</th><td>TP4055 充电管理 + 603035 锂电池</td></tr>
+        <tr><th>电池（我这台）</th><td>1000 mAh。原项目页上 603035 标的是约 600 mAh，我装的这块容量是 1000 mAh</td></tr>
       </tbody>
     </table>
     <p class="doc__source">
@@ -115,6 +116,29 @@
   </section>
 
   <section class="doc__section doc__section--wide reveal">
+    <h2>时间与成本</h2>
+    <ul class="stats">
+      <li><span class="stats__num">1 天</span><span class="stats__label">焊接 + 烧录</span></li>
+      <li><span class="stats__num">≈¥120</span><span class="stats__label">整机成本</span></li>
+      <li><span class="stats__num">¥0</span><span class="stats__label">打板 + 外壳</span></li>
+      <li><span class="stats__num">1000 mAh</span><span class="stats__label">电池容量</span></li>
+    </ul>
+    <table class="spec">
+      <tbody>
+        <tr><th>屏幕</th><td>2.0 英寸 460×460 AMOLED：<b>¥56</b>，整台机器里最贵的一件</td></tr>
+        <tr><th>PCB 打板</th><td>嘉立创打板：<b>免费</b>（¥0）</td></tr>
+        <tr><th>外壳</th><td>嘉立创 3D 打印：¥5，正好有券，<b>实付 ¥0</b></td></tr>
+        <tr><th>其余元件</th><td>主控、DAC、电池和板上的小元件：合计约 <b>¥64</b></td></tr>
+        <tr><th>合计</th><td>整机约 <b>¥120</b></td></tr>
+      </tbody>
+    </table>
+    <p class="doc__source">
+      时间按焊接加烧录算，一天之内做完；钱是我自己记的账，是约数，不是原项目页面的数据。
+      打板和外壳能白嫖，是因为赶上了嘉立创的免费打板和优惠券。
+    </p>
+  </section>
+
+  <section class="doc__section doc__section--wide reveal">
     <h2>制作过程实拍</h2>
     <p>
       从一块空板到能塞进兜里听歌，中间是刷锡膏、贴元件、焊、刷固件这几步。
@@ -147,8 +171,8 @@
         <div class="step__body">
           <p class="step__num">第 2 步</p>
           <h3 class="step__title">刷锡膏</h3>
-          <p>钢网对准、锡膏刮平。锡膏是我自己调的，这次调得偏稀，涂上去不太好控制——
-             太稀容易连锡，太干又推不动。</p>
+          <p>钢网对准、锡膏刮平，再上焊台用 190 ℃ 回流焊。锡膏是我自己调的，
+             这次调得偏稀，涂上去不太好控制——太稀容易连锡，太干又推不动。</p>
         </div>
       </li>
 
@@ -162,7 +186,8 @@
         <div class="step__body">
           <p class="step__num">第 3 步</p>
           <h3 class="step__title">装进外壳</h3>
-          <p>焊完、洗净、测试通过，再装壳。这张是拆开的样子（这台上还没装电池）：
+          <p>焊完、洗净、测试通过，再装壳。外壳不是买的成品，是拿嘉立创 3D 打印的
+             （5 元，正好有券，实付 0 元）。这张是拆开的样子（这台上还没装电池）：
              从上往下是外壳、主板、2.0 英寸方形屏幕，屏幕和主板之间只靠一条软的排线连着。</p>
         </div>
       </li>
