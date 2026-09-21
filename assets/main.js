@@ -171,41 +171,34 @@
     var count = tiles.length;
     var currentCols = 0;
 
-    /* 点击封面去听：链接不是一张一张手写的，而是拿封面下面那两行字
-       （歌名 + 歌手）现算一个搜索地址——以后加歌、改名，链接自动跟着变，
-       不会出现写错或者点开是死链的情况。想换平台只改下面这一行。
-
-       ⚠️ 为什么是 B 站而不是网易云 / QQ 音乐：那两家网页版会把搜索结果
-       挡在"扫码登录"弹窗后面（2026-09-20 实测截图 /tmp/site1.png 网易云、
-       /tmp/qq_search.png QQ 音乐），访客不登录就看不到歌；B 站搜索页免登录
-       就能看结果（实测截图 /tmp/bili_search.png 宽屏、/tmp/bili_mobile.png
-       手机尺寸），所以选它。链接是"搜索页"，不是某一首歌，永不会失效。   */
-    var SEARCH = 'https://search.bilibili.com/all?keyword=';
+    /* 点击封面不直接跳走，而是弹「用哪个软件听」的面板（见下面第 7 段）：
+       访客用什么软件听歌，让他自己挑，不再统一跳一个地方。
+       按钮只是"入口"，具体地址由第 7 段拿封面下面那两行字（歌名 + 歌手）现算，
+       所以以后加歌、改名，地址自动跟着变，不会写错、也不会变成死链。       */
     var withListenLink = function (li) {
       var song = li.querySelector('.tile__cap b');
       var artist = li.querySelector('.tile__cap i');
-      var query = [
-        (song && song.textContent.trim()) || '',
-        (artist && artist.textContent.trim()) || ''
-      ].join(' ').trim();
+      var songText = (song && song.textContent.trim()) || '';
+      var artistText = (artist && artist.textContent.trim()) || '';
+      var query = (songText + ' ' + artistText).trim();
       if (!query) return;
 
-      var link = document.createElement('a');
-      link.className = 'tile__link';
-      link.href = SEARCH + encodeURIComponent(query);
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.title = '去听：' + query + '（B 站搜索）';
-      link.setAttribute('aria-label', '去听：' + query + '（B 站搜索）');
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'tile__link';
+      btn.setAttribute('data-query', query);
+      btn.setAttribute('data-label', '《' + songText + '》' + artistText);
+      btn.title = '选择用什么软件听：' + query;
+      btn.setAttribute('aria-label', '选择用什么软件听：' + query);
 
       var badge = document.createElement('span');
       badge.className = 'tile__play';
       badge.textContent = '去听 ▸';
 
-      // 把封面和歌名那两行搬进链接里，整张封面就都能点了
-      while (li.firstChild) link.appendChild(li.firstChild);
-      link.appendChild(badge);
-      li.appendChild(link);
+      // 把封面和歌名那两行搬进按钮里，整张封面就都能点了
+      while (li.firstChild) btn.appendChild(li.firstChild);
+      btn.appendChild(badge);
+      li.appendChild(btn);
     };
     tiles.forEach(withListenLink);   // 先给原列表加工，各列的克隆会自动带上
 
@@ -249,7 +242,111 @@
     window.addEventListener('resize', sync, { passive: true });
   }
 
-  /* --- 7. 页脚年份 --------------------------------------------------------- */
+  /* --- 7. 「用哪个软件听」面板：让访客自己挑播放器 -------------------------
+     以前是所有人统一跳到 B 站。现在访客大多在手机上打开，而手机上本来就装着
+     听歌软件，所以改成"点封面 → 先问用哪个软件"。
+
+     下面 PLATFORMS 就是全部可选平台，一行一个：
+       name = 按钮上的字；url = 搜索地址的前半段（后面自动接上「歌名 歌手」）。
+     想加平台、去掉平台、换名字，改这张表就行，改完刷新页面生效。
+     为什么不加"打开 App"那种特殊跳转：那属于各家 App 私有的协议，写错了
+     访客手机上会弹出"打不开"甚至一片空白；而直接用各家的搜索网页，装了 App
+     的手机通常会自己进 App（这些平台自己做了这个跳转），没装的也能看到网页。
+     面板里的按钮都是开新标签：万一对面要登录或要下载 App，关掉标签就回到本站。 */
+  var PLATFORMS = [
+    { name: '网易云音乐',  url: 'https://music.163.com/#/search/m/?s=' },
+    { name: 'QQ 音乐',     url: 'https://y.qq.com/n/ryqq/search?w=' },
+    { name: '酷狗音乐',    url: 'https://m.kugou.com/search?keyword=' },
+    { name: 'Apple Music', url: 'https://music.apple.com/cn/search?term=' }
+  ];
+
+  /* B 站：不用装任何东西、不用登录就能看结果，留给"这些都没装"的访客兜底
+     （2026-09-21 实测：B 站搜索页免登录就能看；酷狗、Apple Music 的手机网页
+     也能直接看；网易云、QQ 音乐的网页会引导装 App 或登录） */
+  var BILI = 'https://search.bilibili.com/all?keyword=';
+
+  var picker = document.getElementById('picker');
+  var pickerSong = document.getElementById('pickerSong');
+  var pickerList = document.getElementById('pickerList');
+  var pickerBili = document.getElementById('pickerBili');
+  var openedFrom = null;
+
+  function closePicker() {
+    if (!picker || picker.hidden) return;
+    picker.hidden = true;
+    document.body.style.overflow = '';
+    // 焦点还给刚才点的那张封面（用键盘的人才知道自己回到哪儿了）
+    if (openedFrom && document.contains(openedFrom)) openedFrom.focus();
+    openedFrom = null;
+  }
+
+  function fillPicker(query, label) {
+    if (!picker || !pickerList) return;
+
+    if (pickerSong) pickerSong.textContent = label || query;
+
+    pickerList.textContent = '';
+    PLATFORMS.forEach(function (platform) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.className = 'picker__btn';
+      a.href = platform.url + encodeURIComponent(query);
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.textContent = platform.name;
+      a.setAttribute('aria-label', '用' + platform.name + '听：' + query);
+      li.appendChild(a);
+      pickerList.appendChild(li);
+    });
+
+    if (pickerBili) pickerBili.href = BILI + encodeURIComponent(query);
+  }
+
+  function openPicker(query, label, trigger) {
+    if (!picker || !pickerList || !query) return false;
+    openedFrom = trigger || null;
+    fillPicker(query, label);
+    picker.hidden = false;
+    document.body.style.overflow = 'hidden';   // 面板开着，后面那页别跟着上下滑
+
+    var first = pickerList.querySelector('.picker__btn');
+    if (first) first.focus();
+    return true;
+  }
+
+  /* 点封面 → 弹面板。这里用"事件委托"而不是给每张封面挂监听：
+     封面会被脚本复制成好几列，复制出来的那些挂不上监听，委托则一视同仁。  */
+  if (wall) {
+    wall.addEventListener('click', function (e) {
+      var t = e.target;
+      var btn = (t && t.closest) ? t.closest('.tile__link') : null;
+      if (!btn) return;
+
+      e.preventDefault();
+      var query = btn.getAttribute('data-query') || '';
+      var label = btn.getAttribute('data-label') || query;
+
+      // 万一面板的 HTML 被删掉了，也别让这一下点击没反应：直接去 B 站
+      if (!openPicker(query, label, btn)) {
+        window.open(BILI + encodeURIComponent(query), '_blank', 'noopener');
+      }
+    });
+  }
+
+  if (picker) {
+    picker.addEventListener('click', function (e) {
+      var t = e.target;
+      if (!t || !t.closest) return;
+      // 点了遮罩或"取消"就关掉；选好某个平台也把面板收起来（那个平台自己开新标签）
+      if (t.closest('[data-picker-close]') || t.closest('.picker__btn')) closePicker();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' || e.keyCode === 27) closePicker();
+    });
+  }
+
+  /* --- 8. 页脚年份 --------------------------------------------------------- */
   var year = document.getElementById('year');
   if (year) year.textContent = String(new Date().getFullYear());
 })();

@@ -534,8 +534,18 @@ main { position: relative; z-index: 2; }
   box-shadow: 0 26px 60px -38px rgba(0, 0, 0, .95);
 }
 
-/* 整张封面就是一个链接（脚本按"歌名 + 歌手"生成搜索地址）：点它去听 */
-.tile__link { display: block; color: inherit; text-decoration: none; }
+/* 整张封面就是一个按钮（点了弹出"用哪个软件听"）：按钮的默认样式要清掉，才像一张图 */
+.tile__link {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: none;
+  cursor: pointer;
+}
 .tile__link:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
 
 /* 右上角的小角标：鼠标移上去（或键盘选中）才露出来，触屏设备上一直显示 */
@@ -571,6 +581,118 @@ main { position: relative; z-index: 2; }
 }
 .tile__cap b { font-weight: 600; letter-spacing: -.01em; }
 .tile__cap i { font-style: normal; font-size: .72rem; color: var(--fg-dim); }
+
+/* --------------------------------------------------------------------------
+   「用哪个软件听」面板：平时藏起来（hidden），点封面才出现
+   手机从底部升上来（手指好按），电脑是屏幕中间的小卡片
+   -------------------------------------------------------------------------- */
+.picker {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.picker[hidden] { display: none; }
+
+.picker__mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 4, 6, .7);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  animation: picker-fade .26s var(--ease) both;
+}
+
+.picker__card {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  padding: 1.15rem 1.15rem calc(1.2rem + env(safe-area-inset-bottom));
+  border: 1px solid var(--line);
+  border-radius: 20px 20px 0 0;
+  background: var(--bg-soft);
+  box-shadow: 0 -30px 70px -34px rgba(0, 0, 0, .96);
+  animation: picker-up .34s var(--ease) both;
+}
+
+.picker__title { margin: 0; font-size: 1.02rem; font-weight: 600; }
+.picker__song { margin: .2rem 0 1rem; font-size: .84rem; color: var(--fg-dim); }
+
+.picker__list {
+  margin: 0 0 .9rem;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .5rem;
+}
+.picker__btn {
+  display: block;
+  padding: .85rem .6rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-size: .86rem;
+  text-align: center;
+  background: rgba(255, 255, 255, .03);
+  transition: transform .3s var(--ease), border-color .3s var(--ease),
+              background .3s var(--ease);
+}
+.picker__btn:hover,
+.picker__btn:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(217, 200, 161, .5);
+  background: rgba(217, 200, 161, .1);
+}
+
+.picker__fallback {
+  display: block;
+  padding: .7rem .2rem .1rem;
+  border-top: 1px solid var(--line-soft);
+  font-size: .78rem;
+  color: var(--fg-dim);
+  text-align: center;
+}
+.picker__fallback:hover,
+.picker__fallback:focus-visible { color: var(--accent); }
+
+.picker__close {
+  display: block;
+  width: 100%;
+  margin-top: .8rem;
+  padding: .72rem;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-size: .84rem;
+  color: var(--fg-dim);
+  background: rgba(255, 255, 255, .05);
+  cursor: pointer;
+  transition: color .3s var(--ease), background .3s var(--ease);
+}
+.picker__close:hover,
+.picker__close:focus-visible { color: var(--fg); background: rgba(255, 255, 255, .09); }
+
+@keyframes picker-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes picker-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* 宽屏：从中间淡入，不用底部抽屉的样子 */
+@media (min-width: 761px) {
+  .picker { align-items: center; padding: 1.5rem; }
+  .picker__card {
+    border-radius: 18px;
+    padding-bottom: 1.15rem;
+    animation-name: picker-in;
+  }
+}
+@keyframes picker-in {
+  from { opacity: 0; transform: translateY(10px) scale(.98); }
+  to   { opacity: 1; transform: none; }
+}
 
 /* 列数：宽屏铺满，窄屏一列列减，手机只留两列 */
 /* 联系区 */

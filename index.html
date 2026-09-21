@@ -188,15 +188,15 @@
       <h2 class="section__title reveal" style="--d:.06s">音乐墙</h2>
       <div class="section__body">
         <p class="lead reveal" style="--d:.12s">
-          平时常听的专辑。鼠标停留在某一列上，该列会暂停，便于看清封面；点击封面会打开 B 站（哔哩哔哩）的搜索页，不用登录就能看结果。
+          平时常听的专辑。鼠标停留在某一列上，该列会暂停，便于看清封面；点击封面会让你挑一个听歌软件——手机上装了对应 App 的，一般会直接进 App。
         </p>
       </div>
     </div>
 
     <!-- 音乐墙：一份按顺序排好的列表（下面这些 <li>），脚本按顺序分给几列、每列各走各的。
          每一列拿到的专辑互不重复，所以屏幕上不会同时出现两张一样的封面。
-         点封面会打开"歌名 + 歌手"的搜索页，链接由脚本按这两行字现算，不用手写。
-         跳的是 B 站，因为网易云和 QQ 音乐的网页版都会弹出扫码登录框挡住搜索结果。
+         点封面会弹出「用哪个软件听」的小面板（那块面板在页面最下面），
+         上面列出几个平台让访客自己挑；地址由脚本按「歌名 + 歌手」现算，不用手写。
          图片都在 assets/img/ 里，从 music-01.jpg 开始排。
          改歌名：把 <b> 里的字换成歌名，<i> 里的字换成歌手。
          换封面：用同名文件覆盖，尺寸 400×400（正方形）最省事。 -->
@@ -340,6 +340,22 @@
 </footer>
 
 <a class="sticky-mail" href="mailto:lyxicl@qq.com" aria-label="给我发邮件">✉ 联系我</a>
+
+<!-- 「用哪个软件听」的小面板：平时藏起来，点封面才出现（逻辑在 assets/main.js 第 7 段）。
+     平台按钮由脚本按「歌名 + 歌手」现算地址；想加平台、换平台，改 main.js 里的 PLATFORMS 表。
+     面板里的按钮都是"开新标签"，所以万一对面要登录或要下载 App，关掉标签就能回到本站。 -->
+<div class="picker" id="picker" hidden>
+  <div class="picker__mask" data-picker-close></div>
+  <div class="picker__card" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
+    <p class="picker__title" id="pickerTitle">用哪个软件听？</p>
+    <p class="picker__song" id="pickerSong"></p>
+    <ul class="picker__list" id="pickerList"></ul>
+    <a class="picker__fallback" id="pickerBili" href="https://search.bilibili.com/all?keyword=" target="_blank" rel="noopener noreferrer">
+      这些都没装？去 B 站搜（免登录，能直接看）
+    </a>
+    <button class="picker__close" type="button" data-picker-close>取消</button>
+  </div>
+</div>
 
 <script src="assets/main.js" defer></script>
 </body>
