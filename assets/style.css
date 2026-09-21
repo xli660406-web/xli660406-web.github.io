@@ -619,6 +619,12 @@ main { position: relative; z-index: 2; }
 
 .picker__title { margin: 0; font-size: 1.02rem; font-weight: 600; }
 .picker__song { margin: .2rem 0 1rem; font-size: .84rem; color: var(--fg-dim); }
+.picker__hint {
+  margin: -.55rem 0 .95rem;
+  font-size: .72rem;
+  line-height: 1.5;
+  color: var(--fg-mute);
+}
 
 .picker__list {
   margin: 0 0 .9rem;

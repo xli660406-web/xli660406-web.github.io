@@ -248,22 +248,31 @@
 
      下面 PLATFORMS 就是全部可选平台，一行一个：
        name = 按钮上的字；
-       url  = 搜索地址，中间的 {q} 会被换成「歌名 歌手」。
-              没有 {q} 的（比如汽水音乐）就直接打开那个地址，不带搜索词。
+       app  = 这个 App 自己的跳转协议（手机上用它唤起 App），没有就留空；
+       pkg  = 安卓包名，安卓浏览器用 intent:// 唤起时要写；
+       url  = 网页地址（电脑上点它、以及手机上唤不起 App 时退回这里），
+              中间的 {q} 会被换成「歌名 歌手」，没有 {q} 的就原样打开。
      想加平台、去掉平台、换名字，改这张表就行，改完刷新页面生效。
-     为什么不加"打开 App"那种特殊跳转：那属于各家 App 私有的协议，写错了
-     访客手机上会弹出"打不开"甚至一片空白；而直接用各家的搜索网页，装了 App
-     的手机通常会自己进 App（这些平台自己做了这个跳转），没装的也能看到网页。
-     面板里的按钮都是开新标签：万一对面要登录或要下载 App，关掉标签就回到本站。 */
+
+     这些协议是 2026-09-21 从各家自己的网页脚本里翻出来的（不是网上抄的）：
+       网易云 orpheus://  —— 网易云手机版脚本里写着 ORPHEUS_SCHEME="orpheus://"
+       酷狗   kugou://    —— 酷狗自己的 open-kugou-app 脚本里在用 kugou://start.weixin?
+       QQ 音乐 qqmusic:// —— 没找到证据，按常见写法填的，需要拿手机实测
+       汽水音乐 —— 官网脚本里只有它自己内部用的 bytedance://、nativeapp://，
+                   没有对外的唤起协议，所以这一家只能打开官网（下面的 app 留空）  */
   var PLATFORMS = [
-    { name: '网易云音乐',  url: 'https://music.163.com/#/search/m/?s={q}' },
-    { name: 'QQ 音乐',     url: 'https://y.qq.com/n/ryqq/search?w={q}' },
-    { name: '酷狗音乐',    url: 'https://m.kugou.com/search?keyword={q}' },
+    { name: '网易云音乐',  app: 'orpheus://', pkg: 'com.netease.cloudmusic',
+      url: 'https://music.163.com/#/search/m/?s={q}' },
+    { name: 'QQ 音乐',     app: 'qqmusic://', pkg: 'com.tencent.qqmusic',
+      url: 'https://y.qq.com/n/ryqq/search?w={q}' },
+    { name: '酷狗音乐',    app: 'kugou://',   pkg: 'com.kugou.android',
+      url: 'https://m.kugou.com/search?keyword={q}' },
     /* 汽水音乐（2026-09-21 实测）：没有给听众用的网页版搜索——官网 qishui.douyin.com
        只有下载页，music.douyin.com 是给音乐人/合作方用的平台，所以这里只能把人送到
-       官网；手机上装了 App 的一般会直接进 App，没装的会看到下载页。 */
-    { name: '汽水音乐',    url: 'https://qishui.douyin.com/' },
-    { name: 'Apple Music', url: 'https://music.apple.com/cn/search?term={q}' }
+       官网；也没有找到对外的唤起协议，所以手机上点它不会直接进 App。 */
+    { name: '汽水音乐',    app: '', pkg: '', url: 'https://qishui.douyin.com/' },
+    /* Apple Music 不用协议：iOS 上打开它的网页链接，系统会自己交给"音乐"App */
+    { name: 'Apple Music', app: '', pkg: '', url: 'https://music.apple.com/cn/search?term={q}' }
   ];
 
   /* B 站：不用装任何东西、不用登录就能看结果，留给"这些都没装"的访客兜底
@@ -276,6 +285,55 @@
   var pickerList = document.getElementById('pickerList');
   var pickerBili = document.getElementById('pickerBili');
   var openedFrom = null;
+  var currentQuery = '';
+
+  /* 手机/平板 = 没有鼠标悬停的设备。电脑上没有这些 App，就别白等那 1.6 秒 */
+  var noHover = window.matchMedia('(hover: none)').matches;
+  var isAndroid = /android/i.test(navigator.userAgent);
+
+  function pickerUrl(platform, query) {
+    return platform.url.indexOf('{q}') >= 0
+      ? platform.url.replace('{q}', encodeURIComponent(query))
+      : platform.url;
+  }
+
+  /* 把「歌名 歌手」放进剪贴板：进 App 后长按粘贴就能搜到，不用一个字一个字打。
+     复制失败（浏览器不给权限）也没关系，不影响下面的唤起。 */
+  function copyQuery() {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(currentQuery);
+      }
+    } catch (err) { /* 复制不了就算了 */ }
+  }
+
+  /* 唤起 App：手机上点平台名走这里。唤不起（没装）就退回这个平台的网页，
+     所以不管装没装，点一下都有结果，不会卡在空白页上。 */
+  function openInApp(platform, webUrl) {
+    if (isAndroid && platform.pkg) {
+      /* 安卓浏览器的标准写法：App 没装时，浏览器自己会去 S.browser_fallback_url，
+         不用我们掐时间判断——这段是照网易云自己网页里的写法抄的 */
+      var scheme = platform.app.split('://')[0];
+      var path = platform.app.slice(scheme.length + 3);
+      window.location.href = 'intent://' + path + '#Intent;scheme=' + scheme +
+        ';package=' + platform.pkg +
+        ';S.browser_fallback_url=' + encodeURIComponent(webUrl) + ';end';
+      return;
+    }
+
+    // iPhone 等：先试协议；1.6 秒后还停在这一页，说明没起来 → 退回网页
+    var left = false;
+    var markLeft = function () { left = true; };
+    document.addEventListener('visibilitychange', markLeft);
+    window.addEventListener('pagehide', markLeft);
+    window.location.href = platform.app;
+    window.setTimeout(function () {
+      document.removeEventListener('visibilitychange', markLeft);
+      window.removeEventListener('pagehide', markLeft);
+      if (left || document.hidden) return;   // App 起来了，页面被切到后台，什么都不用做
+      window.location.href = webUrl;
+    }, 1600);
+  }
 
   function closePicker() {
     if (!picker || picker.hidden) return;
@@ -289,19 +347,19 @@
   function fillPicker(query, label) {
     if (!picker || !pickerList) return;
 
+    currentQuery = query;
     if (pickerSong) pickerSong.textContent = label || query;
 
     pickerList.textContent = '';
-    PLATFORMS.forEach(function (platform) {
+    PLATFORMS.forEach(function (platform, i) {
       var li = document.createElement('li');
       var a = document.createElement('a');
       a.className = 'picker__btn';
-      a.href = platform.url.indexOf('{q}') >= 0
-        ? platform.url.replace('{q}', encodeURIComponent(query))
-        : platform.url;
+      a.href = pickerUrl(platform, query);
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
       a.textContent = platform.name;
+      a.setAttribute('data-platform', String(i));
       a.setAttribute('aria-label', '用' + platform.name + '听：' + query);
       li.appendChild(a);
       pickerList.appendChild(li);
@@ -345,9 +403,30 @@
     picker.addEventListener('click', function (e) {
       var t = e.target;
       if (!t || !t.closest) return;
-      // 点了遮罩或"取消"就关掉；选好某个平台也把面板收起来（那个平台自己开新标签）
-      if (t.closest('[data-picker-close]') || t.closest('.picker__btn')) closePicker();
+      if (t.closest('[data-picker-close]')) closePicker();   // 点遮罩或"取消"就关掉
     });
+
+    /* 选好某个平台之后：手机上我们自己来（先唤起 App，唤不起再退回网页）；
+       电脑上没有这些 App，就交给这个链接自己开新标签。 */
+    if (pickerList) {
+      pickerList.addEventListener('click', function (e) {
+        var t = e.target;
+        var a = (t && t.closest) ? t.closest('.picker__btn') : null;
+        if (!a) return;
+
+        var platform = PLATFORMS[Number(a.getAttribute('data-platform'))];
+        if (!platform) return;
+
+        if (platform.app && noHover) {
+          e.preventDefault();
+          copyQuery();                       // 歌名先复制好，进 App 直接粘贴
+          closePicker();
+          openInApp(platform, a.href);
+        } else {
+          closePicker();
+        }
+      });
+    }
 
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' || e.keyCode === 27) closePicker();

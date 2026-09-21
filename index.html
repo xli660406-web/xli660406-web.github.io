@@ -343,12 +343,14 @@
 
 <!-- 「用哪个软件听」的小面板：平时藏起来，点封面才出现（逻辑在 assets/main.js 第 7 段）。
      平台按钮由脚本按「歌名 + 歌手」现算地址；想加平台、换平台，改 main.js 里的 PLATFORMS 表。
-     面板里的按钮都是"开新标签"，所以万一对面要登录或要下载 App，关掉标签就能回到本站。 -->
+     手机上是"先唤起 App，唤不起再退回这个平台的网页"：所以装了 App 就直接进 App，
+     没装的也不会卡住；点平台名的同时会把歌名复制进剪贴板，进 App 粘贴就能搜。 -->
 <div class="picker" id="picker" hidden>
   <div class="picker__mask" data-picker-close></div>
   <div class="picker__card" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
     <p class="picker__title" id="pickerTitle">用哪个软件听？</p>
     <p class="picker__song" id="pickerSong"></p>
+    <p class="picker__hint">点平台名会打开对应 App（歌名会自动复制好，进去粘贴就能搜到）；没装的会打开它的网页。</p>
     <ul class="picker__list" id="pickerList"></ul>
     <a class="picker__fallback" id="pickerBili" href="https://search.bilibili.com/all?keyword=" target="_blank" rel="noopener noreferrer">
       这些都没装？去 B 站搜（免登录，能直接看）
