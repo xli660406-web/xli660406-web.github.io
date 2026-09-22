@@ -15,7 +15,7 @@
     if (localStorage.getItem('site-lang') === 'en') document.documentElement.classList.add('lang-en');
   } catch (e) {}
 </script>
-<link rel="stylesheet" href="../assets/style.css?v=20260922e">
+<link rel="stylesheet" href="../assets/style.css?v=20260922f">
 </head>
 <body>
 
@@ -59,8 +59,8 @@
     <img src="../assets/img/project-luna.jpg" alt="示意图：QQ 聊天窗口里，Luna 在回复消息，并给出一条定时提醒"
          data-en-alt="Illustration: a QQ chat window where Luna replies and confirms a scheduled reminder"
          width="1200" height="750" decoding="async">
-    <figcaption data-en="An illustration of the conversation flow (I have not taken a real screenshot yet — this one is drawn by me, and I will swap in a real one later).">
-      示意图：对话大致是这个样子（还没截真图，这张是我自己画的，以后换成真的聊天截图）。
+    <figcaption data-en="A drawing of how the conversation goes — I drew this one myself (the one in the chat window is what a reminder looks like when it comes due).">
+      示意图：对话大致是这个样子（这张是我自己画的；聊天窗口里那条，就是提醒到点时的样子）。
     </figcaption>
   </figure>
 
@@ -117,15 +117,15 @@
 
   <section class="doc__section reveal">
     <h2 data-en="Where it stands now">现在是什么样</h2>
-    <p data-en="Offline. The last line in its log was written on 30 July 2026, and since then it has not run. The reason is not the code: the piece that logs into QQ for me — the protocol client — is stopped, and its data is gone with it. The end of the log is a run of “connection refused, reconnecting in 5 seconds”: 924 lines of it.">
-      停着。日志里最后一条是 2026 年 7 月 30 日写的，之后没再跑过。原因不在代码：
-      替我登录 QQ 的那块（协议端）停掉了，连它的数据也一起没了。日志结尾是一长串“连接被拒，5 秒后重试”，
-      一共 924 行。
+    <p data-en="It is off now. The last line it wrote to its log was on 30 July 2026, and I have not started it since. This time it is not the code: the piece that logged into QQ for me — the protocol client — stopped, and its data went with it. The end of my log is one long run of “connection refused, reconnecting in 5 seconds”: 924 lines of it.">
+      它现在停着。日志里最后一条是 2026 年 7 月 30 日写的，那天之后我就没再启动过。
+      这回不是代码的问题：替我登录 QQ 的那块（协议端）停掉了，连它的数据也一起没了。
+      日志结尾只剩一长串“连接被拒，5 秒后重试”，一共 924 行。
     </p>
-    <p data-en="To bring it back I would have to run the protocol client again from scratch and log in with a QQ account once more — the old login is unusable, because the folders it stored its data in are no longer on this machine. The database still holds what was tried: 40 lines of conversation from 2 accounts, all from one afternoon in May 2026.">
-      想让它重新跑起来，得从头把协议端再跑一遍、再用一个 QQ 号登录一次——旧的登录信息用不了了，
-      因为它存数据的那两个目录已经不在本机。数据库里还留着当时试出来的东西：2 个账号、40 条对话，
-      都集中在 2026 年 5 月的那个下午。
+    <p data-en="Whenever I want it back, I have to run the protocol client again from scratch and scan a QR code with a QQ account once more — the old login is no use now, because the two folders it kept its data in are gone from this machine. What I tried back then is still in the database: 40 lines of conversation from 2 accounts, all crammed into one afternoon in May 2026.">
+      哪天想让它再活过来，我得从头把协议端跑一遍、再扫码登录一次；旧的登录信息已经不能用了，
+      因为它存东西的那两个文件夹被清掉了。我当年试出来的东西还在数据库里：2 个账号、40 条对话，
+      全都挤在 2026 年 5 月的那个下午。
     </p>
     <p class="note"
        data-en-html="Two things I would tell anyone trying this: <b>use a spare QQ account</b>, because logging in through a third-party client breaks QQ&#39;s terms and the account can be limited or banned; and <b>do not write API keys into the code</b> — mine were hard-coded at first, which is fine only as long as the file never leaves your machine. Environment variables or a separate file with 600 permissions are the easy fix.">
@@ -136,36 +136,36 @@
   </section>
 
   <section class="doc__section reveal">
-    <h2 data-en="What is still on the machine">机器上还留着什么</h2>
-    <p data-en="Almost everything. The project folder, the database, the log and the container itself are all still here — this page is written from those files rather than from memory.">
-      几乎全都在：项目文件夹、数据库、日志，连那个容器本身都还在。这一页就是从这些文件里翻出来的，
-      不是凭印象写的。
+    <h2 data-en="What I found still on the machine">我在机器上翻到的痕迹</h2>
+    <p data-en="Nearly everything is still there: the project folder, the database, the log, even the container itself. The numbers below are what I dug out one by one, so that I would not end up writing this from memory.">
+      东西几乎都还在：项目文件夹、数据库、日志，连那个容器本身都留着。下面这些数字是我回头一项项翻出来的，
+      免得只凭记忆写错。
     </p>
     <table class="spec">
       <tbody>
-        <tr><th data-en="Protocol client">协议端</th><td data-en-html="NapCat, running in Docker — container name <code>napcat</code>, image <code>docker.1ms.run/mlikiowa/napcat-docker:latest</code> (1.36 GB), still on disk">NapCat，跑在 Docker 里——容器名 <code>napcat</code>，镜像 <code>docker.1ms.run/mlikiowa/napcat-docker:latest</code>（1.36 GB），现在还在硬盘上</td></tr>
-        <tr><th data-en="Container">容器状态</th><td data-en="Still in the container list, but stopped: created on 17 May 2026, killed on 30 July 2026 (exit code 137), and its restart policy is “no”, so it will not come back by itself">还在容器列表里，但是停的：2026-05-17 创建，2026-07-30 被杀掉（退出码 137），重启策略是“no”，所以它不会自己回来</td></tr>
-        <tr><th data-en="Ports">端口</th><td data-en="Three ports are mapped to this machine: 3000, 3001 and 6099 — the first two are exactly the addresses my program sends to and listens on">映射了三个端口到本机：3000、3001、6099——前两个正好就是程序里发消息和收消息用的那两个地址</td></tr>
-        <tr><th data-en="Data folders">数据目录</th><td data-en-html="The two folders the container had mounted (<code>~/napcat/QQ_data</code> and <code>~/napcat/napcat_config</code>) are no longer on this machine, so the QQ login went with them">容器当初挂载的两个目录（<code>~/napcat/QQ_data</code> 和 <code>~/napcat/napcat_config</code>）现在已经不在本机，QQ 的登录信息也跟着没了</td></tr>
-        <tr><th data-en="Startup service">开机服务</th><td data-en-html="<code>luna-bot.service</code> declares <code>Requires=docker.service</code> (Docker has to be running first), restarts the bot automatically, and appends everything it prints to <code>bot.log</code>"><code>luna-bot.service</code> 里写着 <code>Requires=docker.service</code>（要先有 Docker 才能启动）、自动重启，以及把输出的每一行都追加到 <code>bot.log</code></td></tr>
-        <tr><th data-en="Log file">日志</th><td data-en="36 MB, 460,984 lines — big because every failed connection wrote a line of its own">36 MB、460,984 行——之所以这么大，是因为每失败一次就往里写一行</td></tr>
+        <tr><th data-en="Protocol client">协议端</th><td data-en-html="The protocol client I used is NapCat, running in Docker — container name <code>napcat</code>, image <code>docker.1ms.run/mlikiowa/napcat-docker:latest</code> (1.36 GB), still on disk">我用的协议端是 NapCat，跑在 Docker 里——容器名 <code>napcat</code>，镜像 <code>docker.1ms.run/mlikiowa/napcat-docker:latest</code>（1.36 GB），现在还在硬盘上</td></tr>
+        <tr><th data-en="Container">容器状态</th><td data-en="I created the container on 17 May 2026, and it was killed on 30 July 2026 (exit code 137); its restart policy is “no”, so it will not come back by itself">容器是我 2026-05-17 建的，2026-07-30 被杀掉（退出码 137）；它的重启策略是“no”，所以不会自己回来</td></tr>
+        <tr><th data-en="Ports">端口</th><td data-en="I mapped three ports into this machine: 3000, 3001 and 6099 — the first two are exactly the addresses my program sends to and listens on">我让它把三个端口映射到本机：3000、3001、6099——前两个正好是我程序里发消息和收消息用的那两个地址</td></tr>
+        <tr><th data-en="Data folders">数据目录</th><td data-en-html="The two folders I had mounted (<code>~/napcat/QQ_data</code> and <code>~/napcat/napcat_config</code>) have been cleared away, so the QQ login went with them">我当初挂载的两个目录（<code>~/napcat/QQ_data</code> 和 <code>~/napcat/napcat_config</code>）已经被清掉了，QQ 的登录信息也跟着没了</td></tr>
+        <tr><th data-en="Startup service">开机服务</th><td data-en-html="The startup service I set up, <code>luna-bot.service</code>, declares <code>Requires=docker.service</code> (Docker has to be running first), restarts the bot automatically, and appends every line it prints to <code>bot.log</code>">我给它配的开机服务 <code>luna-bot.service</code> 里写着 <code>Requires=docker.service</code>（要先有 Docker 才能启动）、自动重启，输出的每一行都追加到 <code>bot.log</code></td></tr>
+        <tr><th data-en="Log file">日志</th><td data-en="My log file is 36 MB and 460,984 lines — that big because every failed connection wrote a line of its own">我那个日志 36 MB、460,984 行——之所以这么大，是因为每失败一次就往里写一行</td></tr>
       </tbody>
     </table>
     <ul>
-      <li data-en-html="<b>458,648 of those lines</b> say the same thing: the port answered, but the handshake never completed. The log does not say why; what it does show is that something was listening on that port for a long time. It only completed the handshake <b>59 times</b>."><b>其中 458,648 行</b>说的是同一件事：端口有人应答，但握手始终没成。日志没写原因；能确定的是那段时间端口上确实有东西在听。真正握手成功只有 <b>59 次</b>。</li>
-      <li data-en-html="<b>924 lines</b> are “connection refused”, one every 5 seconds — about 77 minutes in total, and that is the very end of the log."><b>924 行</b>是“连接被拒”，每 5 秒一行，正好约 77 分钟——这就是日志最后的那一段。</li>
-      <li data-en-html="<b>138 exceptions and 170 lines of syntax errors</b> all come from the first days of editing. A batch of them is the same problem: <code>commands.py</code> was not saved as UTF-8 back then, so Python 3 could not read the Chinese in it."><b>138 次异常、170 行语法报错</b>都出在最早改代码的那几天。其中一批是同一个毛病：<code>commands.py</code> 当时不是 UTF-8 编码，Python 3 读不了里面的中文。</li>
-      <li data-en-html="Only <b>41 messages</b> were ever received, and they all appear near the very beginning of the log — so the time it actually spent talking in a group was short.">真正收到过的消息只有 <b>41 条</b>，而且全部出现在日志很靠前的位置——它真正在群里说话的时间并不长。</li>
+      <li data-en-html="<b>458,648 of those lines</b> say the same thing: the port answered, but the handshake never went through. My log does not say why; what I can see is that something was listening on that port the whole time. It only got through the handshake <b>59 times</b>."><b>其中 458,648 行</b>说的是同一件事：端口有人应答，但握手始终没成。日志里没写为什么；我能看到的只是那段时间端口上确实有东西在听。真正连上只有 <b>59 次</b>。</li>
+      <li data-en-html="<b>924 lines</b> are “connection refused”, one every 5 seconds — about 77 minutes in total. That is all my log ends with."><b>924 行</b>是“连接被拒”，每 5 秒一行，正好约 77 分钟——最后那段就只剩这个了。</li>
+      <li data-en-html="<b>138 exceptions and 170 lines of syntax errors</b> all come from the first days when I was editing the code. A batch of them is the same problem: <code>commands.py</code> was not saved as UTF-8 back then, so Python 3 could not read the Chinese in it."><b>138 次报错、170 行语法问题</b>都出在我最早改代码的那几天。其中一批是同一个毛病：<code>commands.py</code> 当时不是 UTF-8 编码，Python 3 读不了里面的中文。</li>
+      <li data-en-html="In all that time only <b>41 messages</b> ever came in, and they all sit near the very beginning of the log — so the bot did not get to talk in a group for long.">那段时间它真正收到过的消息只有 <b>41 条</b>，而且都在日志很靠前的位置——它真正在群里说过话的时间，其实没几天。</li>
     </ul>
-    <p data-en="Put those dates in order and the story is short:">
-      把这些时间点按顺序排一下，故事其实很短：
+    <p data-en="Lay those dates out in order and the whole thing is short:">
+      我把这些日子按顺序摆在一起，才发现前后其实只有两个多月：
     </p>
     <ul>
-      <li data-en="17 May 2026 — the NapCat container is created, and the bot connects successfully for the first time soon after.">2026-05-17：NapCat 容器建好，机器人很快第一次连上。</li>
-      <li data-en="17–23 May 2026 — the days of editing: first the encoding problem, then trying out a persona, image replies, reminders and search. The backup files in the folder are from that week.">2026-05-17～05-23：改代码的那几天——先解决编码问题，再试人设、看图、提醒、搜索。文件夹里那些备份都是这一周留下的。</li>
-      <li data-en="23 May 2026 — the database is written for the last time: 2 accounts, 40 lines of conversation.">2026-05-23：数据库最后一次被写入——2 个账号、40 条对话。</li>
+      <li data-en="17 May 2026 — I set up the NapCat container; that is the day the protocol client came into being.">2026-05-17：我把 NapCat 容器建了起来——协议端就是从这天开始有的。</li>
+      <li data-en="17–23 May 2026 — the days I spent editing the code: first the encoding problem, then trying out a persona, image replies, reminders and search. The backup files in the folder are all from that one week.">2026-05-17～05-23：我改代码的那几天——先解决编码问题，再试人设、看图、提醒、搜索。文件夹里那些备份全都是这一周留下的。</li>
+      <li data-en="23 May 2026 — my database gets its last write: 2 accounts, 40 lines of conversation.">2026-05-23：数据库最后一次写入——2 个账号、40 条对话。</li>
       <li data-en="30 July 2026, 20:17 — the container is killed. The bot starts retrying every 5 seconds.">2026-07-30 20:17：容器被杀掉，机器人开始每 5 秒重试一次。</li>
-      <li data-en="30 July 2026, 21:34 — 924 retries later the log stops, and nothing has been written to it since.">2026-07-30 21:34：重试了 924 次之后，日志停在这里，之后再没写过。</li>
+      <li data-en="30 July 2026, 21:34 — 924 retries later my log stops, and nothing has been written to it since.">2026-07-30 21:34：重试了 924 次之后，日志停在这里，之后再没写过。</li>
     </ul>
   </section>
 
@@ -181,6 +181,6 @@
   </div>
 </footer>
 
-<script src="../assets/main.js?v=20260922e" defer></script>
+<script src="../assets/main.js?v=20260922f" defer></script>
 </body>
 </html>
