@@ -21,7 +21,7 @@
 </script>
 <!-- ?v= 是"版本号"：改了样式或脚本就把日期加一位，浏览器就会去拿新的，
      不会拿手机里存的旧文件（不然改了也看不到效果） -->
-<link rel="stylesheet" href="assets/style.css?v=20260922d">
+<link rel="stylesheet" href="assets/style.css?v=20260922e">
 </head>
 <body>
 
@@ -203,14 +203,15 @@
               <p class="card__meta" data-en="Personal project · 2026">个人项目 · 2026</p>
               <h3 class="card__title"><a href="projects/luna.html" data-en="Luna, a QQ chatbot">QQ 聊天机器人 Luna</a></h3>
               <p class="card__desc"
-                 data-en="A chatbot that lives in QQ. I wrote it in Python: it answers with AI-generated text in private chats and groups, remembers the last 20 lines of each conversation in a local database, and understands commands such as /remind — send “/remind tomorrow 3pm hand in homework” and it messages you when the time comes. It is offline now (last run July 2026) because the QQ protocol client it depends on is gone.">
+                 data-en="A chatbot that lives in QQ. I wrote it in Python: it answers with AI-generated text in private chats and groups, remembers the last 20 lines of each conversation in a local database, and understands commands such as /remind — send “/remind tomorrow 3pm hand in homework” and it messages you when the time comes. It is offline now: the QQ protocol client it depends on — a Docker container — was killed on 30 July 2026, and the folders that held its login data are gone.">
                 一个住在 QQ 里的机器人，用 Python 写的：私聊和群里都能聊，回复由 AI 模型生成；
                 每个人最近 20 条对话存在本机数据库里，所以它记得住上下文；还认 /remind 这类命令——
                 发一句「/remind 明天下午3点 交作业」，到点它私聊提醒你。现在是停着的
-                （最后一次运行是 2026 年 7 月），因为它依赖的那个 QQ 协议端不在了。
+                （最后一次运行是 2026 年 7 月）：它依赖的那个 QQ 协议端是一个 Docker 容器，
+                2026-07-30 被杀掉了，存登录信息的两个目录也没了。
               </p>
               <p class="card__tags"><span class="tag tag--sm">Python</span><span class="tag tag--sm" data-en="Chatbot">聊天机器人</span><span class="tag tag--sm" data-en="AI">AI</span></p>
-              <p class="card__more"><a href="projects/luna.html" data-en="Details: how it works, its commands, what I learned →">看详情：怎么工作的、有哪些命令、踩过的坑 →</a></p>
+              <p class="card__more"><a href="projects/luna.html" data-en="Details: how it works, its commands, what is still on the machine →">看详情：怎么工作的、有哪些命令、机器上还留着什么 →</a></p>
             </div>
           </article>
 
@@ -462,6 +463,6 @@
   </div>
 </div>
 
-<script src="assets/main.js?v=20260922d" defer></script>
+<script src="assets/main.js?v=20260922e" defer></script>
 </body>
 </html>
