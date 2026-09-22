@@ -21,7 +21,7 @@
 </script>
 <!-- ?v= 是"版本号"：改了样式或脚本就把日期加一位，浏览器就会去拿新的，
      不会拿手机里存的旧文件（不然改了也看不到效果） -->
-<link rel="stylesheet" href="assets/style.css?v=20260922a">
+<link rel="stylesheet" href="assets/style.css?v=20260922b">
 </head>
 <body>
 
@@ -413,7 +413,8 @@
 <!-- 「用哪个软件听」的小面板：平时藏起来，点封面才出现（逻辑在 assets/main.js 第 7 段）。
      平台按钮由脚本按「歌名 + 歌手」现算地址；想加平台、换平台，改 main.js 里的 PLATFORMS 表。
      手机上是"先唤起 App，唤不起再退回这个平台的网页"：所以装了 App 就直接进 App，
-     没装的也不会卡住；点平台名的同时会把歌名复制进剪贴板，进 App 粘贴就能搜。 -->
+     没装的也不会卡住；点平台名的同时会把歌名复制进剪贴板，进 App 粘贴就能搜。
+     iPhone 上平台有官方入口的（网易云）改走官方入口、在新标签里打开，见 assets/main.js。 -->
 <div class="picker" id="picker" hidden>
   <div class="picker__mask" data-picker-close></div>
   <div class="picker__card" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
@@ -422,12 +423,13 @@
     <p class="picker__hint"
        data-en="Tapping an app name tries to open it on your phone (the track name is copied for you — paste it in the app to search). If it will not open, use the web link below.">点平台名会试着打开你手机里的 App（歌名会自动复制好，进去粘贴就能搜到）；唤不起来就用下面那行网页。</p>
     <ul class="picker__list" id="pickerList"></ul>
-    <!-- 点过平台名之后才出现的兜底：微信、QQ 这类自带浏览器不给跳 App，
-         点了会一点反应都没有，所以永远留一步"用网页打开"给访客自己点 -->
+    <!-- 点过平台名之后才出现的提示行：文案全部由 assets/main.js 写（这行本来就只有
+         脚本会显示），两种情形——① 手机在试唤起 App 但唤不起来；
+         ② 在微信/QQ 这类自带浏览器里，它压根不许跳 App，只能提示换浏览器。
+         永远留一步"用网页打开"给访客自己点，不会出现点了没反应的死路。 -->
     <p class="picker__note" id="pickerNote" hidden>
-      <span id="pickerNoteText"></span> · <span data-en="no response?">没反应？</span>
-      <a id="pickerNoteLink" href="https://search.bilibili.com/all?keyword=" target="_blank" rel="noopener noreferrer"
-         data-en="Open it in the web browser">点这里用网页打开</a>
+      <span id="pickerNoteText"></span>
+      <a id="pickerNoteLink" href="https://search.bilibili.com/all?keyword=" target="_blank" rel="noopener noreferrer"></a>
     </p>
     <a class="picker__fallback" id="pickerBili" href="https://search.bilibili.com/all?keyword=" target="_blank" rel="noopener noreferrer"
        data-en="None of them installed? Search on Bilibili (no login needed)">
@@ -437,6 +439,6 @@
   </div>
 </div>
 
-<script src="assets/main.js?v=20260922a" defer></script>
+<script src="assets/main.js?v=20260922b" defer></script>
 </body>
 </html>

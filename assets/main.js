@@ -51,7 +51,16 @@
     pickerLabel: { zh: function (n, q) { return '用' + n + '听：' + q; },
                    en: function (n, q) { return 'Listen to ' + q + ' in ' + n; } },
     noteLabel:   { zh: function (n, q) { return '用网页打开' + n + '，搜索：' + q; },
-                   en: function (n, q) { return 'Open ' + n + ' on the web, searching: ' + q; } }
+                   en: function (n, q) { return 'Open ' + n + ' on the web, searching: ' + q; } },
+    noteOpen:    { zh: function () { return '没反应？点这里用网页打开'; },
+                   en: function () { return 'No response? Open the web version'; } },
+    noteOpenShort: { zh: function () { return '点这里用网页打开'; },
+                     en: function () { return 'Open the web version'; } },
+    /* 微信、QQ、微博这类"自带浏览器"是白名单制，不是它自家 App 一律不给跳。
+       网易云自己的网页遇到这种情况也只是提示"点右上角 → 在浏览器中打开"，
+       我们照抄这句人话（文案见 https://music.163.com/m/applink 的源码）。 */
+    inAppBlock:  { zh: function () { return '微信、QQ 这类自带浏览器不许网页跳 App，点了不会有用——点右上角的 ⋯，选「在浏览器中打开」，再点一次就能进 App。歌名已经帮你复制好了。'; },
+                   en: function () { return 'Browsers inside WeChat or QQ block app links, so tapping does nothing here. Tap ⋯ at the top right, choose “Open in browser”, then tap again. The track name is already copied.'; } }
   };
 
   /* t('copied', 'a@b.com') → 按当前语言取出那一条，拼成一句话 */
@@ -408,6 +417,8 @@
      下面 PLATFORMS 就是全部可选平台，一行一个：
        name = 按钮上的字（中文）；nameEn = 切到英文时按钮上的字；
        app  = 这个 App 自己的跳转协议（手机上用它唤起 App），没有就留空；
+       applink = iPhone 上的**官方入口地址**（只有平台自己配了"通用链接"才有，
+                 见下面网易云那行的说明）；有它就优先走它；
        pkg  = 安卓包名，安卓浏览器用 intent:// 唤起时要写；
        url  = 网页地址（电脑上点它、以及手机上唤不起 App 时退回这里），
               中间的 {q} 会被换成「歌名 歌手」，没有 {q} 的就原样打开。
@@ -421,6 +432,13 @@
                    没有对外的唤起协议，所以这一家只能打开官网（下面的 app 留空）  */
   var PLATFORMS = [
     { name: '网易云音乐',  nameEn: 'NetEase Cloud Music', app: 'orpheus://', pkg: 'com.netease.cloudmusic',
+      /* iPhone 上的官方入口（2026-09-22 实测）：
+         网易云在自己域名的 apple-app-site-association 里**只放行了 /m/applink 这一条路径**
+         （见 https://music.163.com/.well-known/apple-app-site-association），
+         也就是说只有走这个地址，iOS 才肯把网页交给网易云 App。它自己也是这么用的。
+         打开后：装了 App 就直接进 App；没装它自己会提示"下拉点打开"或给下载入口。
+         它还会认 UA——在微信里打开时，它自己显示的就是"点右上角→在Safari中打开"。 */
+      applink: 'https://music.163.com/m/applink?scheme=orpheus%3A%2F%2F',
       url: 'https://music.163.com/#/search/m/?s={q}' },
     { name: 'QQ 音乐',     nameEn: 'QQ Music', app: 'qqmusic://', pkg: 'com.tencent.qqmusic',
       url: 'https://y.qq.com/n/ryqq/search?w={q}' },
@@ -455,6 +473,11 @@
   var noHover = window.matchMedia('(hover: none)').matches;
   var isAndroid = /android/i.test(navigator.userAgent);
 
+  /* 微信、微博、QQ 这类"自带浏览器"是白名单制：只要不是它自家的 App，一律不给跳。
+     这个判断照抄网易云自己网页里的写法（micromessenger|weibo|qq，但 QQ 浏览器不算），
+     出自 https://music.163.com/m/applink 的源码。命中它就别白点那一下，直接给提示。 */
+  var isInApp = /micromessenger|weibo|qq(?!browser)/i.test(navigator.userAgent);
+
   function pickerUrl(platform, query) {
     return platform.url.indexOf('{q}') >= 0
       ? platform.url.replace('{q}', encodeURIComponent(query))
@@ -471,7 +494,7 @@
     } catch (err) { /* 复制不了就算了 */ }
   }
 
-  /* 唤起 App：手机上点平台名走这里。
+  /* 唤起 App：手机上点平台名走这里（iPhone 上有官方入口的平台不进来，见上面）。
      ⚠️ 2026-09-21 用户实测"点网易云、QQ 音乐没反应"之后改的，两个坑：
        1) 必须在这一下点击里同步跳，挪进 setTimeout 再跳 iPhone 就不认了；
        2) 唤起成不成功，网页这边**测不出来**：微信、QQ 这类自带浏览器直接禁止
@@ -502,18 +525,34 @@
   var note = document.getElementById('pickerNote');
   var noteText = document.getElementById('pickerNoteText');
   var noteLink = document.getElementById('pickerNoteLink');
+  var noteState = null;      /* 记住这次提示说的是谁、哪种情况，切换语言时好重写一遍 */
 
-  function showNote(platform, webUrl) {
-    if (!note || !noteText || !noteLink) return;
-    noteText.textContent = t('opening', platName(platform));
-    noteLink.href = webUrl;
-    noteLink.setAttribute('aria-label', t('noteLabel', platName(platform), currentQuery));
+  /* 提示行的字全部由脚本写（这行本来就只有脚本会显示出来），
+     好处是切换语言时能就地重写一遍，不用去改 HTML 里的 data-en。 */
+  function paintNote() {
+    if (!note || !noteText || !noteLink || !noteState) return;
+    var blocked = noteState.mode === 'inApp';
+    noteText.textContent = blocked
+      ? t('inAppBlock')
+      : t('opening', platName(noteState.platform));
+    noteLink.textContent = blocked ? t('noteOpenShort') : t('noteOpen');
+    noteLink.href = noteState.webUrl;
+    noteLink.setAttribute('aria-label', t('noteLabel', platName(noteState.platform), currentQuery));
     note.hidden = false;
   }
 
+  /* mode 不传 = 手机正在试唤起 App；mode='inApp' = 在微信/QQ 里，跳不了，只能提示换浏览器 */
+  function showNote(platform, webUrl, mode) {
+    noteState = { platform: platform, webUrl: webUrl, mode: mode || 'app' };
+    paintNote();
+  }
+
   function hideNote() {
+    noteState = null;
     if (note) note.hidden = true;
   }
+
+  document.addEventListener('site:lang', paintNote);
 
   function closePicker() {
     if (!picker || picker.hidden) return;
@@ -540,7 +579,12 @@
       a.rel = 'noopener noreferrer';
       a.textContent = platName(platform);
       a.setAttribute('data-platform', String(i));
+      /* 网页版地址单独存一份：提示行要拿它当兜底，不能受下面那条替换影响 */
+      a.setAttribute('data-web', pickerUrl(platform, query));
       a.setAttribute('aria-label', t('pickerLabel', platName(platform), query));
+      /* iPhone 上平台有官方入口的（目前只有网易云），按钮直接指向那个入口：
+         浏览器在新标签里打开它，iOS 才会把网页交给 App（见下面的点击处理）。 */
+      if (noHover && !isAndroid && platform.applink) a.href = platform.applink;
       li.appendChild(a);
       pickerList.appendChild(li);
     });
@@ -598,11 +642,32 @@
         var platform = PLATFORMS[Number(a.getAttribute('data-platform'))];
         if (!platform) return;
 
+        var webUrl = a.getAttribute('data-web') || a.href;
+
+        /* 微信、QQ、微博里点了也是白点——它们的浏览器是白名单制，一律不给跳 App。
+           网易云自己碰到这种情况也只是提示"点右上角→在浏览器中打开"，
+           所以这里干脆不试，直接把那句话摆出来。 */
+        if (isInApp && noHover) {
+          e.preventDefault();
+          copyQuery();                       // 歌名先复制好，换到浏览器里就能用
+          showNote(platform, webUrl, 'inApp');
+          return;
+        }
+
+        /* iPhone 上有官方入口的平台（现在只有网易云）：按钮的地址已经换成那个
+           官方地址，这里**不拦**——让浏览器在新标签里打开它，App 装了就进 App；
+           没装就是它自己的"打开/下载"页，而且在新标签里，不会把我们这张页面顶掉。
+           为什么不用自己跳 orpheus://：iOS 只在自己放行过的网址上才认 App。 */
+        if (!isAndroid && noHover && platform.applink) {
+          copyQuery();
+          return;
+        }
+
         if (platform.app && noHover) {
           e.preventDefault();
           copyQuery();                       // 歌名先复制好，进 App 直接粘贴
-          showNote(platform, a.href);        // 先摆好兜底，再试唤起
-          launchApp(platform, a.href);       // 别挪进 setTimeout：晚了浏览器不让跳
+          showNote(platform, webUrl);        // 先摆好兜底，再试唤起
+          launchApp(platform, webUrl);       // 别挪进 setTimeout：晚了浏览器不让跳
           /* 面板故意不关：App 没起来时，那行"用网页打开"要留在屏幕上给用户点 */
         } else {
           closePicker();

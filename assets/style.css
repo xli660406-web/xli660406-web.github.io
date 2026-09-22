@@ -718,7 +718,8 @@ main { position: relative; z-index: 2; }
   grid-template-columns: 1fr 1fr;
   gap: .5rem;
 }
-/* 「正在试着打开…· 没反应？点这里用网页打开」：只在点过平台名之后出现 */
+/* 点过平台名之后才出现的那行提示：文案（"正在试着打开…"或"微信里跳不了…"）
+   和链接都由 assets/main.js 写进去，这里只管排版。 */
 .picker__note {
   margin: -.35rem 0 .9rem;
   font-size: .76rem;
@@ -728,9 +729,11 @@ main { position: relative; z-index: 2; }
 }
 .picker__note[hidden] { display: none; }
 .picker__note a {
+  margin-left: .35rem;
   color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 3px;
+  white-space: nowrap;      /* "点这里用网页打开"别被拆成两行 */
 }
 /* 平台是单数个时（现在是 5 个），最后那个按钮占满整行，不留一个孤零零的半格 */
 .picker__list > li:last-child:nth-child(odd) { grid-column: 1 / -1; }
