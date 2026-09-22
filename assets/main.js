@@ -417,28 +417,29 @@
      下面 PLATFORMS 就是全部可选平台，一行一个：
        name = 按钮上的字（中文）；nameEn = 切到英文时按钮上的字；
        app  = 这个 App 自己的跳转协议（手机上用它唤起 App），没有就留空；
-       applink = iPhone 上的**官方入口地址**（只有平台自己配了"通用链接"才有，
-                 见下面网易云那行的说明）；有它就优先走它；
+              ⚠️ **协议后面一定要带内容**，光写 "xxx://" 手机系统会当无效地址忽略，
+              连"要打开…吗？"的许可弹窗都不弹（用户 2026-09-22 实测反馈的就是这个）；
        pkg  = 安卓包名，安卓浏览器用 intent:// 唤起时要写；
        url  = 网页地址（电脑上点它、以及手机上唤不起 App 时退回这里），
               中间的 {q} 会被换成「歌名 歌手」，没有 {q} 的就原样打开。
      想加平台、去掉平台、换名字，改这张表就行，改完刷新页面生效。
 
-     这些协议是 2026-09-21 从各家自己的网页脚本里翻出来的（不是网上抄的）：
-       网易云 orpheus://  —— 网易云手机版脚本里写着 ORPHEUS_SCHEME="orpheus://"
+      这些协议是 2026-09-21 从各家自己的网页脚本里翻出来的（不是网上抄的）：
+       网易云 orpheus://  —— 网易云手机版脚本里写着 ORPHEUS_SCHEME="orpheus://"，
+                            并且它自己的函数 completingOrpheus() 会把 "song/123" 这种
+                            路径补成 "orpheus://song/123"，可见协议后面必须带路径；
+                            它给的兜底入口是 orpheus://openurl（见 getOrpheusLink）。
        酷狗   kugou://    —— 酷狗自己的 open-kugou-app 脚本里在用 kugou://start.weixin?
-       QQ 音乐 qqmusic:// —— 没找到证据，按常见写法填的，需要拿手机实测
+       QQ 音乐 qqmusic:// —— **没有证据**：它的域名没配通用链接、官网脚本里也翻不到，
+                            目前按常见写法填着，属于"碰运气"，需要真机实测
        汽水音乐 —— 官网脚本里只有它自己内部用的 bytedance://、nativeapp://，
                    没有对外的唤起协议，所以这一家只能打开官网（下面的 app 留空）  */
   var PLATFORMS = [
-    { name: '网易云音乐',  nameEn: 'NetEase Cloud Music', app: 'orpheus://', pkg: 'com.netease.cloudmusic',
-      /* iPhone 上的官方入口（2026-09-22 实测）：
-         网易云在自己域名的 apple-app-site-association 里**只放行了 /m/applink 这一条路径**
-         （见 https://music.163.com/.well-known/apple-app-site-association），
-         也就是说只有走这个地址，iOS 才肯把网页交给网易云 App。它自己也是这么用的。
-         打开后：装了 App 就直接进 App；没装它自己会提示"下拉点打开"或给下载入口。
-         它还会认 UA——在微信里打开时，它自己显示的就是"点右上角→在Safari中打开"。 */
-      applink: 'https://music.163.com/m/applink?scheme=orpheus%3A%2F%2F',
+    { name: '网易云音乐',  nameEn: 'NetEase Cloud Music', app: 'orpheus://openurl', pkg: 'com.netease.cloudmusic',
+      /* 为什么带 openurl：见上面那段——光写 "orpheus://" 等于没带内容，系统不认。
+         2026-09-22 曾改成网易云的官网入口 https://music.163.com/m/applink?scheme=…
+         （那是它配的通用链接路径），但**用户真机实测：不弹许可、还落到下载页**，
+         所以退回协议跳转。那次的实测与结论都记在 项目清单.md 里。 */
       url: 'https://music.163.com/#/search/m/?s={q}' },
     { name: 'QQ 音乐',     nameEn: 'QQ Music', app: 'qqmusic://', pkg: 'com.tencent.qqmusic',
       url: 'https://y.qq.com/n/ryqq/search?w={q}' },
@@ -582,9 +583,6 @@
       /* 网页版地址单独存一份：提示行要拿它当兜底，不能受下面那条替换影响 */
       a.setAttribute('data-web', pickerUrl(platform, query));
       a.setAttribute('aria-label', t('pickerLabel', platName(platform), query));
-      /* iPhone 上平台有官方入口的（目前只有网易云），按钮直接指向那个入口：
-         浏览器在新标签里打开它，iOS 才会把网页交给 App（见下面的点击处理）。 */
-      if (noHover && !isAndroid && platform.applink) a.href = platform.applink;
       li.appendChild(a);
       pickerList.appendChild(li);
     });
@@ -651,15 +649,6 @@
           e.preventDefault();
           copyQuery();                       // 歌名先复制好，换到浏览器里就能用
           showNote(platform, webUrl, 'inApp');
-          return;
-        }
-
-        /* iPhone 上有官方入口的平台（现在只有网易云）：按钮的地址已经换成那个
-           官方地址，这里**不拦**——让浏览器在新标签里打开它，App 装了就进 App；
-           没装就是它自己的"打开/下载"页，而且在新标签里，不会把我们这张页面顶掉。
-           为什么不用自己跳 orpheus://：iOS 只在自己放行过的网址上才认 App。 */
-        if (!isAndroid && noHover && platform.applink) {
-          copyQuery();
           return;
         }
 
