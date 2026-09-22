@@ -3,20 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>枫言枫语 · 个人主页</title>
-<meta name="description" content="枫言枫语（李育晓）的个人主页：水利水电工程大一在读，关注 AIGC 视频，喜欢打乒乓球和听音乐。">
+<!-- 英文版文字写在 data-en 里（详见 assets/main.js 第 0 段的说明）：
+     想改哪句话，中文和英文就在同一个标签上，挨着改就不会漏 -->
+<title data-en="Feng Yan Feng Yu · Personal Site">枫言枫语 · 个人主页</title>
+<meta name="description" content="枫言枫语（李育晓）的个人主页：水利水电工程大一在读，关注 AIGC 视频，喜欢打乒乓球和听音乐。"
+      data-en-content="The personal site of 枫言枫语 (Li Yuxiao): a first-year Water and Hydropower Engineering student, into AIGC video, table tennis and music.">
 <meta name="theme-color" content="#08080a">
 <!-- 网页图标：内嵌的矢量小标记（网名第一字"一"，右侧那道香槟金是本站的点缀色），
      不额外请求文件，断网也在 -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d0d12'/%3E%3Crect x='12' y='28' width='14' height='8' rx='4' fill='%23d9c8a1'/%3E%3Crect x='26' y='28' width='26' height='8' rx='4' fill='%23ececee'/%3E%3C/svg%3E">
-<script>document.documentElement.classList.add('js');</script>
+<script>
+  document.documentElement.classList.add('js');
+  /* 上次选了英文就先把标记打上（文字由 assets/main.js 换），免得版式先闪一下中文的 */
+  try {
+    if (localStorage.getItem('site-lang') === 'en') document.documentElement.classList.add('lang-en');
+  } catch (e) {}
+</script>
 <!-- ?v= 是"版本号"：改了样式或脚本就把日期加一位，浏览器就会去拿新的，
      不会拿手机里存的旧文件（不然改了也看不到效果） -->
-<link rel="stylesheet" href="assets/style.css?v=20260921g">
+<link rel="stylesheet" href="assets/style.css?v=20260922a">
 </head>
 <body>
 
-<a class="skip" href="#main">跳到正文</a>
+<a class="skip" href="#main" data-en="Skip to content">跳到正文</a>
 
 <!-- 背景：三层景深（最远的光斑 → 中景光晕 → 网格与颗粒） -->
 <div class="bg" aria-hidden="true">
@@ -38,12 +47,14 @@
 <header class="nav" id="nav">
   <div class="wrap nav__inner">
     <a class="nav__brand" href="#top">枫言枫语</a>
-    <nav class="nav__links" aria-label="页面导航">
-      <a href="#about">关于</a>
-      <a href="#skills">技能</a>
-      <a href="#projects">项目</a>
-      <a href="#music">音乐</a>
-      <a href="#contact">联系</a>
+    <nav class="nav__links" aria-label="页面导航" data-en-aria-label="Page navigation">
+      <a href="#about" data-en="About">关于</a>
+      <a href="#skills" data-en="Skills">技能</a>
+      <a href="#projects" data-en="Projects">项目</a>
+      <a href="#music" data-en="Music">音乐</a>
+      <a href="#contact" data-en="Contact">联系</a>
+      <!-- 语言按钮：按钮上的字由脚本写（中文时显示 EN，英文时显示「中」） -->
+      <button class="nav__lang" id="langBtn" type="button" aria-label="Switch to English">EN</button>
     </nav>
   </div>
 </header>
@@ -52,7 +63,7 @@
 
   <section class="hero" id="top">
     <div class="wrap">
-      <p class="hero__eyebrow reveal">李育晓 · 水利水电工程 · 大一在读</p>
+      <p class="hero__eyebrow reveal" data-en="Li Yuxiao · Water and Hydropower Engineering · First year">李育晓 · 水利水电工程 · 大一在读</p>
 
       <h1 class="hero__name">
         <span class="line"><span class="line__in reveal" style="--d:.05s">枫言枫语</span></span>
@@ -63,12 +74,12 @@
       </p>
 
       <div class="hero__cta reveal" style="--d:.45s">
-        <a class="btn btn--primary" href="#projects">看看我在做什么</a>
-        <a class="btn" href="#contact">联系我</a>
+        <a class="btn btn--primary" href="#projects" data-en="See what I do">看看我在做什么</a>
+        <a class="btn" href="#contact" data-en="Get in touch">联系我</a>
       </div>
 
       <div class="hero__scroll reveal" style="--d:.6s" aria-hidden="true">
-        <span>向下浏览</span>
+        <span data-en="Scroll">向下浏览</span>
         <span class="hero__scroll-line"></span>
       </div>
     </div>
@@ -77,12 +88,14 @@
   <section class="section" id="about">
     <div class="wrap">
       <p class="section__index reveal">01</p>
-      <h2 class="section__title reveal" style="--d:.06s">关于我</h2>
+      <h2 class="section__title reveal" style="--d:.06s" data-en="About">关于我</h2>
       <div class="section__body">
-        <p class="lead reveal" style="--d:.12s">
+        <p class="lead reveal" style="--d:.12s"
+           data-en="I am Li Yuxiao — 枫言枫语 is the name I use online. First-year student in Water and Hydropower Engineering.">
           我是李育晓，网名「枫言枫语」，水利水电工程专业大一在读。
         </p>
-        <p class="reveal" style="--d:.18s">
+        <p class="reveal" style="--d:.18s"
+           data-en="AIGC video is the field I follow: I have looked into open-source video models such as LTX-Video, Tongyi Wanxiang Wan 2.2 and MiniMax, and I know what kind of footage each of them does best. I play table tennis and listen to a lot of music. This site is the first web page I have built, and I will keep updating it.">
           AIGC 视频是我关注的方向：LTX-Video、通义万相 Wan 2.2、MiniMax 这些开源视频生成模型
           我都了解过，清楚它们各自擅长什么样的画面。平时喜欢打乒乓球，也爱听音乐。
           这个网站是我做的第一个网页作品，之后会持续更新。
@@ -94,32 +107,32 @@
   <section class="section" id="skills">
     <div class="wrap">
       <p class="section__index reveal">02</p>
-      <h2 class="section__title reveal" style="--d:.06s">技能</h2>
+      <h2 class="section__title reveal" style="--d:.06s" data-en="Skills">技能</h2>
       <div class="section__body">
         <dl class="skills">
           <div class="skills__group reveal">
-            <dt>专业</dt>
+            <dt data-en="Major">专业</dt>
             <dd>
-              <span class="tag">水利水电工程（大一在读）</span>
+              <span class="tag" data-en="Water and Hydropower Eng. (first year)">水利水电工程（大一在读）</span>
             </dd>
           </div>
           <div class="skills__group reveal" style="--d:.08s">
-            <dt>兴趣方向</dt>
+            <dt data-en="Interests">兴趣方向</dt>
             <dd>
-              <span class="tag">AIGC 视频</span>
-              <span class="tag">开源模型</span>
+              <span class="tag" data-en="AIGC video">AIGC 视频</span>
+              <span class="tag" data-en="Open-source models">开源模型</span>
               <span class="tag">LTX-Video</span>
-              <span class="tag">通义万相 Wan 2.2</span>
+              <span class="tag" data-en="Tongyi Wanxiang Wan 2.2">通义万相 Wan 2.2</span>
               <span class="tag">MiniMax</span>
             </dd>
           </div>
           <div class="skills__group reveal" style="--d:.16s">
-            <dt>学习与尝试</dt>
+            <dt data-en="Learning and trying">学习与尝试</dt>
             <dd>
-              <span class="tag">网页制作（HTML / CSS 入门）</span>
+              <span class="tag" data-en="Web pages (HTML / CSS basics)">网页制作（HTML / CSS 入门）</span>
               <span class="tag">GitHub</span>
-              <span class="tag">乒乓球</span>
-              <span class="tag">音乐</span>
+              <span class="tag" data-en="Table tennis">乒乓球</span>
+              <span class="tag" data-en="Music">音乐</span>
             </dd>
           </div>
         </dl>
@@ -130,7 +143,7 @@
   <section class="section" id="projects">
     <div class="wrap">
       <p class="section__index reveal">03</p>
-      <h2 class="section__title reveal" style="--d:.06s">项目与兴趣</h2>
+      <h2 class="section__title reveal" style="--d:.06s" data-en="Projects and interests">项目与兴趣</h2>
       <div class="section__body">
         <div class="cards">
           <!-- 复刻项目做成"整行大卡片"（图在左、字在右）：它的内容比别的卡片多，
@@ -142,62 +155,71 @@
             <div class="card__media">
               <a href="projects/fakepod.html">
                 <img src="assets/img/project-fakepod.jpg" alt="实拍照片：一台黑机身方屏小播放器摆在键盘上，屏幕上正显示一张有树和钟楼的风景照片"
+                     data-en-alt="Photo: a small black player with a square screen lying on a keyboard, showing a landscape picture with a tree and a clock tower"
                      width="1200" height="1200" loading="lazy" decoding="async">
               </a>
             </div>
             <div class="card__body">
-              <p class="card__meta">复刻项目 · 2026</p>
-              <h3 class="card__title"><a href="projects/fakepod.html">FAKE_POD_NANO 播放器</a></h3>
-              <p class="card__desc">
+              <p class="card__meta" data-en="Replica project · 2026">复刻项目 · 2026</p>
+              <h3 class="card__title"><a href="projects/fakepod.html" data-en="FAKE_POD_NANO player">FAKE_POD_NANO 播放器</a></h3>
+              <p class="card__desc"
+                 data-en="I ordered the PCB myself, soldered it myself, bought the parts on Taobao from the original author's BOM and flashed the firmware myself, to build a lossless player modelled on the iPod Nano. Mine is the HIFI version: ESP32-S3, a 2.0-inch 460×460 AMOLED screen and a CS43131 DAC — 130 dB SNR, with a built-in headphone output that drives most headphones directly. It plays MP3 / FLAC up to 96 kHz / 24 bit, has a TF card slot, skips tracks by gesture with a six-axis gyroscope, and works as a USB sound card for a computer. (The original project also has a regular PCM5102A version: LINE OUT, 112 dB SNR.)">
                 自己打板、自己焊接、照原作者的 BOM 从淘宝配元件、自己刷固件，做出一台仿 iPod Nano 的无损播放器。
                 我这台是 HIFI 版：ESP32-S3 主控 + 2.0 英寸 460×460 AMOLED 屏，CS43131 DAC——信噪比 130 dB，
                 自带耳机输出、能直推大部分耳机；支持 MP3 / FLAC，最高 96 kHz / 24 bit，内置 TF 卡槽、
                 六轴陀螺仪手势切歌，还能当电脑的 USB 声卡用。（原项目另有 PCM5102A 的普通版，LINE OUT，
                 信噪比 112 dB。）
               </p>
-              <p class="card__desc">
+              <p class="card__desc"
+                 data-en="Beyond music: the spectrum visualiser has 5 styles with real-time beat detection, it plays 460×460 MJPEG animation and a photo album, and it reads UTF-8 txt files.">
                 听歌之外的玩法：拾音频谱有 5 种样式并支持实时节拍检测，能放 460×460 的 MJPEG 动画和图片相册，
                 也能读 UTF-8 的 txt。
               </p>
-              <p class="card__note">
+              <p class="card__note"
+                 data-en="Two things to remember if you want to build one: the screen is fragile and has no protective edge, so any pressure during assembly can break it; and never plug or unplug anything while it is powered on (headphones, TF card and USB alike) — that can damage it too.">
                 想自己复刻的话先记住两条：这块屏幕很脆弱、边上没有任何保护，装配时压到就会坏；也不要带电插拔
                 （耳机、TF 卡、USB 都一样），容易损坏。
               </p>
-              <p class="card__credit">
+              <p class="card__credit"
+                 data-en-html='Replica of <a href="https://oshwhub.com/planevina/fakepodnano-lossless-audioplayer" target="_blank" rel="noopener noreferrer">planevina&#39;s open-source project FAKE_POD_NANO</a>: the design, firmware and schematics all come from the original author, fully open source (CC BY-NC-SA 3.0 — credit the source and you may use it for reference; do not sell it, and share your changes under the same licence. Get the schematics and firmware from the original project page). The soldering, assembly and debugging are my own work.'>
                 复刻自 <a href="https://oshwhub.com/planevina/fakepodnano-lossless-audioplayer" target="_blank" rel="noopener noreferrer">planevina 的开源项目 FAKE_POD_NANO</a>：
                 设计、固件和图纸都出自原作者，全开源（协议 CC BY-NC-SA 3.0，标注出处即可参考使用，
                 别拿去卖、改动后也要同样开源；图纸和固件请到原项目页面下载）。焊接、装配和调试是我自己做的。
               </p>
-              <p class="card__tags"><span class="tag tag--sm">ESP32-S3</span><span class="tag tag--sm">焊接</span><span class="tag tag--sm">无损音频</span></p>
-              <p class="card__more"><a href="projects/fakepod.html">看详情：硬件配置、能做什么、两个坑 →</a></p>
+              <p class="card__tags"><span class="tag tag--sm">ESP32-S3</span><span class="tag tag--sm" data-en="Soldering">焊接</span><span class="tag tag--sm" data-en="Lossless audio">无损音频</span></p>
+              <p class="card__more"><a href="projects/fakepod.html" data-en="Details: hardware, what it can do, two pitfalls →">看详情：硬件配置、能做什么、两个坑 →</a></p>
             </div>
           </article>
 
           <article class="card reveal" style="--d:.06s">
             <div class="card__media">
               <img src="assets/img/project-aigc.jpg" alt="长曝光式的横向流光，AIGC 视频方向的配图"
+                   data-en-alt="Long horizontal streaks of light, an illustration for the AIGC video card"
                    width="1200" height="750" loading="lazy" decoding="async">
             </div>
             <div class="card__body">
-              <p class="card__meta">兴趣方向 · 2026</p>
-              <h3 class="card__title">AIGC 视频</h3>
-              <p class="card__desc">
+              <p class="card__meta" data-en="Interest · 2026">兴趣方向 · 2026</p>
+              <h3 class="card__title" data-en="AIGC video">AIGC 视频</h3>
+              <p class="card__desc"
+                 data-en="What I follow: video generation models such as MiniMax, LTX-Video and Tongyi Wanxiang Wan 2.2 — and what kind of footage each of them does best.">
                 关注的方向：MiniMax、LTX-Video、通义万相 Wan 2.2 这类视频生成模型，
                 了解它们各自擅长呈现什么样的画面。
               </p>
-              <p class="card__tags"><span class="tag tag--sm">视频生成</span><span class="tag tag--sm">开源模型</span></p>
+              <p class="card__tags"><span class="tag tag--sm" data-en="Video generation">视频生成</span><span class="tag tag--sm" data-en="Open-source models">开源模型</span></p>
             </div>
           </article>
 
           <article class="card reveal" style="--d:.12s">
             <div class="card__media">
               <img src="assets/img/project-site.jpg" alt="个人主页首页截图：深色背景上写着大字「枫言枫语」"
+                   data-en-alt="Screenshot of this home page: large 枫言枫语 lettering on a dark background"
                    width="1200" height="750" loading="lazy" decoding="async">
             </div>
             <div class="card__body">
-              <p class="card__meta">个人项目 · 2026</p>
-              <h3 class="card__title">这个网站</h3>
-              <p class="card__desc">
+              <p class="card__meta" data-en="Personal project · 2026">个人项目 · 2026</p>
+              <h3 class="card__title" data-en="This website">这个网站</h3>
+              <p class="card__desc"
+                 data-en="The page is three files: one HTML, one stylesheet and one script. No framework and no external dependencies — just double-click to open. It is the first web page I have ever built.">
                 页面由三个文件构成：一个 HTML、一份样式表、一个脚本，没有框架，也没有外部依赖，
                 双击即可打开。这是我第一次动手做的网页。
               </p>
@@ -208,15 +230,16 @@
           <article class="card reveal" style="--d:.18s">
             <div class="card__media">
               <img src="assets/img/project-pingpong.jpg" alt="乒乓球：暗色背景上划过一道弧线和一只白色小球"
+                   data-en-alt="Table tennis: an arc and a small white ball across a dark background"
                    width="1200" height="750" loading="lazy" decoding="async">
             </div>
             <div class="card__body">
-              <p class="card__meta">爱好 · 长期坚持</p>
-              <h3 class="card__title">乒乓球</h3>
-              <p class="card__desc">
+              <p class="card__meta" data-en="Hobby · long-term">爱好 · 长期坚持</p>
+              <h3 class="card__title" data-en="Table tennis">乒乓球</h3>
+              <p class="card__desc" data-en="The thing I put the most time into besides the computer. Always happy to play a game.">
                 除了电脑之外投入最多的事。欢迎约球。
               </p>
-              <p class="card__tags"><span class="tag tag--sm">运动</span></p>
+              <p class="card__tags"><span class="tag tag--sm" data-en="Sport">运动</span></p>
             </div>
           </article>
         </div>
@@ -227,9 +250,10 @@
   <section class="section" id="music">
     <div class="wrap">
       <p class="section__index reveal">04</p>
-      <h2 class="section__title reveal" style="--d:.06s">音乐墙</h2>
+      <h2 class="section__title reveal" style="--d:.06s" data-en="Music wall">音乐墙</h2>
       <div class="section__body">
-        <p class="lead reveal" style="--d:.12s">
+        <p class="lead reveal" style="--d:.12s"
+           data-en="Albums I listen to a lot. Rest the mouse on a column and it pauses so you can read the covers; click a cover and you can pick which music app to listen in — on a phone that usually opens the app you already have.">
           平时常听的专辑。鼠标停留在某一列上，该列会暂停，便于看清封面；点击封面会让你挑一个听歌软件——手机上装了对应 App 的，一般会直接进 App。
         </p>
       </div>
@@ -242,107 +266,107 @@
          图片都在 assets/img/ 里，从 music-01.jpg 开始排。
          改歌名：把 <b> 里的字换成歌名，<i> 里的字换成歌手。
          换封面：用同名文件覆盖，尺寸 400×400（正方形）最省事。 -->
-    <div class="wall" id="musicWall" aria-label="常听专辑封面墙">
+    <div class="wall" id="musicWall" aria-label="常听专辑封面墙" data-en-aria-label="Wall of album covers I listen to">
       <div class="wall__col">
         <ol class="wall__track" id="wallList">
           <li class="tile">
-            <img src="assets/img/music-01.jpg" alt="专辑封面：Kiss Me（松下優也）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-01.jpg" alt="专辑封面：Kiss Me（松下優也）" data-en-alt="Album cover: Kiss Me (松下優也)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>Kiss Me</b><i>松下優也</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-02.jpg" alt="专辑封面：The Waiting Game（Steve Gibbons Band）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-02.jpg" alt="专辑封面：The Waiting Game（Steve Gibbons Band）" data-en-alt="Album cover: The Waiting Game (Steve Gibbons Band)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>The Waiting Game</b><i>Steve Gibbons Band</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-03.jpg" alt="专辑封面：You Are Not Alone（Michael Jackson）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-03.jpg" alt="专辑封面：You Are Not Alone（Michael Jackson）" data-en-alt="Album cover: You Are Not Alone (Michael Jackson)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>You Are Not Alone</b><i>Michael Jackson</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-04.jpg" alt="专辑封面：そばにいるね（青山テルマ feat. SoulJa）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-04.jpg" alt="专辑封面：そばにいるね（青山テルマ feat. SoulJa）" data-en-alt="Album cover: そばにいるね (青山テルマ feat. SoulJa)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>そばにいるね</b><i>青山テルマ feat. SoulJa</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-05.jpg" alt="专辑封面：一笑倾城（汪苏泷）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-05.jpg" alt="专辑封面：一笑倾城（汪苏泷）" data-en-alt="Album cover: 一笑倾城 (汪苏泷)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>一笑倾城</b><i>汪苏泷</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-06.jpg" alt="专辑封面：不值得（梦飞船）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-06.jpg" alt="专辑封面：不值得（梦飞船）" data-en-alt="Album cover: 不值得 (梦飞船)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>不值得</b><i>梦飞船</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-07.jpg" alt="专辑封面：出现又离开（梁博）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-07.jpg" alt="专辑封面：出现又离开（梁博）" data-en-alt="Album cover: 出现又离开 (梁博)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>出现又离开</b><i>梁博</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-08.jpg" alt="专辑封面：半点心（草蜢）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-08.jpg" alt="专辑封面：半点心（草蜢）" data-en-alt="Album cover: 半点心 (草蜢)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>半点心</b><i>草蜢</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-09.jpg" alt="专辑封面：又是黄昏（Beyond）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-09.jpg" alt="专辑封面：又是黄昏（Beyond）" data-en-alt="Album cover: 又是黄昏 (Beyond)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>又是黄昏</b><i>Beyond</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-10.jpg" alt="专辑封面：多余的解释（许嵩）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-10.jpg" alt="专辑封面：多余的解释（许嵩）" data-en-alt="Album cover: 多余的解释 (许嵩)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>多余的解释</b><i>许嵩</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-11.jpg" alt="专辑封面：很想一生跟你走（张学友）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-11.jpg" alt="专辑封面：很想一生跟你走（张学友）" data-en-alt="Album cover: 很想一生跟你走 (张学友)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>很想一生跟你走</b><i>张学友</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-12.jpg" alt="专辑封面：认真的雪（薛之谦）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-12.jpg" alt="专辑封面：认真的雪（薛之谦）" data-en-alt="Album cover: 认真的雪 (薛之谦)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>认真的雪</b><i>薛之谦</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-13.jpg" alt="专辑封面：天下第一流（张学友）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-13.jpg" alt="专辑封面：天下第一流（张学友）" data-en-alt="Album cover: 天下第一流 (张学友)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>天下第一流</b><i>张学友</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-14.jpg" alt="专辑封面：Summertime（Beyoncé / Diddy）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-14.jpg" alt="专辑封面：Summertime（Beyoncé / Diddy）" data-en-alt="Album cover: Summertime (Beyoncé / Diddy)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>Summertime</b><i>Beyoncé / Diddy</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-15.jpg" alt="专辑封面：最后的一班渡轮（蔡国权）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-15.jpg" alt="专辑封面：最后的一班渡轮（蔡国权）" data-en-alt="Album cover: 最后的一班渡轮 (蔡国权)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>最后的一班渡轮</b><i>蔡国权</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-16.jpg" alt="专辑封面：Fall In Love（RAMZI）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-16.jpg" alt="专辑封面：Fall In Love（RAMZI）" data-en-alt="Album cover: Fall In Love (RAMZI)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>Fall In Love</b><i>RAMZI</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-17.jpg" alt="专辑封面：Volar（侧田）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-17.jpg" alt="专辑封面：Volar（侧田）" data-en-alt="Album cover: Volar (侧田)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>Volar</b><i>侧田</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-18.jpg" alt="专辑封面：Reason（吴建豪）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-18.jpg" alt="专辑封面：Reason（吴建豪）" data-en-alt="Album cover: Reason (吴建豪)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>Reason</b><i>吴建豪</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-19.jpg" alt="专辑封面：Slowly（Rain）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-19.jpg" alt="专辑封面：Slowly（Rain）" data-en-alt="Album cover: Slowly (Rain)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>Slowly</b><i>Rain</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-20.jpg" alt="专辑封面：Come Back To Me（宇多田ヒカル）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-20.jpg" alt="专辑封面：Come Back To Me（宇多田ヒカル）" data-en-alt="Album cover: Come Back To Me (宇多田ヒカル)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>Come Back To Me</b><i>宇多田ヒカル</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-21.jpg" alt="专辑封面：Cry no more（加藤ミリヤ）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-21.jpg" alt="专辑封面：Cry no more（加藤ミリヤ）" data-en-alt="Album cover: Cry no more (加藤ミリヤ)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>Cry no more</b><i>加藤ミリヤ</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-22.jpg" alt="专辑封面：Call On Me（Janet Jackson）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-22.jpg" alt="专辑封面：Call On Me（Janet Jackson）" data-en-alt="Album cover: Call On Me (Janet Jackson)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>Call On Me</b><i>Janet Jackson</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-23.jpg" alt="专辑封面：昨迟人（许志安）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-23.jpg" alt="专辑封面：昨迟人（许志安）" data-en-alt="Album cover: 昨迟人 (许志安)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>昨迟人</b><i>许志安</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-24.jpg" alt="专辑封面：风继续吹（张国荣）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-24.jpg" alt="专辑封面：风继续吹（张国荣）" data-en-alt="Album cover: 风继续吹 (张国荣)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>风继续吹</b><i>张国荣</i></span>
           </li>
           <li class="tile">
-            <img src="assets/img/music-25.jpg" alt="专辑封面：Bleeding Love（Leona Lewis）" width="400" height="400" loading="lazy" decoding="async">
+            <img src="assets/img/music-25.jpg" alt="专辑封面：Bleeding Love（Leona Lewis）" data-en-alt="Album cover: Bleeding Love (Leona Lewis)" width="400" height="400" loading="lazy" decoding="async">
             <span class="tile__cap"><b>Bleeding Love</b><i>Leona Lewis</i></span>
           </li>
         </ol>
@@ -353,20 +377,22 @@
   <section class="section section--contact" id="contact">
     <div class="wrap">
       <p class="section__index reveal">05</p>
-      <h2 class="section__title reveal" style="--d:.06s">联系我</h2>
+      <h2 class="section__title reveal" style="--d:.06s" data-en="Contact">联系我</h2>
       <div class="section__body">
-        <p class="lead reveal" style="--d:.12s">如果想聊聊 AIGC 视频、约球，或者别的事情，欢迎写信给我。</p>
+        <p class="lead reveal" style="--d:.12s"
+           data-en="If you want to talk about AIGC video, play table tennis, or ask about anything else, feel free to write to me.">如果想聊聊 AIGC 视频、约球，或者别的事情，欢迎写信给我。</p>
 
         <a class="mail reveal" style="--d:.18s" href="mailto:lyxicl@qq.com" id="mailLink">
           lyxicl@qq.com
         </a>
 
         <div class="hero__cta reveal" style="--d:.24s">
-          <button class="btn btn--primary" id="copyMail" type="button">复制邮箱</button>
+          <button class="btn btn--primary" id="copyMail" type="button" data-en="Copy email">复制邮箱</button>
           <a class="btn" href="https://github.com/xli660406-web" target="_blank" rel="noopener noreferrer">GitHub</a>
         </div>
 
-        <p class="reveal" style="--d:.3s">
+        <p class="reveal" style="--d:.3s"
+           data-en="Other email: xli660406@gmail.com ｜ Douyin: @xiao18777430100">
           另一个邮箱：xli660406@gmail.com ｜ 抖音：@xiao18777430100
         </p>
       </div>
@@ -376,12 +402,13 @@
 
 <footer class="footer">
   <div class="wrap footer__inner">
-    <span>© <span id="year">2026</span> 枫言枫语（李育晓）</span>
-    <span class="footer__dim">本站为静态页面，无跟踪、无广告。</span>
+    <span>© <span id="year">2026</span> <span data-en="枫言枫语 (Li Yuxiao)">枫言枫语（李育晓）</span></span>
+    <span class="footer__dim" data-en="A static page: no tracking, no ads.">本站为静态页面，无跟踪、无广告。</span>
   </div>
 </footer>
 
-<a class="sticky-mail" href="mailto:lyxicl@qq.com" aria-label="给我发邮件">✉ 联系我</a>
+<a class="sticky-mail" href="mailto:lyxicl@qq.com" aria-label="给我发邮件" data-en-aria-label="Email me"
+   data-en="✉ Contact">✉ 联系我</a>
 
 <!-- 「用哪个软件听」的小面板：平时藏起来，点封面才出现（逻辑在 assets/main.js 第 7 段）。
      平台按钮由脚本按「歌名 + 歌手」现算地址；想加平台、换平台，改 main.js 里的 PLATFORMS 表。
@@ -390,23 +417,26 @@
 <div class="picker" id="picker" hidden>
   <div class="picker__mask" data-picker-close></div>
   <div class="picker__card" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
-    <p class="picker__title" id="pickerTitle">用哪个软件听？</p>
+    <p class="picker__title" id="pickerTitle" data-en="Which app do you want to listen in?">用哪个软件听？</p>
     <p class="picker__song" id="pickerSong"></p>
-    <p class="picker__hint">点平台名会试着打开你手机里的 App（歌名会自动复制好，进去粘贴就能搜到）；唤不起来就用下面那行网页。</p>
+    <p class="picker__hint"
+       data-en="Tapping an app name tries to open it on your phone (the track name is copied for you — paste it in the app to search). If it will not open, use the web link below.">点平台名会试着打开你手机里的 App（歌名会自动复制好，进去粘贴就能搜到）；唤不起来就用下面那行网页。</p>
     <ul class="picker__list" id="pickerList"></ul>
     <!-- 点过平台名之后才出现的兜底：微信、QQ 这类自带浏览器不给跳 App，
          点了会一点反应都没有，所以永远留一步"用网页打开"给访客自己点 -->
     <p class="picker__note" id="pickerNote" hidden>
-      <span id="pickerNoteText"></span> · 没反应？
-      <a id="pickerNoteLink" href="https://search.bilibili.com/all?keyword=" target="_blank" rel="noopener noreferrer">点这里用网页打开</a>
+      <span id="pickerNoteText"></span> · <span data-en="no response?">没反应？</span>
+      <a id="pickerNoteLink" href="https://search.bilibili.com/all?keyword=" target="_blank" rel="noopener noreferrer"
+         data-en="Open it in the web browser">点这里用网页打开</a>
     </p>
-    <a class="picker__fallback" id="pickerBili" href="https://search.bilibili.com/all?keyword=" target="_blank" rel="noopener noreferrer">
+    <a class="picker__fallback" id="pickerBili" href="https://search.bilibili.com/all?keyword=" target="_blank" rel="noopener noreferrer"
+       data-en="None of them installed? Search on Bilibili (no login needed)">
       这些都没装？去 B 站搜（免登录，能直接看）
     </a>
-    <button class="picker__close" type="button" data-picker-close>取消</button>
+    <button class="picker__close" type="button" data-picker-close data-en="Cancel">取消</button>
   </div>
 </div>
 
-<script src="assets/main.js?v=20260921g" defer></script>
+<script src="assets/main.js?v=20260922a" defer></script>
 </body>
 </html>

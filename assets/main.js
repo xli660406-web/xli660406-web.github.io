@@ -8,6 +8,136 @@
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var narrowMQ = window.matchMedia('(max-width: 760px)');   // 实时判断，窗口缩放/手机横竖屏切换后跟着变
 
+  /* --- 0. 中英文切换：引擎 -------------------------------------------------
+     中文原文直接写在页面里，英文写在同一个标签的 data-en 上：
+         <p data-en="Hello">你好</p>
+     标签里还夹着别的标签（链接、加粗）时，改用 data-en-html，里面可以写 HTML：
+         <p data-en-html='read <a href="x">this</a>'>读<a href="x">这里</a></p>
+     写在属性里的字（图片说明 alt、无障碍标注 aria-label、照片说明 data-cap）就用
+     data-en-alt / data-en-aria-label / data-en-cap。
+     切换按钮在页面顶部（id="langBtn"）：点一下换语言，选过就记在浏览器里，
+     下次打开还是上次那个语言；两个页面（首页 / 项目详情页）共用这一个设置。
+     歌名、歌手、人名、型号不翻——它们是名字，不是说明文字。  */
+  var LANG_KEY = 'site-lang';
+  var lang = 'zh';
+
+  try {
+    if (window.localStorage.getItem(LANG_KEY) === 'en') lang = 'en';
+  } catch (e) { /* 隐私模式下本地存储会报错：不影响看，只是记不住选择 */ }
+
+  /* JS 自己拼出来的那几句（打字机、听歌面板、复制邮箱）也得分语言 */
+  var T = {
+    phrases: {
+      zh: ['水利水电工程大一在读', '在关注 AIGC 视频', '喜欢打乒乓球', '喜欢听音乐', '本名李育晓'],
+      en: ['Water & Hydropower, year 1', 'Following AIGC video', 'Playing table tennis',
+           'Listening to music', 'Li Yuxiao']
+    },
+    copied:   { zh: function (a) { return '已复制 ' + a; },
+                en: function (a) { return 'Copied ' + a; } },
+    copyFail: { zh: function () { return '复制失败，请手动选中'; },
+                en: function () { return 'Copy failed — please select it manually'; } },
+    copySel:  { zh: function () { return '已选中，按 Ctrl+C 复制'; },
+                en: function () { return 'Selected — press Ctrl+C'; } },
+    copyTitle:{ zh: function () { return '复制邮箱'; },
+                en: function () { return 'Copy email'; } },
+    listen:   { zh: function () { return '去听 ▸'; },
+                en: function () { return 'Listen ▸'; } },
+    listenTitle: { zh: function (q) { return '选择用什么软件听：' + q; },
+                   en: function (q) { return 'Choose an app to listen in: ' + q; } },
+    songLabel:   { zh: function (s, a) { return '《' + s + '》' + a; },
+                   en: function (s, a) { return '“' + s + '” ' + a; } },
+    opening:  { zh: function (n) { return '正在试着打开「' + n + '」'; },
+                en: function (n) { return 'Trying to open “' + n + '”'; } },
+    pickerLabel: { zh: function (n, q) { return '用' + n + '听：' + q; },
+                   en: function (n, q) { return 'Listen to ' + q + ' in ' + n; } },
+    noteLabel:   { zh: function (n, q) { return '用网页打开' + n + '，搜索：' + q; },
+                   en: function (n, q) { return 'Open ' + n + ' on the web, searching: ' + q; } }
+  };
+
+  /* t('copied', 'a@b.com') → 按当前语言取出那一条，拼成一句话 */
+  function t(key, a, b) {
+    var item = T[key];
+    if (!item || !item[lang]) return '';
+    return item[lang](a, b);
+  }
+
+  /* 属性里的文字：左边是页面上的属性名，右边是 data-en-??? 里的那个后缀 */
+  var EN_ATTRS = [
+    ['alt', 'alt'], ['aria-label', 'aria-label'], ['content', 'content'],
+    ['title', 'title'], ['placeholder', 'placeholder'], ['data-cap', 'cap']
+  ];
+
+  function swapLang(toEn) {
+    var i, j, el, key, zhKey;
+
+    /* 1) 标签之间的文字 */
+    var nodes = document.querySelectorAll('[data-en], [data-en-html]');
+    for (i = 0; i < nodes.length; i++) {
+      el = nodes[i];
+      if (el.hasAttribute('data-en')) {
+        /* 第一次切到英文时，把中文原文抄在 data-zh 里（切回来要用） */
+        if (toEn) {
+          if (!el.hasAttribute('data-zh')) el.setAttribute('data-zh', el.textContent);
+          el.textContent = el.getAttribute('data-en');
+        } else if (el.hasAttribute('data-zh')) {
+          el.textContent = el.getAttribute('data-zh');
+        }
+      }
+      if (el.hasAttribute('data-en-html')) {
+        if (toEn) {
+          if (!el.hasAttribute('data-zh-html')) el.setAttribute('data-zh-html', el.innerHTML);
+          el.innerHTML = el.getAttribute('data-en-html');
+        } else if (el.hasAttribute('data-zh-html')) {
+          el.innerHTML = el.getAttribute('data-zh-html');
+        }
+      }
+    }
+
+    /* 2) 属性里的文字（图片说明、无障碍标注、照片说明……） */
+    var all = document.querySelectorAll('*');
+    for (i = 0; i < all.length; i++) {
+      el = all[i];
+      for (j = 0; j < EN_ATTRS.length; j++) {
+        key = 'data-en-' + EN_ATTRS[j][1];
+        if (!el.hasAttribute(key)) continue;
+        zhKey = 'data-zh-' + EN_ATTRS[j][1];
+        if (toEn) {
+          if (!el.hasAttribute(zhKey)) el.setAttribute(zhKey, el.getAttribute(EN_ATTRS[j][0]) || '');
+          el.setAttribute(EN_ATTRS[j][0], el.getAttribute(key));
+        } else if (el.hasAttribute(zhKey)) {
+          el.setAttribute(EN_ATTRS[j][0], el.getAttribute(zhKey));
+        }
+      }
+    }
+  }
+
+  var langBtn = document.getElementById('langBtn');
+
+  function applyLang(next, remember) {
+    lang = next === 'en' ? 'en' : 'zh';
+    var toEn = lang === 'en';
+
+    document.documentElement.lang = toEn ? 'en' : 'zh-CN';
+    if (toEn) document.documentElement.classList.add('lang-en');
+    else document.documentElement.classList.remove('lang-en');
+
+    swapLang(toEn);
+
+    if (langBtn) {
+      /* 按钮上写的是"点了会换成哪种语言"：中文时显示 EN，英文时显示「中」 */
+      langBtn.textContent = toEn ? '中' : 'EN';
+      langBtn.setAttribute('lang', toEn ? 'zh-CN' : 'en');
+      langBtn.setAttribute('aria-label', toEn ? '切换成中文' : 'Switch to English');
+    }
+
+    if (remember) {
+      try { window.localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+    }
+
+    /* 打字机这类 JS 生成的内容，各自监听这个事件跟着换 */
+    document.dispatchEvent(new CustomEvent('site:lang', { detail: { lang: lang } }));
+  }
+
   /* --- 1. 滚动淡入 --------------------------------------------------------- */
   var revealItems = document.querySelectorAll('.reveal');
 
@@ -77,10 +207,10 @@
 
   /* --- 4. 打字机：轮流显示几个标签 ----------------------------------------- */
   var typedEl = document.getElementById('typed');
-  var phrases = ['水利水电工程大一在读', '在关注 AIGC 视频', '喜欢打乒乓球', '喜欢听音乐', '本名李育晓'];
+  var phrases = T.phrases[lang];
 
-  if (typedEl && !reduceMotion) {
-    var pIndex = 0, cIndex = 0, deleting = false;
+  if (typedEl) {
+    var pIndex = 0, cIndex = 0, deleting = false, typeTimer = null;
 
     var tick = function () {
       var text = phrases[pIndex];
@@ -94,11 +224,21 @@
         pIndex = (pIndex + 1) % phrases.length;
         wait = 320;
       }
-      window.setTimeout(tick, wait);
+      typeTimer = window.setTimeout(tick, wait);
     };
-    window.setTimeout(tick, 600);
-  } else if (typedEl) {
-    typedEl.textContent = phrases[0];
+
+    /* 换语言时从头再打一遍：不然会接着打上一门语言打到一半的那半句 */
+    var startTyping = function () {
+      window.clearTimeout(typeTimer);
+      phrases = T.phrases[lang];
+      pIndex = 0; cIndex = 0; deleting = false;
+      if (reduceMotion) { typedEl.textContent = phrases[0]; return; }
+      typedEl.textContent = '';
+      typeTimer = window.setTimeout(tick, 600);
+    };
+
+    startTyping();
+    document.addEventListener('site:lang', startTyping);
   }
 
   /* --- 5. 复制邮箱 --------------------------------------------------------- */
@@ -109,8 +249,8 @@
     copyBtn.addEventListener('click', function () {
       var address = mailLink ? mailLink.textContent.trim() : '';
       var done = function (ok) {
-        copyBtn.textContent = ok ? '已复制 ' + address : '复制失败，请手动选中';
-        window.setTimeout(function () { copyBtn.textContent = '复制邮箱'; }, 2200);
+        copyBtn.textContent = ok ? t('copied', address) : t('copyFail');
+        window.setTimeout(function () { copyBtn.textContent = t('copyTitle'); }, 2200);
       };
 
       // 老办法：造一个看不见的输入框，选中后调用系统的复制命令。
@@ -140,8 +280,8 @@
           sel.removeAllRanges();
           sel.addRange(range);
         }
-        copyBtn.textContent = '已选中，按 Ctrl+C 复制';
-        window.setTimeout(function () { copyBtn.textContent = '复制邮箱'; }, 3200);
+        copyBtn.textContent = t('copySel');
+        window.setTimeout(function () { copyBtn.textContent = t('copyTitle'); }, 3200);
       };
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -187,13 +327,13 @@
       btn.type = 'button';
       btn.className = 'tile__link';
       btn.setAttribute('data-query', query);
-      btn.setAttribute('data-label', '《' + songText + '》' + artistText);
-      btn.title = '选择用什么软件听：' + query;
-      btn.setAttribute('aria-label', '选择用什么软件听：' + query);
+      btn.setAttribute('data-label', t('songLabel', songText, artistText));
+      btn.title = t('listenTitle', query);
+      btn.setAttribute('aria-label', t('listenTitle', query));
 
       var badge = document.createElement('span');
       badge.className = 'tile__play';
-      badge.textContent = '去听 ▸';
+      badge.textContent = t('listen');
 
       // 把封面和歌名那两行搬进按钮里，整张封面就都能点了
       while (li.firstChild) btn.appendChild(li.firstChild);
@@ -201,6 +341,25 @@
       li.appendChild(btn);
     };
     tiles.forEach(withListenLink);   // 先给原列表加工，各列的克隆会自动带上
+
+    /* 换语言之后，封面角标「去听 ▸」和按钮上的说明也跟着换一遍
+       （歌名、歌手本身不翻，它们是名字） */
+    var relabelTiles = function () {
+      var list = document.querySelectorAll('.tile__link');
+      for (var i = 0; i < list.length; i++) {
+        var b = list[i];
+        var q = b.getAttribute('data-query') || '';
+        var s = b.querySelector('.tile__cap b');
+        var a = b.querySelector('.tile__cap i');
+        b.setAttribute('data-label',
+          t('songLabel', s ? s.textContent.trim() : '', a ? a.textContent.trim() : ''));
+        b.title = t('listenTitle', q);
+        b.setAttribute('aria-label', t('listenTitle', q));
+        var badge = b.querySelector('.tile__play');
+        if (badge) badge.textContent = t('listen');
+      }
+    };
+    document.addEventListener('site:lang', relabelTiles);
 
     // 列数按屏幕宽度定：宽屏 5 列，窄了逐级减到 2 列（列少时每列分到的封面更多）
     var colsForWidth = function () {
@@ -247,7 +406,7 @@
      听歌软件，所以改成"点封面 → 先问用哪个软件"。
 
      下面 PLATFORMS 就是全部可选平台，一行一个：
-       name = 按钮上的字；
+       name = 按钮上的字（中文）；nameEn = 切到英文时按钮上的字；
        app  = 这个 App 自己的跳转协议（手机上用它唤起 App），没有就留空；
        pkg  = 安卓包名，安卓浏览器用 intent:// 唤起时要写；
        url  = 网页地址（电脑上点它、以及手机上唤不起 App 时退回这里），
@@ -261,19 +420,24 @@
        汽水音乐 —— 官网脚本里只有它自己内部用的 bytedance://、nativeapp://，
                    没有对外的唤起协议，所以这一家只能打开官网（下面的 app 留空）  */
   var PLATFORMS = [
-    { name: '网易云音乐',  app: 'orpheus://', pkg: 'com.netease.cloudmusic',
+    { name: '网易云音乐',  nameEn: 'NetEase Cloud Music', app: 'orpheus://', pkg: 'com.netease.cloudmusic',
       url: 'https://music.163.com/#/search/m/?s={q}' },
-    { name: 'QQ 音乐',     app: 'qqmusic://', pkg: 'com.tencent.qqmusic',
+    { name: 'QQ 音乐',     nameEn: 'QQ Music', app: 'qqmusic://', pkg: 'com.tencent.qqmusic',
       url: 'https://y.qq.com/n/ryqq/search?w={q}' },
-    { name: '酷狗音乐',    app: 'kugou://',   pkg: 'com.kugou.android',
+    { name: '酷狗音乐',    nameEn: 'Kugou Music', app: 'kugou://',   pkg: 'com.kugou.android',
       url: 'https://m.kugou.com/search?keyword={q}' },
     /* 汽水音乐（2026-09-21 实测）：没有给听众用的网页版搜索——官网 qishui.douyin.com
        只有下载页，music.douyin.com 是给音乐人/合作方用的平台，所以这里只能把人送到
        官网；也没有找到对外的唤起协议，所以手机上点它不会直接进 App。 */
-    { name: '汽水音乐',    app: '', pkg: '', url: 'https://qishui.douyin.com/' },
+    { name: '汽水音乐',    nameEn: 'Soda Music', app: '', pkg: '', url: 'https://qishui.douyin.com/' },
     /* Apple Music 不用协议：iOS 上打开它的网页链接，系统会自己交给"音乐"App */
-    { name: 'Apple Music', app: '', pkg: '', url: 'https://music.apple.com/cn/search?term={q}' }
+    { name: 'Apple Music', nameEn: 'Apple Music', app: '', pkg: '', url: 'https://music.apple.com/cn/search?term={q}' }
   ];
+
+  /* 平台名跟着语言走（没有英文名的就还用中文名） */
+  function platName(platform) {
+    return (lang === 'en' && platform.nameEn) ? platform.nameEn : platform.name;
+  }
 
   /* B 站：不用装任何东西、不用登录就能看结果，留给"这些都没装"的访客兜底
      （2026-09-21 实测：B 站搜索页免登录就能看；酷狗、Apple Music 的手机网页
@@ -341,9 +505,9 @@
 
   function showNote(platform, webUrl) {
     if (!note || !noteText || !noteLink) return;
-    noteText.textContent = '正在试着打开「' + platform.name + '」';
+    noteText.textContent = t('opening', platName(platform));
     noteLink.href = webUrl;
-    noteLink.setAttribute('aria-label', '用网页打开' + platform.name + '，搜索：' + currentQuery);
+    noteLink.setAttribute('aria-label', t('noteLabel', platName(platform), currentQuery));
     note.hidden = false;
   }
 
@@ -374,9 +538,9 @@
       a.href = pickerUrl(platform, query);
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
-      a.textContent = platform.name;
+      a.textContent = platName(platform);
       a.setAttribute('data-platform', String(i));
-      a.setAttribute('aria-label', '用' + platform.name + '听：' + query);
+      a.setAttribute('aria-label', t('pickerLabel', platName(platform), query));
       li.appendChild(a);
       pickerList.appendChild(li);
     });
@@ -468,8 +632,9 @@
     lightbox.setAttribute('role', 'dialog');
     lightbox.setAttribute('aria-modal', 'true');
     lightbox.setAttribute('aria-label', '放大看照片');
+    lightbox.setAttribute('data-en-aria-label', 'View a larger photo');
     lightbox.innerHTML =
-      '<button class="lightbox__close" type="button" aria-label="关闭">✕</button>' +
+      '<button class="lightbox__close" type="button" aria-label="关闭" data-en-aria-label="Close">✕</button>' +
       '<figure class="lightbox__inner"><img alt=""><figcaption></figcaption></figure>';
     document.body.appendChild(lightbox);
 
@@ -523,4 +688,16 @@
   /* --- 9. 页脚年份 --------------------------------------------------------- */
   var year = document.getElementById('year');
   if (year) year.textContent = String(new Date().getFullYear());
+
+  /* --- 10. 语言按钮：切换 + 记住选择 ---------------------------------------
+     放在最后执行：先把页面上所有内容都铺好（包括脚本自己生成的那几块），
+     再统一按当前语言刷一遍，免得漏掉谁。
+     注意这里会把 #year 里刚写好的年份也保护起来——年份那个 span 不带
+     data-en，所以不会被覆盖。 */
+  if (langBtn) {
+    langBtn.addEventListener('click', function () {
+      applyLang(lang === 'en' ? 'zh' : 'en', true);
+    });
+  }
+  applyLang(lang, false);
 })();

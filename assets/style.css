@@ -227,6 +227,28 @@ a { color: inherit; text-decoration: none; }
 .nav__links a:hover { color: var(--fg); }
 .nav__links a:hover::after { transform: scaleX(1); }
 
+/* 语言按钮：中文界面显示「EN」、英文界面显示「中」（字由 assets/main.js 写）。
+   做成一枚小胶囊，和导航文字同一个色系，鼠标移上去才亮起来 */
+.nav__lang {
+  font: inherit;
+  font-size: .72rem;
+  line-height: 1.6;
+  letter-spacing: .1em;
+  padding: .12rem .6rem;
+  color: var(--fg-dim);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color .35s var(--ease), border-color .35s var(--ease),
+              background-color .35s var(--ease);
+}
+.nav__lang:hover {
+  color: var(--accent);
+  border-color: rgba(217, 200, 161, .55);
+  background: rgba(217, 200, 161, .07);
+}
+
 /* --------------------------------------------------------------------------
    首屏
    -------------------------------------------------------------------------- */
@@ -867,6 +889,12 @@ main { position: relative; z-index: 2; }
   .nav__inner { height: 60px; gap: .6rem; }
   .nav__brand { font-size: .88rem; }
   .nav__links { gap: .85rem; font-size: .72rem; letter-spacing: 0; }
+  /* 英文的导航词更长（About / Skills / Projects / Music / Contact），再收紧一点，
+     保证小屏上这些入口和语言按钮都能排下、不会被挤到第二行 */
+  html.lang-en .nav__inner { gap: .5rem; }
+  html.lang-en .nav__brand { font-size: .8rem; }
+  html.lang-en .nav__links { gap: .58rem; font-size: .68rem; }
+  html.lang-en .nav__lang { font-size: .66rem; padding: .1rem .5rem; }
   .blob { filter: blur(52px); opacity: .38; animation: none; }
   .glow { display: none; }
   .spotlight { display: none; }

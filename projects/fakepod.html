@@ -3,16 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FAKE_POD_NANO 无损音乐播放器（复刻）· 枫言枫语</title>
-<meta name="description" content="复刻自 planevina 开源项目的 ESP32-S3 无损音乐播放器：CS43131 HIFI 版，自己的打板、焊接、配元件与刷固件记录。">
+<title data-en="FAKE_POD_NANO lossless music player (replica) · Feng Yan Feng Yu">FAKE_POD_NANO 无损音乐播放器（复刻）· 枫言枫语</title>
+<meta name="description" content="复刻自 planevina 开源项目的 ESP32-S3 无损音乐播放器：CS43131 HIFI 版，自己的打板、焊接、配元件与刷固件记录。"
+      data-en-content="An ESP32-S3 lossless music player built from planevina's open-source project: the CS43131 HIFI version, with my own board ordering, soldering, parts sourcing and firmware flashing.">
 <meta name="theme-color" content="#08080a">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d0d12'/%3E%3Crect x='12' y='28' width='14' height='8' rx='4' fill='%23d9c8a1'/%3E%3Crect x='26' y='28' width='26' height='8' rx='4' fill='%23ececee'/%3E%3C/svg%3E">
-<script>document.documentElement.classList.add('js');</script>
-<link rel="stylesheet" href="../assets/style.css?v=20260921g">
+<script>
+  document.documentElement.classList.add('js');
+  /* 上次选了英文就先把标记打上（文字由 assets/main.js 换），免得版式先闪一下中文的 */
+  try {
+    if (localStorage.getItem('site-lang') === 'en') document.documentElement.classList.add('lang-en');
+  } catch (e) {}
+</script>
+<link rel="stylesheet" href="../assets/style.css?v=20260922a">
 </head>
 <body>
 
-<a class="skip" href="#main">跳到正文</a>
+<a class="skip" href="#main" data-en="Skip to content">跳到正文</a>
 
 <div class="bg" aria-hidden="true">
   <div class="bg__far" data-depth="0.10">
@@ -31,110 +38,117 @@
 <header class="nav" id="nav">
   <div class="wrap nav__inner">
     <a class="nav__brand" href="../index.html">枫言枫语</a>
-    <nav class="nav__links" aria-label="页面导航">
-      <a href="../index.html#projects">← 回到项目</a>
+    <nav class="nav__links" aria-label="页面导航" data-en-aria-label="Page navigation">
+      <a href="../index.html#projects" data-en="← Back to projects">← 回到项目</a>
+      <button class="nav__lang" id="langBtn" type="button" aria-label="Switch to English">EN</button>
     </nav>
   </div>
 </header>
 
 <main class="doc wrap" id="main">
-  <p class="doc__meta reveal">复刻项目 · 2026</p>
-  <h1 class="doc__title reveal" style="--d:.06s">FAKE_POD_NANO 无损音乐播放器</h1>
-  <p class="doc__lead reveal" style="--d:.12s">
+  <p class="doc__meta reveal" data-en="Replica project · 2026">复刻项目 · 2026</p>
+  <h1 class="doc__title reveal" style="--d:.06s" data-en="FAKE_POD_NANO lossless music player">FAKE_POD_NANO 无损音乐播放器</h1>
+  <p class="doc__lead reveal" style="--d:.12s"
+     data-en-html="A small player modelled on the iPod Nano. Using the material the original author open-sourced, I ordered the PCB myself, soldered it myself, bought the parts on Taobao from his BOM and flashed the firmware myself to build this machine — <b>mine is the HIFI version, using the CS43131 DAC</b>.">
     一台模仿 iPod Nano 外观的小播放器。我用原作者开源出来的资料自己打板、自己焊接、
     按他的 BOM 在淘宝配元件、自己刷固件做出了这台机器——<b>我做的是 HIFI 版，用的是 CS43131 这颗 DAC</b>。
   </p>
 
   <figure class="doc__figure reveal" style="--d:.18s">
     <img src="../assets/img/project-fakepod.jpg" alt="实拍照片：一台黑机身方屏小播放器摆在键盘上，屏幕上正显示一张有树和钟楼的风景照片"
+         data-en-alt="Photo: a small black player with a square screen lying on a keyboard, showing a landscape picture with a tree and a clock tower"
          width="1200" height="1200" decoding="async">
-    <figcaption>我做的这台（CS43131 HIFI 版）：2.0 英寸方屏正在显示一张图片，随手放在键盘上拍的。</figcaption>
+    <figcaption data-en="The one I built (CS43131 HIFI version): the 2.0-inch square screen showing a picture — a quick shot on my keyboard.">我做的这台（CS43131 HIFI 版）：2.0 英寸方屏正在显示一张图片，随手放在键盘上拍的。</figcaption>
   </figure>
 
   <section class="doc__section reveal">
-    <h2>硬件配置</h2>
+    <h2 data-en="Hardware">硬件配置</h2>
     <table class="spec">
       <tbody>
-        <tr><th>主控</th><td>ESP32-S3，负责驱动 QSPI 屏幕、解码音频、跑界面</td></tr>
-        <tr><th>屏幕</th><td>鱼鹰光电 2.0 英寸 460×460 QSPI AMOLED——比普通 LCD 更省电、显示效果更好</td></tr>
-        <tr><th>DAC（我这台）</th><td>CS43131：信噪比 130 dB，自带耳机输出，大多数耳机可以直接推</td></tr>
-        <tr><th>DAC（另一版）</th><td>PCM5102A：信噪比 112 dB，不需要 MCK 时钟，默认是 LINE OUT，接音响更合适</td></tr>
-        <tr><th>传感器</th><td>QMI8658 六轴陀螺仪，用来做手势切歌</td></tr>
-        <tr><th>存储</th><td>内置 TF 卡槽，音乐放在卡里</td></tr>
-        <tr><th>电源</th><td>TP4055 充电管理 + 603035 锂电池</td></tr>
-        <tr><th>电池（我这台）</th><td>1000 mAh，能连着听大约 6 小时。原项目页上 603035 标的是约 600 mAh，我装的这块容量是 1000 mAh</td></tr>
+        <tr><th data-en="Main chip">主控</th><td data-en="ESP32-S3 — drives the QSPI screen, decodes the audio and runs the interface">ESP32-S3，负责驱动 QSPI 屏幕、解码音频、跑界面</td></tr>
+        <tr><th data-en="Screen">屏幕</th><td data-en="Osprey 2.0-inch 460×460 QSPI AMOLED — more power-efficient and better looking than a normal LCD">鱼鹰光电 2.0 英寸 460×460 QSPI AMOLED——比普通 LCD 更省电、显示效果更好</td></tr>
+        <tr><th data-en="DAC (mine)">DAC（我这台）</th><td data-en="CS43131: 130 dB SNR, with a built-in headphone output that drives most headphones directly">CS43131：信噪比 130 dB，自带耳机输出，大多数耳机可以直接推</td></tr>
+        <tr><th data-en="DAC (other version)">DAC（另一版）</th><td data-en="PCM5102A: 112 dB SNR, no MCK clock needed, LINE OUT by default — a better match for a stereo">PCM5102A：信噪比 112 dB，不需要 MCK 时钟，默认是 LINE OUT，接音响更合适</td></tr>
+        <tr><th data-en="Sensor">传感器</th><td data-en="QMI8658 six-axis gyroscope, used for gesture-based track skipping">QMI8658 六轴陀螺仪，用来做手势切歌</td></tr>
+        <tr><th data-en="Storage">存储</th><td data-en="Built-in TF card slot — the music lives on the card">内置 TF 卡槽，音乐放在卡里</td></tr>
+        <tr><th data-en="Power">电源</th><td data-en="TP4055 charging management + 603035 lithium battery">TP4055 充电管理 + 603035 锂电池</td></tr>
+        <tr><th data-en="Battery (mine)">电池（我这台）</th><td data-en="1000 mAh, about 6 hours of continuous listening. The original project page lists the 603035 as about 600 mAh; the one I fitted is 1000 mAh">1000 mAh，能连着听大约 6 小时。原项目页上 603035 标的是约 600 mAh，我装的这块容量是 1000 mAh</td></tr>
       </tbody>
     </table>
-    <p class="doc__source">
+    <p class="doc__source"
+       data-en="These specs come from the original project page (captured 2026-09-21), not from guesswork; for the fuller material (schematics, firmware, BOM) please see the original project page below.">
       以上参数摘自原项目页面（2026-09-21 抓取），不是我猜的；更完整的资料（图纸、固件、BOM）请去下面的原项目页面看。
     </p>
   </section>
 
   <section class="doc__section reveal">
-    <h2>它能做什么</h2>
+    <h2 data-en="What it can do">它能做什么</h2>
     <ul>
-      <li><b>无损音乐播放</b>：支持 MP3 与 FLAC，最高 96 kHz 采样率、24 bit 位宽；界面仿 iPod Nano，能读取并显示歌曲内嵌的封面。</li>
-      <li><b>拾音频谱</b>：共 5 种样式，带实时节拍检测，屏幕会跟着音乐动。</li>
-      <li><b>MJPEG 动画播放</b>：460×460、15 帧/秒，可以把自己做的动画放进去（附件里有转换工具）。</li>
-      <li><b>图片相册</b>：显示 460×460 的 JPEG 图片。</li>
-      <li><b>文本阅读器</b>：能看 UTF-8 编码的 txt。</li>
-      <li><b>蓝牙传歌与升级</b>：通过小程序做蓝牙 OTA 升级、发送图片。</li>
-      <li><b>当电脑的 USB 声卡</b>（原项目 2025-07-24 更新加入）：把播放器插到电脑上就能当外置声卡用，屏幕还会显示背景图和频谱——注意这个模式需要单独刷固件。</li>
+      <li data-en-html="<b>Lossless playback</b>: MP3 and FLAC up to 96 kHz / 24 bit; the interface follows the iPod Nano and it reads the cover art embedded in each file."><b>无损音乐播放</b>：支持 MP3 与 FLAC，最高 96 kHz 采样率、24 bit 位宽；界面仿 iPod Nano，能读取并显示歌曲内嵌的封面。</li>
+      <li data-en-html="<b>Spectrum visualiser</b>: 5 styles with real-time beat detection, so the screen moves with the music."><b>拾音频谱</b>：共 5 种样式，带实时节拍检测，屏幕会跟着音乐动。</li>
+      <li data-en-html="<b>MJPEG animation</b>: 460×460 at 15 fps — you can put your own animation on it (a conversion tool comes with the project)."><b>MJPEG 动画播放</b>：460×460、15 帧/秒，可以把自己做的动画放进去（附件里有转换工具）。</li>
+      <li data-en-html="<b>Photo album</b>: shows 460×460 JPEG images."><b>图片相册</b>：显示 460×460 的 JPEG 图片。</li>
+      <li data-en-html="<b>Text reader</b>: reads UTF-8 txt files."><b>文本阅读器</b>：能看 UTF-8 编码的 txt。</li>
+      <li data-en-html="<b>Bluetooth file transfer and updates</b>: a mini-program handles Bluetooth OTA updates and sending images."><b>蓝牙传歌与升级</b>：通过小程序做蓝牙 OTA 升级、发送图片。</li>
+      <li data-en-html="<b>USB sound card for a computer</b> (added in the original project on 2025-07-24): plug the player into a computer and it works as an external sound card, with a background picture and a spectrum on screen — note that this mode needs its own firmware."><b>当电脑的 USB 声卡</b>（原项目 2025-07-24 更新加入）：把播放器插到电脑上就能当外置声卡用，屏幕还会显示背景图和频谱——注意这个模式需要单独刷固件。</li>
     </ul>
   </section>
 
   <section class="doc__section reveal">
-    <h2>已知的限制</h2>
+    <h2 data-en="Known limitations">已知的限制</h2>
     <ul>
-      <li>歌曲封面不能太大：原作者的说明是别超过 400 KB、尺寸建议不超过 500×500，否则播放器读不动。</li>
-      <li>TF 卡里的音乐要按文件夹放进 <code>music</code> 目录，而且只认一层文件夹，嵌套的更深的目录扫不到。</li>
-      <li>一旦生成了播放列表文件，之后进音乐就会直接读列表、不再重新扫描 TF 卡——新加的歌要重新扫描才会出现。</li>
-      <li>MJPEG 动画和相册都是 460×460，超过这个尺寸的素材要先转好。</li>
-      <li>USB 声卡模式和播放器模式是两套固件，要来回切就得重新刷。</li>
+      <li data-en="Cover art cannot be too large: the original author says keep it under 400 KB and no bigger than 500×500, or the player will not load it.">歌曲封面不能太大：原作者的说明是别超过 400 KB、尺寸建议不超过 500×500，否则播放器读不动。</li>
+      <li data-en-html="Music on the TF card has to sit in folders under a <code>music</code> directory, and only one level deep — nested folders are not scanned.">TF 卡里的音乐要按文件夹放进 <code>music</code> 目录，而且只认一层文件夹，嵌套的更深的目录扫不到。</li>
+      <li data-en="Once a playlist file has been generated, the player reads that list instead of rescanning the TF card — new songs only appear after a fresh scan.">一旦生成了播放列表文件，之后进音乐就会直接读列表、不再重新扫描 TF 卡——新加的歌要重新扫描才会出现。</li>
+      <li data-en="MJPEG animations and photos are both 460×460; anything larger has to be converted first.">MJPEG 动画和相册都是 460×460，超过这个尺寸的素材要先转好。</li>
+      <li data-en="USB sound card mode and player mode are two different firmwares, so switching back and forth means reflashing.">USB 声卡模式和播放器模式是两套固件，要来回切就得重新刷。</li>
     </ul>
   </section>
 
   <section class="doc__section reveal">
-    <h2>两个我想先说清楚的坑</h2>
-    <p class="note">
+    <h2 data-en="Two pitfalls I want to flag first">两个我想先说清楚的坑</h2>
+    <p class="note"
+       data-en="This AMOLED screen is fragile and has no protective edge at all — any pressure while assembling it can break it, so take your time. And never plug or unplug anything while it is powered on: headphones, TF card and USB cable alike — power it off first.">
       这块 AMOLED 屏幕很脆弱，边上没有任何保护，装配时压到就会坏，装的时候宁可慢一点；
       另外不要带电插拔——耳机、TF 卡、USB 线都一样，插拔前先关机。
     </p>
   </section>
 
   <section class="doc__section reveal">
-    <h2>我在这个项目里做了什么</h2>
+    <h2 data-en="What I did on this project">我在这个项目里做了什么</h2>
     <ul>
-      <li>自己下单打了 PCB（板厚 1.0 mm，这是原作者特别强调的，打错了装不进去）。</li>
-      <li>自己焊接：板上的阻容大多是 0402 封装，肉眼几乎看不清，得配钢网和加热台。</li>
-      <li>照着原作者的 BOM 在淘宝配齐元件（屏幕、DAC、陀螺仪、电池、外壳这些）。</li>
-      <li>外壳用原项目给的 3D 模型文件，找嘉立创打印的（模型不是我画的）。</li>
-      <li>自己刷固件：先用一键烧录工具写进去，之后再用小程序做蓝牙 OTA。</li>
+      <li data-en="I ordered the PCB myself (1.0 mm thick — the original author stresses this, or it will not fit in the case).">自己下单打了 PCB（板厚 1.0 mm，这是原作者特别强调的，打错了装不进去）。</li>
+      <li data-en="I did the soldering: most of the resistors and capacitors are 0402 packages, almost invisible to the eye, so a stencil and a hot plate are needed.">自己焊接：板上的阻容大多是 0402 封装，肉眼几乎看不清，得配钢网和加热台。</li>
+      <li data-en="I bought the parts on Taobao from the original author's BOM (screen, DAC, gyroscope, battery, case and so on).">照着原作者的 BOM 在淘宝配齐元件（屏幕、DAC、陀螺仪、电池、外壳这些）。</li>
+      <li data-en="The case was 3D printed by JLC from the model file the original project provides (I did not draw the model).">外壳用原项目给的 3D 模型文件，找嘉立创打印的（模型不是我画的）。</li>
+      <li data-en="I flashed the firmware myself: first with the one-click flashing tool, then Bluetooth OTA through the mini-program.">自己刷固件：先用一键烧录工具写进去，之后再用小程序做蓝牙 OTA。</li>
     </ul>
-    <p class="doc__source">
+    <p class="doc__source"
+       data-en="The design, firmware and schematics are the original author's work, and I will always say so; what I added is the hands-on part and the experience of those two pitfalls.">
       设计、固件、图纸都是原作者做的，这部分我会一直写清楚；我加进去的是动手的部分和上面那两个坑的经验。
     </p>
   </section>
 
   <section class="doc__section doc__section--wide reveal">
-    <h2>时间与成本</h2>
+    <h2 data-en="Time and cost">时间与成本</h2>
     <ul class="stats">
-      <li><span class="stats__num">7 天</span><span class="stats__label">等板（打板 + 快递）</span></li>
-      <li><span class="stats__num">1 天</span><span class="stats__label">焊接 + 烧录</span></li>
-      <li><span class="stats__num">≈¥120</span><span class="stats__label">整机成本</span></li>
-      <li><span class="stats__num">¥0</span><span class="stats__label">打板 + 外壳</span></li>
-      <li><span class="stats__num">6 小时</span><span class="stats__label">连着听（续航）</span></li>
+      <li><span class="stats__num" data-en="7 days">7 天</span><span class="stats__label" data-en="Waiting for the board (fab + shipping)">等板（打板 + 快递）</span></li>
+      <li><span class="stats__num" data-en="1 day">1 天</span><span class="stats__label" data-en="Soldering and flashing">焊接 + 烧录</span></li>
+      <li><span class="stats__num">≈¥120</span><span class="stats__label" data-en="Total build cost">整机成本</span></li>
+      <li><span class="stats__num">¥0</span><span class="stats__label" data-en="PCB and case">打板 + 外壳</span></li>
+      <li><span class="stats__num" data-en="6 hours">6 小时</span><span class="stats__label" data-en="Continuous playback (battery life)">连着听（续航）</span></li>
     </ul>
     <table class="spec">
       <tbody>
-        <tr><th>屏幕</th><td>2.0 英寸 460×460 AMOLED：<b>¥56</b>，整台机器里最贵的一件</td></tr>
-        <tr><th>PCB 打板</th><td>嘉立创打板：<b>免费</b>（¥0）</td></tr>
-        <tr><th>外壳</th><td>拿原项目给的模型文件去嘉立创 3D 打印：¥5，正好有券，<b>实付 ¥0</b></td></tr>
-        <tr><th>其余元件</th><td>主控、DAC、电池和板上的小元件：合计约 <b>¥64</b></td></tr>
-        <tr><th>合计</th><td>整机约 <b>¥120</b></td></tr>
+        <tr><th data-en="Screen">屏幕</th><td data-en-html="2.0-inch 460×460 AMOLED: <b>¥56</b> — the most expensive single part of the build">2.0 英寸 460×460 AMOLED：<b>¥56</b>，整台机器里最贵的一件</td></tr>
+        <tr><th data-en="PCB fabrication">PCB 打板</th><td data-en-html="JLC PCB fabrication: <b>free</b> (¥0)">嘉立创打板：<b>免费</b>（¥0）</td></tr>
+        <tr><th data-en="Case">外壳</th><td data-en-html="3D printed by JLC from the model file the original project provides: ¥5 list price, and a coupon was available, so <b>I paid ¥0</b>">拿原项目给的模型文件去嘉立创 3D 打印：¥5，正好有券，<b>实付 ¥0</b></td></tr>
+        <tr><th data-en="Other parts">其余元件</th><td data-en-html="Main chip, DAC, battery and the small parts on the board: about <b>¥64</b> in total">主控、DAC、电池和板上的小元件：合计约 <b>¥64</b></td></tr>
+        <tr><th data-en="Total">合计</th><td data-en-html="About <b>¥120</b> for the whole machine">整机约 <b>¥120</b></td></tr>
       </tbody>
     </table>
-    <p class="doc__source">
+    <p class="doc__source"
+       data-en="The board took 7 days to arrive (queueing plus shipping); once it was here, soldering and flashing took one day — so about 8 days from ordering to first sound. The money is my own tally, rounded, not data from the original project page (the &quot;other parts&quot; line is the total minus the screen). The PCB and the case came free because I caught JLC's free PCB offer and a coupon.">
       打板等了 7 天（排队 + 快递），板子到手之后焊接加烧录一天做完，从下单到能出声大约 8 天；
       钱是我自己记的账，是约数，不是原项目页面的数据（"其余元件"那一行是拿总价减掉屏幕算出来的）。
       打板和外壳能白嫖，是因为赶上了嘉立创的免费打板和优惠券。
@@ -142,8 +156,8 @@
   </section>
 
   <section class="doc__section doc__section--wide reveal">
-    <h2>制作过程实拍</h2>
-    <p>
+    <h2 data-en="Build photos">制作过程实拍</h2>
+    <p data-en-html="From a bare board to something you can slip in a pocket and listen to: paste, place the parts, solder, flash. Every photo below is mine — <b>tap any one to enlarge it</b>.">
       从一块空板到能塞进兜里听歌，中间是刷锡膏、贴元件、焊、刷固件这几步。
       下面这些照片都是我自己拍的、自己截的，没有从原项目搬图——<b>点任意一张可以放大看</b>。
     </p>
@@ -151,30 +165,34 @@
     <ol class="steps">
       <li class="step">
         <div class="step__media">
-          <button class="shot" type="button" data-cap="第 1 步 · 用嘉立创的辅助焊接工具，把 BOM 和板上的位号对上">
+          <button class="shot" type="button" data-cap="第 1 步 · 用嘉立创的辅助焊接工具，把 BOM 和板上的位号对上"
+                  data-en-cap="Step 1 · Using JLC's soldering helper to match the BOM against the reference designators on the board">
             <img src="../assets/img/fakepod-02.jpg" alt="电脑屏幕上是嘉立创的辅助焊接工具：左边是 BOM 表格，右边是 PCB 视图，高亮的元件就是当前要贴的位置"
+                 data-en-alt="A computer screen showing JLC's soldering helper: the BOM table on the left, the PCB view on the right, with the part to place highlighted"
                  width="1100" height="792" loading="lazy" decoding="async">
           </button>
         </div>
         <div class="step__body">
-          <p class="step__num">第 1 步</p>
-          <h3 class="step__title">备料：把位号一个个对过去</h3>
-          <p>板子到手之后先别急着焊。用嘉立创的辅助焊接工具，把 BOM 上的元件和板上的位号对上，
+          <p class="step__num" data-en="Step 1">第 1 步</p>
+          <h3 class="step__title" data-en="Getting ready: matching part by part">备料：把位号一个个对过去</h3>
+          <p data-en="Do not rush into soldering once the board arrives. Use JLC's soldering helper to match the parts in the BOM against the reference designators on the board: place whichever one is highlighted, because putting one in the wrong spot can mean desoldering and starting over.">板子到手之后先别急着焊。用嘉立创的辅助焊接工具，把 BOM 上的元件和板上的位号对上，
              高亮哪个就贴哪个，贴错一个位置可能就要拆下来重来。</p>
         </div>
       </li>
 
       <li class="step">
         <div class="step__media">
-          <button class="shot" type="button" data-cap="第 2 步 · 刷完锡膏、还没贴元件的板子">
+          <button class="shot" type="button" data-cap="第 2 步 · 刷完锡膏、还没贴元件的板子"
+                  data-en-cap="Step 2 · The board after paste was applied, before any parts were placed">
             <img src="../assets/img/fakepod-01.jpg" alt="刷好锡膏、还没贴元件的绿色 PCB，板上有无线模组、TF 卡座和密密麻麻的小元件焊盘"
+                 data-en-alt="A green PCB with solder paste applied and no parts placed yet: a wireless module, a TF card socket and densely packed small pads"
                  width="1000" height="974" loading="lazy" decoding="async">
           </button>
         </div>
         <div class="step__body">
-          <p class="step__num">第 2 步</p>
-          <h3 class="step__title">刷锡膏</h3>
-          <p>钢网对准、锡膏刮平，再上焊台用 190 ℃ 回流焊。锡膏是我自己调的，
+          <p class="step__num" data-en="Step 2">第 2 步</p>
+          <h3 class="step__title" data-en="Applying solder paste">刷锡膏</h3>
+          <p data-en="Line up the stencil, squeegee the paste flat, then reflow it on the hot plate at 190 °C. I mix the paste myself and this batch came out too thin, which made it hard to control — too thin and the joints bridge, too dry and it will not spread. I mixed it again and repasted the whole board before soldering anything.">钢网对准、锡膏刮平，再上焊台用 190 ℃ 回流焊。锡膏是我自己调的，
              这次调得偏稀，涂上去不太好控制——太稀容易连锡，太干又推不动，
              后来把锡膏重新调好、整块板重刷了一遍才往下焊。</p>
         </div>
@@ -182,15 +200,17 @@
 
       <li class="step">
         <div class="step__media">
-          <button class="shot" type="button" data-cap="第 3 步 · 拆开的样子：外壳、主板、2.0 英寸方形屏幕">
+          <button class="shot" type="button" data-cap="第 3 步 · 拆开的样子：外壳、主板、2.0 英寸方形屏幕"
+                  data-en-cap="Step 3 · Taken apart: case, main board and the 2.0-inch square screen">
             <img src="../assets/img/fakepod-03.jpg" alt="拆开的零件摆在木桌上：白色外壳、焊好元件的主板、还有一块 2.0 英寸方形屏幕"
+                 data-en-alt="The parts laid out on a wooden table: a white case, a populated main board and a 2.0-inch square screen"
                  width="760" height="1014" loading="lazy" decoding="async">
           </button>
         </div>
         <div class="step__body">
-          <p class="step__num">第 3 步</p>
-          <h3 class="step__title">装进外壳</h3>
-          <p>焊完、洗净、测试通过，再装壳。外壳不是买的成品，是拿<b>原项目给的模型文件</b>
+          <p class="step__num" data-en="Step 3">第 3 步</p>
+          <h3 class="step__title" data-en="Into the case">装进外壳</h3>
+          <p data-en-html="Solder, clean, test — then assemble. The case is not a bought part: it was 3D printed by JLC from <b>the model file the original project provides</b> (¥5 list price, a coupon was available, so I paid ¥0). This is the unit taken apart (no battery fitted in this one yet): from top to bottom, the case, the main board and the 2.0-inch square screen, with only a soft ribbon cable between screen and board.">焊完、洗净、测试通过，再装壳。外壳不是买的成品，是拿<b>原项目给的模型文件</b>
              在嘉立创 3D 打印的（5 元，正好有券，实付 0 元）。这张是拆开的样子（这台上还没装电池）：
              从上往下是外壳、主板、2.0 英寸方形屏幕，屏幕和主板之间只靠一条软的排线连着。</p>
         </div>
@@ -198,15 +218,17 @@
 
       <li class="step">
         <div class="step__media">
-          <button class="shot" type="button" data-cap="第 4 步 · 刷完固件第一次点亮：屏幕上的「关于本设备」">
+          <button class="shot" type="button" data-cap="第 4 步 · 刷完固件第一次点亮：屏幕上的「关于本设备」"
+                  data-en-cap="Step 4 · First power-on after flashing: the About screen">
             <img src="../assets/img/fakepod-04.jpg" alt="手里拿着播放器，屏幕显示「关于本设备」：型号 FAKE POD NANO、版本 H02F12.9"
+                 data-en-alt="Holding the player, screen showing the About page: model FAKE POD NANO, version H02F12.9"
                  width="1000" height="966" loading="lazy" decoding="async">
           </button>
         </div>
         <div class="step__body">
-          <p class="step__num">第 4 步</p>
-          <h3 class="step__title">刷固件、点亮</h3>
-          <p>第一次点亮能出这个「关于本设备」页面，基本上就稳了：型号 FAKE POD NANO、
+          <p class="step__num" data-en="Step 4">第 4 步</p>
+          <h3 class="step__title" data-en="Flashing the firmware">刷固件、点亮</h3>
+          <p data-en-html="When it powers on for the first time and shows this About screen, you are basically there: model FAKE POD NANO, version H02F12.9. The line on screen — 「设计：萨纳兰的黄昏」 — is <b>the original author's credit</b>, not mine: every part of the design of this machine is his work.">第一次点亮能出这个「关于本设备」页面，基本上就稳了：型号 FAKE POD NANO、
              版本 H02F12.9。屏幕上那行「设计：萨纳兰的黄昏」是<b>原作者的署名</b>，不是我——
              这台机器的设计从头到尾都是他做的。</p>
         </div>
@@ -215,28 +237,33 @@
   </section>
 
   <section class="doc__section doc__section--wide reveal">
-    <h2>装好之后</h2>
+    <h2 data-en="Once it was built">装好之后</h2>
     <div class="gallery">
       <figure>
         <button class="shot" type="button">
           <img src="../assets/img/fakepod-05.jpg" alt="播放器放在桌上，屏幕里显示一张专辑封面（Steins;Gate 原声带）"
+               data-en-alt="The player on a table, its screen showing an album cover (the Steins;Gate soundtrack)"
                width="1000" height="893" loading="lazy" decoding="async">
         </button>
-        <figcaption>放歌的样子：能直接读歌曲里内嵌的封面（这张是《Steins;Gate》的原声）。</figcaption>
+        <figcaption data-en="Playing music: it reads the cover art embedded in the track (this one is the Steins;Gate soundtrack).">放歌的样子：能直接读歌曲里内嵌的封面（这张是《Steins;Gate》的原声）。</figcaption>
       </figure>
       <figure>
         <button class="shot" type="button">
           <img src="../assets/img/fakepod-06.jpg" alt="播放器放在木桌上，屏幕显示金色的拾音频谱，音乐会让它实时跳动"
+               data-en-alt="The player on a wooden table, its screen showing a gold spectrum visualiser that moves with the music"
                width="1000" height="750" loading="lazy" decoding="async">
         </button>
-        <figcaption>不放封面的时候可以切到拾音频谱，屏幕会跟着音乐实时跳。</figcaption>
+        <figcaption data-en="With no cover art on screen you can switch to the spectrum visualiser, which moves with the music.">不放封面的时候可以切到拾音频谱，屏幕会跟着音乐实时跳。</figcaption>
       </figure>
     </div>
   </section>
 
   <section class="doc__section reveal">
-    <h2>出处与协议</h2>
-    <p>
+    <h2 data-en="Source and licence">出处与协议</h2>
+    <p data-en-html='Original project: <a class="doc__link" href="https://oshwhub.com/planevina/fakepodnano-lossless-audioplayer" target="_blank" rel="noopener noreferrer">FAKE_POD_NANO lossless audio player · planevina (JLC open-source hardware platform)</a><br>
+      Licence: CC BY-NC-SA 3.0 — credit the source and you may use it for reference, do not sell it, and share any changes under the same licence.
+      The schematics, firmware and case model I used also come from the original project; what is mine is the soldering, assembly, parts sourcing and flashing.
+      <br>The photos on this page are my own — none of the original author&#39;s images were copied. For the schematics and firmware, please download them from the original project page.'>
       原项目：<a class="doc__link" href="https://oshwhub.com/planevina/fakepodnano-lossless-audioplayer" target="_blank" rel="noopener noreferrer">FAKE_POD_NANO 无损音频播放器 · planevina（立创开源硬件平台）</a><br>
       协议：CC BY-NC-SA 3.0——标注出处即可参考使用，不要拿去卖，改动后也要用同样的协议开源。
       我这台用到的图纸、固件和外壳模型文件也都来自原项目，我做的只有焊接、装配、配元件和刷机。
@@ -245,17 +272,17 @@
   </section>
 
   <p class="doc__foot reveal">
-    <a class="doc__link" href="../index.html#projects">← 回到首页的项目区</a>
+    <a class="doc__link" href="../index.html#projects" data-en="← Back to the projects section">← 回到首页的项目区</a>
   </p>
 </main>
 
 <footer class="footer">
   <div class="wrap footer__inner">
-    <span>© <span id="year">2026</span> 枫言枫语（李育晓）</span>
-    <span class="footer__dim">本站为静态页面，无跟踪、无广告。</span>
+    <span>© <span id="year">2026</span> <span data-en="枫言枫语 (Li Yuxiao)">枫言枫语（李育晓）</span></span>
+    <span class="footer__dim" data-en="A static page: no tracking, no ads.">本站为静态页面，无跟踪、无广告。</span>
   </div>
 </footer>
 
-<script src="../assets/main.js?v=20260921g" defer></script>
+<script src="../assets/main.js?v=20260922a" defer></script>
 </body>
 </html>
