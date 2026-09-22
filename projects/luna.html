@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-en="Luna, a QQ chatbot · Feng Yan Feng Yu">QQ 聊天机器人 Luna · 枫言枫语</title>
+<meta name="description" content="我用 Python 写的 QQ 机器人：接上 AI 模型陪聊、记得住最近的对话、支持 /remind 这类命令。这里写清它是怎么工作的、有哪些命令，以及现在为什么停着。"
+      data-en-content="A QQ chatbot I wrote in Python: wired to an AI model, it remembers recent conversations and supports commands such as /remind. This page explains how it works, what it can do and why it is offline now.">
+<meta name="theme-color" content="#08080a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d0d12'/%3E%3Crect x='12' y='17' width='40' height='26' rx='9' fill='%23ececee'/%3E%3Crect x='19' y='45' width='13' height='8' rx='3' fill='%23d9c8a1'/%3E%3C/svg%3E">
+<script>
+  document.documentElement.classList.add('js');
+  /* 上次选了英文就先把标记打上（文字由 assets/main.js 换），免得版式先闪一下中文的 */
+  try {
+    if (localStorage.getItem('site-lang') === 'en') document.documentElement.classList.add('lang-en');
+  } catch (e) {}
+</script>
+<link rel="stylesheet" href="../assets/style.css?v=20260922d">
+</head>
+<body>
+
+<a class="skip" href="#main" data-en="Skip to content">跳到正文</a>
+
+<div class="bg" aria-hidden="true">
+  <div class="bg__far" data-depth="0.10">
+    <span class="blob blob--1"></span>
+    <span class="blob blob--2"></span>
+    <span class="blob blob--3"></span>
+  </div>
+  <div class="bg__mid" data-depth="0.26">
+    <span class="glow glow--1"></span>
+    <span class="glow glow--2"></span>
+  </div>
+  <div class="bg__grid"></div>
+  <div class="bg__noise"></div>
+</div>
+
+<header class="nav" id="nav">
+  <div class="wrap nav__inner">
+    <a class="nav__brand" href="../index.html">枫言枫语</a>
+    <nav class="nav__links" aria-label="页面导航" data-en-aria-label="Page navigation">
+      <a href="../index.html#projects" data-en="← Back to projects">← 回到项目</a>
+      <button class="nav__lang" id="langBtn" type="button" aria-label="Switch to English">EN</button>
+    </nav>
+  </div>
+</header>
+
+<main class="doc wrap" id="main">
+  <p class="doc__meta reveal" data-en="Personal project · 2026">个人项目 · 2026</p>
+  <h1 class="doc__title reveal" style="--d:.06s" data-en="Luna, a QQ chatbot">QQ 聊天机器人 Luna</h1>
+  <p class="doc__lead reveal" style="--d:.12s"
+     data-en-html="A chatbot that lives in QQ. Message it in a private chat or in a group and it answers with AI-generated text; it remembers the last few lines of each conversation, and it understands commands such as <code>/remind</code> — send <b>/remind tomorrow 3pm hand in homework</b> and it will message you when the time comes. This was the first program I wrote that could actually run on its own for weeks.">
+    一个住在 QQ 里的机器人，名字叫 Luna。私聊它、或者在群里跟它说话，它会用 AI 生成回复；
+    它记得住每个人最近的几句话，也认 <code>/remind</code> 这类命令——比如发
+    <b>/remind 明天下午3点 交作业</b>，到点它会私聊提醒你。这是我写的第一个能自己跑起来的程序。
+  </p>
+
+  <figure class="doc__figure reveal" style="--d:.18s">
+    <img src="../assets/img/project-luna.jpg" alt="示意图：QQ 聊天窗口里，Luna 在回复消息，并给出一条定时提醒"
+         data-en-alt="Illustration: a QQ chat window where Luna replies and confirms a scheduled reminder"
+         width="1200" height="750" decoding="async">
+    <figcaption data-en="An illustration of the conversation flow (I have not taken a real screenshot yet — this one is drawn by me, and I will swap in a real one later).">
+      示意图：对话大致是这个样子（还没截真图，这张是我自己画的，以后换成真的聊天截图）。
+    </figcaption>
+  </figure>
+
+  <section class="doc__section reveal">
+    <h2 data-en="What it can do">它能干什么</h2>
+    <ul>
+      <li data-en-html="<b>Chat in private messages and in groups</b>: it reads incoming messages and answers each one through an AI model — no fixed reply list."><b>私聊和群里都能聊</b>：收到消息就交给 AI 模型生成回复，不是固定的问答表。</li>
+      <li data-en-html="<b>Remember the conversation</b>: the last 20 lines of each person are kept in a database on this machine, so the next time you talk it still knows what you were saying."><b>记得住上下文</b>：每个人最近 20 条对话存在本机的数据库里，下次再聊它还记得刚才说过什么。</li>
+      <li data-en-html="<b>Understand commands</b>: messages starting with <code>/</code> go to the command handler instead of the AI, so <code>/ping</code> always answers instantly."><b>认命令</b>：以 <code>/</code> 开头的消息不交给 AI，直接走命令处理，所以 <code>/ping</code> 永远是秒回。</li>
+      <li data-en-html="<b>Set reminders</b>: <code>/remind</code> takes a time written in plain language — “tomorrow 3pm”, “in 30 minutes” and their Chinese equivalents all work."><b>会按时提醒</b>：<code>/remind</code> 后面可以直接写人话时间——“明天下午3点”“30 分钟以后”都能看懂，到点它私聊把这件事发给你。</li>
+    </ul>
+  </section>
+
+  <section class="doc__section reveal">
+    <h2 data-en="How it works">它是怎么工作的</h2>
+    <p data-en="Three pieces: a QQ protocol client that logs into QQ for you, my Python program in the middle, and the AI model at the other end. My program never talks to QQ directly — the protocol client hands it the messages and takes back the replies.">
+      一共三块：一个替我登录 QQ 的“协议端”、中间我自己写的 Python 程序、以及另一头的 AI 模型。
+      我的程序不直接跟 QQ 打交道——协议端把消息递过来，它把回复递回去。
+    </p>
+    <table class="spec">
+      <tbody>
+        <tr><th data-en="Language">语言</th><td data-en="Python 3 — two files: bot.py (the main loop) and commands.py (the commands)">Python 3，两个文件：<code>bot.py</code> 是主流程，<code>commands.py</code> 放命令</td></tr>
+        <tr><th data-en="Receiving">收消息</th><td data-en="A WebSocket connection to the protocol client on this machine (127.0.0.1:3001)">用 WebSocket 连本机的协议端（127.0.0.1:3001），消息一到就处理</td></tr>
+        <tr><th data-en="Replying">发消息</th><td data-en="An HTTP call back to the same client (127.0.0.1:3000), with separate endpoints for private and group messages">再调同一个协议端的 HTTP 接口（127.0.0.1:3000）发回去，私聊和群聊各有一个地址</td></tr>
+        <tr><th data-en="The AI">AI 部分</th><td data-en="DeepSeek's chat model — the persona is set in a system prompt, which is where the name Luna comes from">DeepSeek 的对话模型；人设写在系统提示词里，“Luna”这个名字就是从那里来的</td></tr>
+        <tr><th data-en="Memory">记忆</th><td data-en="SQLite database, the last 20 lines per user; older lines are deleted automatically so the file cannot grow forever">用 SQLite 存，每个人只留最近 20 条；超出的自动删掉，文件不会越滚越大</td></tr>
+        <tr><th data-en="Reminders">提醒</th><td data-en="A background loop checks the reminder table every 30 seconds and sends out whatever is due">后台每 30 秒查一次提醒表，到点的就发出去，发完删掉</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="doc__section reveal">
+    <h2 data-en="Commands">会认的命令</h2>
+    <table class="spec">
+      <tbody>
+        <tr><th>/help</th><td data-en="Lists every command">列出所有命令</td></tr>
+        <tr><th>/ping</th><td data-en="Answers “Pong! Luna is online.” — the quickest way to check it is alive">回一句“Pong! Luna is online.”，用来确认它还活着</td></tr>
+        <tr><th>/joke</th><td data-en="Asks the model for a short joke">让模型讲一个短笑话</td></tr>
+        <tr><th>/echo</th><td data-en="Repeats whatever you typed after it — handy for testing whether messages get through">把你后面的字原样复述一遍，用来测消息通道通不通</td></tr>
+        <tr><th>/remind</th><td data-en="Sets a reminder: /remind &lt;time&gt; &lt;what&gt;">设提醒：<code>/remind 时间 要提醒的事</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="doc__section reveal">
+    <h2 data-en="What I did">我做了什么</h2>
+    <ul>
+      <li data-en="I wrote the Python myself: the message loop, the command handling, the memory and the reminders.">Python 是自己写的：消息循环、命令处理、聊天记忆、定时提醒都是自己搭的。</li>
+      <li data-en="I wired it up to an AI model's API and wrote the persona prompt — tone, name, and the instruction to stay consistent across conversations.">接上了 AI 模型的接口，也自己写了人设提示词——语气、名字，以及“要记得之前的对话”。</li>
+      <li data-en="I stored everything locally with sqlite instead of a cloud service, so the chat history stays on this Raspberry Pi.">数据都存在本机的 sqlite 里，没上云，聊天记录一直留在这台树莓派上。</li>
+      <li data-en="I kept changing it. The source folder still holds more than twenty backup files from those iterations — image replies, reminders, personality, search, a reset command — a record of what I tried.">反复改了很多版：文件夹里留着二十多个备份文件，从名字能看出试过看图、提醒、人设、搜索、重置这些方向。</li>
+    </ul>
+  </section>
+
+  <section class="doc__section reveal">
+    <h2 data-en="Where it stands now">现在是什么样</h2>
+    <p data-en="Offline. The last line in its log was written on 30 July 2026, and since then it has not run. The reason is not the code: the protocol client it depends on is gone — that is the piece that logs into QQ and forwards messages, and without it my program has nothing to talk to. The end of the log is a long run of “connection failed, reconnecting in 5 seconds”.">
+      停着。日志里最后一条是 2026 年 7 月 30 日写的，之后没再跑过。原因不在代码：
+      它依赖的那个“协议端”不在了——就是替我登录 QQ、把消息转过来的那块；没有它，我的程序就没有说话的对象。
+      日志结尾是一长串“连接失败，5 秒后重试”。
+    </p>
+    <p data-en="To bring it back I would have to install a protocol client again and log in with a QQ account. The database still holds what was tried: 40 lines of conversation from 2 accounts, all from one afternoon in May 2026.">
+      想让它重新跑起来，得重新装一个协议端、再用一个 QQ 号登录。数据库里还留着当时试出来的东西：
+      2 个账号、40 条对话，都集中在 2026 年 5 月的那个下午。
+    </p>
+    <p class="note"
+       data-en-html="Two things I would tell anyone trying this: <b>use a spare QQ account</b>, because logging in through a third-party client breaks QQ&#39;s terms and the account can be limited or banned; and <b>do not write API keys into the code</b> — mine were hard-coded at first, which is fine only as long as the file never leaves your machine. Environment variables or a separate file with 600 permissions are the easy fix.">
+      想自己做一个的话，有两条要提前知道：<b>用一个备用 QQ 号</b>——用第三方客户端登录是违反 QQ 规则的，
+      账号可能被限制甚至封禁；另外<b>别把接口密钥写死在代码里</b>——我第一版就是写死的，
+      只要这个文件不外流就没事，但更稳妥的做法是放进环境变量，或者单独放一个权限 600 的文件。
+    </p>
+  </section>
+
+  <p class="doc__foot reveal">
+    <a class="doc__link" href="../index.html#projects" data-en="← Back to the projects section">← 回到首页的项目区</a>
+  </p>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <span>© <span id="year">2026</span> <span data-en="枫言枫语 (Li Yuxiao)">枫言枫语（李育晓）</span></span>
+    <span class="footer__dim" data-en="A static page: no tracking, no ads.">本站为静态页面，无跟踪、无广告。</span>
+  </div>
+</footer>
+
+<script src="../assets/main.js?v=20260922d" defer></script>
+</body>
+</html>

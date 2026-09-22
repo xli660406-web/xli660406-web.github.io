@@ -21,7 +21,7 @@
 </script>
 <!-- ?v= 是"版本号"：改了样式或脚本就把日期加一位，浏览器就会去拿新的，
      不会拿手机里存的旧文件（不然改了也看不到效果） -->
-<link rel="stylesheet" href="assets/style.css?v=20260922c">
+<link rel="stylesheet" href="assets/style.css?v=20260922d">
 </head>
 <body>
 
@@ -193,6 +193,29 @@
 
           <article class="card reveal" style="--d:.06s">
             <div class="card__media">
+              <a href="projects/luna.html">
+                <img src="assets/img/project-luna.jpg" alt="示意图：QQ 聊天窗口里，Luna 在回复消息，并确认了一条定时提醒"
+                     data-en-alt="Illustration: a QQ chat window where Luna replies and confirms a scheduled reminder"
+                     width="1200" height="750" loading="lazy" decoding="async">
+              </a>
+            </div>
+            <div class="card__body">
+              <p class="card__meta" data-en="Personal project · 2026">个人项目 · 2026</p>
+              <h3 class="card__title"><a href="projects/luna.html" data-en="Luna, a QQ chatbot">QQ 聊天机器人 Luna</a></h3>
+              <p class="card__desc"
+                 data-en="A chatbot that lives in QQ. I wrote it in Python: it answers with AI-generated text in private chats and groups, remembers the last 20 lines of each conversation in a local database, and understands commands such as /remind — send “/remind tomorrow 3pm hand in homework” and it messages you when the time comes. It is offline now (last run July 2026) because the QQ protocol client it depends on is gone.">
+                一个住在 QQ 里的机器人，用 Python 写的：私聊和群里都能聊，回复由 AI 模型生成；
+                每个人最近 20 条对话存在本机数据库里，所以它记得住上下文；还认 /remind 这类命令——
+                发一句「/remind 明天下午3点 交作业」，到点它私聊提醒你。现在是停着的
+                （最后一次运行是 2026 年 7 月），因为它依赖的那个 QQ 协议端不在了。
+              </p>
+              <p class="card__tags"><span class="tag tag--sm">Python</span><span class="tag tag--sm" data-en="Chatbot">聊天机器人</span><span class="tag tag--sm" data-en="AI">AI</span></p>
+              <p class="card__more"><a href="projects/luna.html" data-en="Details: how it works, its commands, what I learned →">看详情：怎么工作的、有哪些命令、踩过的坑 →</a></p>
+            </div>
+          </article>
+
+          <article class="card reveal" style="--d:.12s">
+            <div class="card__media">
               <img src="assets/img/project-aigc.jpg" alt="长曝光式的横向流光，AIGC 视频方向的配图"
                    data-en-alt="Long horizontal streaks of light, an illustration for the AIGC video card"
                    width="1200" height="750" loading="lazy" decoding="async">
@@ -209,7 +232,7 @@
             </div>
           </article>
 
-          <article class="card reveal" style="--d:.12s">
+          <article class="card reveal" style="--d:.18s">
             <div class="card__media">
               <img src="assets/img/project-site.jpg" alt="个人主页首页截图：深色背景上写着大字「枫言枫语」"
                    data-en-alt="Screenshot of this home page: large 枫言枫语 lettering on a dark background"
@@ -227,7 +250,7 @@
             </div>
           </article>
 
-          <article class="card reveal" style="--d:.18s">
+          <article class="card reveal" style="--d:.24s">
             <div class="card__media">
               <img src="assets/img/project-pingpong.jpg" alt="乒乓球：暗色背景上划过一道弧线和一只白色小球"
                    data-en-alt="Table tennis: an arc and a small white ball across a dark background"
@@ -439,6 +462,6 @@
   </div>
 </div>
 
-<script src="assets/main.js?v=20260922c" defer></script>
+<script src="assets/main.js?v=20260922d" defer></script>
 </body>
 </html>
