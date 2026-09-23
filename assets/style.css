@@ -550,6 +550,25 @@ main { position: relative; z-index: 2; }
 .card__title a:hover,
 .card__media a:hover { color: var(--accent); }
 
+/* 整张卡片都能点进详情页。
+   做法是让标题里那个链接伸出一层"透明的膜"铺满整张卡（同行里管这叫 stretch link）：
+   访客点配图、点说明文字、点卡片空白处都会进详情页，不用非要去戳标题或"看详情"那行小字。
+   没有详情页的卡片（这个网站、乒乓球）标题里本来就没有链接，所以不受影响，鼠标也不会变成手型。 */
+.card__title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+/* 卡片里另外那些外链（比如复刻播放器的"出处"）要压在膜上面，否则会被膜挡住点不到 */
+.card__credit a,
+.card__note a {
+  position: relative;
+  z-index: 2;
+}
+.card:has(.card__title a) { cursor: pointer; }
+.card:has(.card__title a):hover .card__more a { color: var(--fg); }
+
 /* --------------------------------------------------------------------------
    音乐墙：几张封面分给几列，每列各走各的（有的往上、有的往下、快慢也不同）
    - 谁去哪一列由脚本定：第 1 张→第 1 列、第 2 张→第 2 列……转回来再放第 6 张。
