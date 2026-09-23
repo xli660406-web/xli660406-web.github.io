@@ -92,9 +92,9 @@
       一串快速切换的镜头，像动画片的片头。第二段更像一张会动的海报，黑红两色：
       镰刀扫过画面，血月亮起，最后一秒她落座在王座上。
     </p>
-    <p data-en="The two clips do not share a character or a story; what they share is the way they were made. I wrote a description for each one, the model turned it into moving pictures, and I re-ran it when a shot came out wrong.">
-      两段之间没有共同的角色和故事，共同的是做法：我先写一段描述，模型把它变成会动的画面，
-      哪一版崩了就重来。
+    <p data-en="The two clips do not share a character or a story; what they share is the way they were made. I wrote a description for each one, and the model turned it into moving pictures. Both came out of a single run — no reruns.">
+      两段之间没有共同的角色和故事，共同的是做法：我先写一段描述，模型把它变成会动的画面。
+      两段都是第一次跑出来就能用，没有重跑。
     </p>
   </section>
 
@@ -154,11 +154,33 @@
         <b>切镜头的时刻要自己标。</b>一次生成里包含好几个镜头，所以得在描述里写清"第 2.5 秒切到……""第 11 秒……"，
         不标清楚，镜头就会拖或者乱切。
       </li>
-      <li data-en-html="<b>Rerunning is normal.</b> Hands, faces and letters inside the frame are the usual places where a take goes wrong, and the way to deal with it is to run it again — which is also why the compute matters.">
-        <b>重来是常态。</b>手、脸和画面里出现的字最容易出问题，办法就是重跑一版——
-        这也是为什么算力这么要紧。
+      <li data-en-html="<b>The description has to be complete the first time.</b> Renting the GPU is billed by the hour, so a take has to be usable — nothing like “I will fix it on the next run” is in there. Both clips happened to come out right on the first try.">
+        <b>要求得一次写全。</b>租显卡按小时算钱，所以每跑一次都得能用，写的时候就不能留"跑坏了再补"的余地。
+        这两段正好都是一次跑出来的。
       </li>
     </ul>
+  </section>
+
+  <section class="doc__section doc__section--wide reveal">
+    <h2 data-en="Time and cost">时间与成本</h2>
+    <ul class="stats">
+      <li><span class="stats__num" data-en="¥2.5 / hour">¥2.5 / 小时</span><span class="stats__label" data-en="The price of the cloud GPU">云端显卡的价钱</span></li>
+      <li><span class="stats__num" data-en="2 hours">2 小时</span><span class="stats__label" data-en="Rented in total">一共开机的时间</span></li>
+      <li><span class="stats__num">¥5</span><span class="stats__label" data-en="For both clips">两段片子加起来</span></li>
+      <li><span class="stats__num" data-en="One take each">各一版</span><span class="stats__label" data-en="Nothing was rerun">第一次就跑对了</span></li>
+    </ul>
+    <table class="spec">
+      <tbody>
+        <tr><th data-en="What ran it">用什么跑</th><td data-en-html="A rented cloud GPU, <b>¥2.5 an hour</b>; this little Raspberry Pi cannot run a model like this">租的云端显卡，<b>每小时 2.5 元</b>；这台树莓派跑不动这种模型</td></tr>
+        <tr><th data-en="Time">时间</th><td data-en-html="Rented for <b>2 hours</b>, and both 15-second clips were finished inside that window">一共租了 <b>2 小时</b>，两段 15 秒的片子都在这段时间里跑完</td></tr>
+        <tr><th data-en="Money">花的钱</th><td data-en-html="2 hours × ¥2.5 = <b>¥5</b> in total">2 小时 × 2.5 元 = <b>5 元</b></td></tr>
+        <tr><th data-en="How many takes">试了几版</th><td data-en-html="One take each: the two clips on this page are what came out of that single run, so <b>nothing extra was spent on reruns</b>"><b>各一版，没有重跑</b>：页面上这两段就是第一次跑出来的，没有额外花钱再试</td></tr>
+      </tbody>
+    </table>
+    <p class="doc__source"
+       data-en="The money is my own tally — two hours at ¥2.5 an hour, rounded. Since both clips came out of the first run, no extra hours went into rerunning takes.">
+      钱是我自己记的账：2 小时 × 2.5 元，是个约数。两段都一次跑成，所以没有多花时间去重跑。
+    </p>
   </section>
 
   <section class="doc__section reveal">
