@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-en="A home NAS · Feng Yan Feng Yu">家庭 NAS（家里的网盘）· 枫言枫语</title>
+<meta name="description" content="一块 458 GB 的硬盘接在树莓派上，当家里的网盘用：手机和电脑连上家里的 Wi-Fi 就能打开共享文件夹，照片、视频、音乐、文档各归各的格子。这一页说清它是什么、里面装了什么、上面跑着哪些应用。"
+      data-en-content="A 458 GB hard drive attached to a Raspberry Pi, used as the family's own cloud drive: phones and computers on the home Wi-Fi can open the shared folders, where photos, videos, music and documents each have their own place. This page explains what it is, what is stored on it and which apps run on it.">
+<meta name="theme-color" content="#08080a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d0d12'/%3E%3Crect x='12' y='17' width='40' height='30' rx='7' fill='%23ececee'/%3E%3Ccircle cx='23' cy='32' r='4' fill='%23d9c8a1'/%3E%3Crect x='33' y='29' width='13' height='6' rx='3' fill='%230d0d12'/%3E%3C/svg%3E">
+<script>
+  document.documentElement.classList.add('js');
+  /* 上次选了英文就先把标记打上（文字由 assets/main.js 换），免得版式先闪一下中文的 */
+  try {
+    if (localStorage.getItem('site-lang') === 'en') document.documentElement.classList.add('lang-en');
+  } catch (e) {}
+</script>
+<link rel="stylesheet" href="../assets/style.css?v=20260922f">
+</head>
+<body>
+
+<a class="skip" href="#main" data-en="Skip to content">跳到正文</a>
+
+<div class="bg" aria-hidden="true">
+  <div class="bg__far" data-depth="0.10">
+    <span class="blob blob--1"></span>
+    <span class="blob blob--2"></span>
+    <span class="blob blob--3"></span>
+  </div>
+  <div class="bg__mid" data-depth="0.26">
+    <span class="glow glow--1"></span>
+    <span class="glow glow--2"></span>
+  </div>
+  <div class="bg__grid"></div>
+  <div class="bg__noise"></div>
+</div>
+
+<header class="nav" id="nav">
+  <div class="wrap nav__inner">
+    <a class="nav__brand" href="../index.html">枫言枫语</a>
+    <nav class="nav__links" aria-label="页面导航" data-en-aria-label="Page navigation">
+      <a href="../index.html#projects" data-en="← Back to projects">← 回到项目</a>
+      <button class="nav__lang" id="langBtn" type="button" aria-label="Switch to English">EN</button>
+    </nav>
+  </div>
+</header>
+
+<main class="doc wrap" id="main">
+  <p class="doc__meta reveal" data-en="Personal project · 2026">个人项目 · 2026</p>
+  <h1 class="doc__title reveal" style="--d:.06s" data-en="A home NAS">家庭 NAS（家里的网盘）</h1>
+  <p class="doc__lead reveal" style="--d:.12s"
+     data-en-html="A 458 GB hard drive plugged into a Raspberry Pi, turned into the family's own cloud drive. Any phone or computer on the home Wi-Fi can open it and see the shared folders — photos, videos, music, documents and installers, each in its own place. There are no monthly fees and nothing is uploaded to anyone else's server; the files sit in my own room. The machine also runs a photo album page I wrote myself, plus a few small apps.">
+    一块 458 GB 的硬盘接在树莓派上，就成了家里的网盘。手机、电脑连上家里的 Wi-Fi，
+    就能打开它，里面按类别分好了一个个文件夹：照片、视频、音乐、文档、安装包各归各的格子。
+    不用交月费，东西也没传到别人家的服务器上——就在我自己屋里。
+    这台机器上还跑着我自己写的一个相册网页，和几个小应用。
+  </p>
+
+  <figure class="doc__figure reveal" style="--d:.18s">
+    <img src="../assets/img/project-nas.jpg" alt="示意图：一块标着 458 GB 的硬盘，下面按类别列着照片 1071 个、视频 88 个、音频 113 个、文档 106 个、安装包 1 个"
+         data-en-alt="Illustration: a 458 GB hard drive with a list of folders under it — 1,071 photos, 88 videos, 113 audio files, 106 documents and 1 installer"
+         width="1200" height="750" decoding="async">
+    <figcaption data-en="A drawing of what is on it — I drew this one myself. The numbers are what I counted on 23 September 2026.">
+      示意图：里面装着些什么（这张是我自己画的；右边的数目是 2026 年 9 月 23 日数出来的）。
+    </figcaption>
+  </figure>
+
+  <section class="doc__section reveal">
+    <h2 data-en="What it is">它是什么</h2>
+    <p data-en="A small computer that stays on day and night, plus a hard drive. Think of the drive as a warehouse and the Raspberry Pi as the person who runs it: it sorts everything into labelled shelves, and only opens the door to devices inside the home network.">
+      一台一直开着的小电脑（树莓派），加一块硬盘。打个比方：硬盘是仓库，树莓派是管仓库的人——
+      它把东西分门别类摆到架子上，而且只把门开给家里的设备。
+    </p>
+    <table class="spec">
+      <tbody>
+        <tr><th data-en="The disk">硬盘</th><td data-en="One 458 GB hard drive. It is set to mount itself at startup, so a power cut does not need me to do anything by hand">一块 458 GB 的硬盘。设置成开机自动挂上，断电重启不用我手动处理</td></tr>
+        <tr><th data-en="The machine">主机</th><td data-en="The Raspberry Pi — the same little machine I write this site on and where the QQ bot used to run">树莓派，就是我做这个网站、以前跑 QQ 机器人用的那台小机器</td></tr>
+        <tr><th data-en="How to open it">怎么打开</th><td data-en="A phone or computer on the same Wi-Fi: on a computer it shows up under “Network”, on a phone in the file manager. Nothing to install">手机或电脑连上同一个 Wi-Fi，电脑在“网络”里、手机在文件管理里就能看到，不用装东西</td></tr>
+        <tr><th data-en="Reach">谁能看到</th><td data-en="Only devices on the home network. The shared folders themselves are not open to the internet">只有连着家里网络的设备；共享文件夹本身不对外开放</td></tr>
+        <tr><th data-en="Cost">花钱吗</th><td data-en="The drive was a one-off purchase; the software is all free. No subscription">硬盘是一次性买的，软件都是免费的，没有月费</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="doc__section reveal">
+    <h2 data-en="What is on it">里面装了什么</h2>
+    <p data-en="The family share is sorted into five folders. These are the counts I took on 23 September 2026:">
+      “家庭共享”这个文件夹按类型分成五格。下面的数字是 2026 年 9 月 23 日数出来的：
+    </p>
+    <table class="spec">
+      <tbody>
+        <tr><th data-en="Photos">照片</th><td data-en="1,071 files, 3.3 GB — the biggest collection by count">1,071 个文件，3.3 GB——数量最多的一类</td></tr>
+        <tr><th data-en="Videos">视频</th><td data-en="88 files, 7.5 GB — the biggest by size">88 个文件，7.5 GB——按体积算最大的一类</td></tr>
+        <tr><th data-en="Audio">音频</th><td data-en="113 files, 2.7 GB">113 个文件，2.7 GB</td></tr>
+        <tr><th data-en="Documents">文档</th><td data-en="106 files, 24 MB">106 个文件，24 MB</td></tr>
+        <tr><th data-en="Installers">安装包</th><td data-en="1 file, 94 MB — an Android app, kept so it can be handed out again without downloading">1 个文件，94 MB——一个安卓 App，留着是为了下次有人要装的时候不用重新下载</td></tr>
+        <tr><th data-en="Photo album">相册网页</th><td data-en="35 MB — the album page I wrote myself, with its own photos and certificate">35 MB——我自己写的那个相册网页，照片和证书都放在这儿</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="doc__section reveal">
+    <h2 data-en="What runs on it">上面跑着什么</h2>
+    <p data-en="Beyond storing files, the little machine also runs services. Two are on; the other three I installed, tried, and then left switched off.">
+      除了存文件，这台小机器还负责跑几个服务。现在开着两个，另外三个是装过、试过之后放着的。
+    </p>
+    <table class="spec">
+      <tbody>
+        <tr><th data-en="Photo album">相册网页</th><td data-en="On. A page I wrote myself, so the family can look at photos in a browser instead of hunting through folders">开着。我自己写的一个网页，家里人用浏览器就能看照片，不用一层层翻文件夹</td></tr>
+        <tr><th data-en="Proxy manager">统一入口</th><td data-en="On. Nginx Proxy Manager — it gathers the different services behind one door, so I do not have to remember a separate address for each">开着。Nginx Proxy Manager——把几个不同的服务收到一个门口，不用挨个记地址</td></tr>
+        <tr><th data-en="Minecraft">Minecraft 服务器</th><td data-en="Off. I set up a Minecraft server to play with friends; nobody plays at the moment">停着。搭了一个 Minecraft 服务器，和朋友一起玩过；现在没人玩</td></tr>
+        <tr><th data-en="Remote desktop">远程桌面中继</th><td data-en="Off. RustDesk — so I could reach my own computer from outside. Not needed right now">停着。RustDesk——从外面连回自己电脑用的；现在用不上</td></tr>
+        <tr><th data-en="Search">元搜索</th><td data-en="Off. SearXNG — a search page that gathers results from several search engines at once, without tracking">停着。SearXNG——一个把好几家搜索结果汇总到一起、且不跟踪你的搜索页</td></tr>
+      </tbody>
+    </table>
+    <p data-en="The two that are on and the three that are off were all installed as ready-made pieces (through CasaOS), not written by me — I picked them, configured them and left the rest alone.">
+      开着的那两个和停着的那三个，都是现成的软件装上去的（通过一个叫 CasaOS 的应用商店），不是我写的程序；
+      我负责挑、配置，剩下的交给它们自己。
+    </p>
+  </section>
+
+  <section class="doc__section reveal">
+    <h2 data-en="One thing worth knowing first">有件事我想先说清楚</h2>
+    <p class="note"
+       data-en-html="<b>A NAS is not a backup.</b> There is only one drive here, so if it fails, every photo and video on it goes with it — and copying files into a second folder on the same drive does not help, because it is still the same piece of hardware. A real backup needs to sit on a different drive or a different machine.">
+      在这台机器上，<b>硬盘本身就是最容易出事的地方</b>：只有一块盘，它一旦坏掉，里面的照片和视频就一起没了；
+      把文件再复制一份到同一块盘的另一个文件夹也不管用——还是同一块硬件。
+      真正的备份得放在另一块盘、或者另一台机器上。
+    </p>
+  </section>
+
+  <p class="doc__foot reveal">
+    <a class="doc__link" href="../index.html#projects" data-en="← Back to the projects section">← 回到首页的项目区</a>
+  </p>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <span>© <span id="year">2026</span> <span data-en="枫言枫语 (Li Yuxiao)">枫言枫语（李育晓）</span></span>
+    <span class="footer__dim" data-en="A static page: no tracking, no ads.">本站为静态页面，无跟踪、无广告。</span>
+  </div>
+</footer>
+
+<script src="../assets/main.js?v=20260922f" defer></script>
+</body>
+</html>
