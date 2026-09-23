@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title data-en="Luna, a QQ chatbot · Feng Yan Feng Yu">QQ 聊天机器人 Luna · 枫言枫语</title>
-<meta name="description" content="我用 Python 写的 QQ 机器人：接上 AI 模型陪聊、记得住最近的对话、支持 /remind 这类命令。这里写清它是怎么工作的、有哪些命令，以及现在为什么停着。"
-      data-en-content="A QQ chatbot I wrote in Python: wired to an AI model, it remembers recent conversations and supports commands such as /remind. This page explains how it works, what it can do and why it is offline now.">
+<meta name="description" content="我用 Python 写的 QQ 机器人：接上 AI 陪聊、记得住最近聊过什么、认 /remind 这类命令。这一页说清它能干什么、是怎么搭起来的，以及现在为什么停着。"
+      data-en-content="A QQ chatbot I wrote in Python: it chats through an AI model, remembers recent conversations and understands commands such as /remind. This page explains what it can do, how I put it together and why it is offline now.">
 <meta name="theme-color" content="#08080a">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d0d12'/%3E%3Crect x='12' y='17' width='40' height='26' rx='9' fill='%23ececee'/%3E%3Crect x='19' y='45' width='13' height='8' rx='3' fill='%23d9c8a1'/%3E%3C/svg%3E">
 <script>
@@ -49,10 +49,11 @@
   <p class="doc__meta reveal" data-en="Personal project · 2026">个人项目 · 2026</p>
   <h1 class="doc__title reveal" style="--d:.06s" data-en="Luna, a QQ chatbot">QQ 聊天机器人 Luna</h1>
   <p class="doc__lead reveal" style="--d:.12s"
-     data-en-html="A chatbot that lives in QQ. Message it in a private chat or in a group and it answers with AI-generated text; it remembers the last few lines of each conversation, and it understands commands such as <code>/remind</code> — send <b>/remind tomorrow 3pm hand in homework</b> and it will message you when the time comes. This was the first program I wrote that could actually run on its own for weeks.">
-    一个住在 QQ 里的机器人，名字叫 Luna。私聊它、或者在群里跟它说话，它会用 AI 生成回复；
-    它记得住每个人最近的几句话，也认 <code>/remind</code> 这类命令——比如发
-    <b>/remind 明天下午3点 交作业</b>，到点它会私聊提醒你。这是我写的第一个能自己跑起来的程序。
+     data-en-html="A chatbot that lives in QQ. Message it in a private chat or in a group and it answers with AI-generated text. It remembers what each person was just talking about, and it understands a handful of commands that start with <code>/</code> — send <b>/remind tomorrow 3pm hand in homework</b> and it will message you when the time comes. This is the first program I wrote that could keep running on its own for weeks.">
+    一个住在 QQ 里的聊天机器人，名字叫 Luna。私聊它、或者在群里跟它说话，它会用 AI 生成的文字回你，
+    不是提前备好的固定话术。它记得住每个人最近聊过什么，也认得几个以 <code>/</code> 开头的命令——
+    比如发 <b>/remind 明天下午3点 交作业</b>，到点它会主动私聊提醒你。
+    这是我第一个能自己连续跑上几个星期的程序。
   </p>
 
   <figure class="doc__figure reveal" style="--d:.18s">
@@ -67,27 +68,26 @@
   <section class="doc__section reveal">
     <h2 data-en="What it can do">它能干什么</h2>
     <ul>
-      <li data-en-html="<b>Chat in private messages and in groups</b>: it reads incoming messages and answers each one through an AI model — no fixed reply list."><b>私聊和群里都能聊</b>：收到消息就交给 AI 模型生成回复，不是固定的问答表。</li>
-      <li data-en-html="<b>Remember the conversation</b>: the last 20 lines of each person are kept in a database on this machine, so the next time you talk it still knows what you were saying."><b>记得住上下文</b>：每个人最近 20 条对话存在本机的数据库里，下次再聊它还记得刚才说过什么。</li>
-      <li data-en-html="<b>Understand commands</b>: messages starting with <code>/</code> go to the command handler instead of the AI, so <code>/ping</code> always answers instantly."><b>认命令</b>：以 <code>/</code> 开头的消息不交给 AI，直接走命令处理，所以 <code>/ping</code> 永远是秒回。</li>
-      <li data-en-html="<b>Set reminders</b>: <code>/remind</code> takes a time written in plain language — “tomorrow 3pm”, “in 30 minutes” and their Chinese equivalents all work."><b>会按时提醒</b>：<code>/remind</code> 后面可以直接写人话时间——“明天下午3点”“30 分钟以后”都能看懂，到点它私聊把这件事发给你。</li>
+      <li data-en-html="<b>It chats</b>: every message it receives goes to an AI model, and it replies with what comes back — not a fixed list of answers."><b>会聊天</b>：收到消息就交给 AI 生成回复，不是提前写好的固定问答表。</li>
+      <li data-en-html="<b>It remembers what you were saying</b>: the last 20 lines of each person's conversation stay on this machine, so next time it can pick up where you left off."><b>记得住刚才聊过什么</b>：每个人最近 20 句留在这台机器上，下次再聊它还接得上。</li>
+      <li data-en-html="<b>It follows a few commands</b>: a message starting with <code>/</code> does not go to the AI; the program handles it itself, so <code>/ping</code> always answers instantly."><b>认得几个命令</b>：以 <code>/</code> 开头的消息不麻烦 AI，直接由程序处理，所以 <code>/ping</code> 永远是秒回。</li>
+      <li data-en-html="<b>It keeps time</b>: after <code>/remind</code> you can write the time the way you would say it — “tomorrow 3pm”, “in 30 minutes” and their Chinese equivalents all work — and it will message you when the moment arrives."><b>会按时提醒</b>：<code>/remind</code> 后面可以直接写人话时间——“明天下午3点”“30 分钟以后”它都看得懂，到点私聊把这件事发给你。</li>
     </ul>
   </section>
 
   <section class="doc__section reveal">
-    <h2 data-en="How it works">它是怎么工作的</h2>
-    <p data-en="Three pieces: a QQ protocol client that logs into QQ for you, my Python program in the middle, and the AI model at the other end. My program never talks to QQ directly — the protocol client hands it the messages and takes back the replies.">
-      一共三块：一个替我登录 QQ 的“协议端”、中间我自己写的 Python 程序、以及另一头的 AI 模型。
-      我的程序不直接跟 QQ 打交道——协议端把消息递过来，它把回复递回去。
+    <h2 data-en="How it is put together">它是怎么搭起来的</h2>
+    <p data-en="Three pieces, like building blocks: a ready-made program that logs into QQ for me, my own Python program in the middle, and the AI model at the other end. Think of the ready-made piece as a stand-in — it keeps QQ connected for me and carries the messages back and forth. My program is the front desk: when a message arrives it first checks whether it is a command, passes everything else to the AI, and sends the answer back.">
+      一共三块，像搭积木：一块替我登录 QQ 的现成程序、中间我自己写的 Python 程序、另一头的 AI 模型。
+      打个比方，那块现成程序像“替身”——替我把 QQ 挂上去、负责来回送消息；我写的程序像“前台”：
+      消息进来先看是不是命令，不是就转给 AI，再把 AI 的回答送回去。
     </p>
     <table class="spec">
       <tbody>
-        <tr><th data-en="Language">语言</th><td data-en="Python 3 — two files: bot.py (the main loop) and commands.py (the commands)">Python 3，两个文件：<code>bot.py</code> 是主流程，<code>commands.py</code> 放命令</td></tr>
-        <tr><th data-en="Receiving">收消息</th><td data-en="A WebSocket connection to the protocol client on this machine (127.0.0.1:3001)">用 WebSocket 连本机的协议端（127.0.0.1:3001），消息一到就处理</td></tr>
-        <tr><th data-en="Replying">发消息</th><td data-en="An HTTP call back to the same client (127.0.0.1:3000), with separate endpoints for private and group messages">再调同一个协议端的 HTTP 接口（127.0.0.1:3000）发回去，私聊和群聊各有一个地址</td></tr>
-        <tr><th data-en="The AI">AI 部分</th><td data-en="DeepSeek's chat model — the persona is set in a system prompt, which is where the name Luna comes from">DeepSeek 的对话模型；人设写在系统提示词里，“Luna”这个名字就是从那里来的</td></tr>
-        <tr><th data-en="Memory">记忆</th><td data-en="SQLite database, the last 20 lines per user; older lines are deleted automatically so the file cannot grow forever">用 SQLite 存，每个人只留最近 20 条；超出的自动删掉，文件不会越滚越大</td></tr>
-        <tr><th data-en="Reminders">提醒</th><td data-en="A background loop checks the reminder table every 30 seconds and sends out whatever is due">后台每 30 秒查一次提醒表，到点的就发出去，发完删掉</td></tr>
+        <tr><th data-en="Language">用什么写的</th><td data-en="Python — two files: one runs the whole thing, the other holds the commands">Python，两个文件：一个管总的流程，一个放命令</td></tr>
+        <tr><th data-en="The AI">AI 是谁</th><td data-en="DeepSeek's chat model. Its name and the way it talks are something I wrote out and told it">DeepSeek 的对话模型；“Luna”这个名字和它说话的语气，是我写了一段说明告诉它的</td></tr>
+        <tr><th data-en="Memory">记在哪</th><td data-en="In a database file on this machine; each person keeps only their last 20 lines, and older ones are deleted automatically so the file does not grow forever">存在这台机器上的一个数据库文件里；每个人只留最近 20 句，多出来的自动删掉，文件不会越滚越大</td></tr>
+        <tr><th data-en="Reminders">提醒</th><td data-en="The program looks every 30 seconds to see whether anything is due, and sends it as a private message">程序每隔 30 秒看一眼有没有到点的提醒，到点就私聊发出去</td></tr>
       </tbody>
     </table>
   </section>
@@ -108,64 +108,42 @@
   <section class="doc__section reveal">
     <h2 data-en="What I did">我做了什么</h2>
     <ul>
-      <li data-en="I wrote the Python myself: the message loop, the command handling, the memory and the reminders.">Python 是自己写的：消息循环、命令处理、聊天记忆、定时提醒都是自己搭的。</li>
-      <li data-en="I wired it up to an AI model's API and wrote the persona prompt — tone, name, and the instruction to stay consistent across conversations.">接上了 AI 模型的接口，也自己写了人设提示词——语气、名字，以及“要记得之前的对话”。</li>
-      <li data-en="I stored everything locally with sqlite instead of a cloud service, so the chat history stays on this Raspberry Pi.">数据都存在本机的 sqlite 里，没上云，聊天记录一直留在这台树莓派上。</li>
-      <li data-en="I kept changing it. The source folder still holds more than twenty backup files from those iterations — image replies, reminders, personality, search, a reset command — a record of what I tried.">反复改了很多版：文件夹里留着二十多个备份文件，从名字能看出试过看图、提醒、人设、搜索、重置这些方向。</li>
+      <li data-en="I wrote the Python myself: taking in messages, handling commands, remembering what was said and sending reminders.">Python 是自己写的：收消息、认命令、记住聊过什么、按时发提醒，都是自己搭的。</li>
+      <li data-en="I connected it to an AI model and wrote the description of who it is — the tone, the name, and the instruction to keep what was said earlier in mind.">接上了 AI 模型的接口，也自己写了它的“人设”——语气、名字，以及要记着之前说过的话。</li>
+      <li data-en="The chat history stays on this Raspberry Pi; I did not put it on a cloud service.">聊天记录一直留在这台树莓派上，没有放到云上。</li>
+      <li data-en="I kept changing it. The folder still holds more than twenty backup files from those days — their names show the directions I tried: pictures, reminders, personality, search, resetting.">反复改了很多版：文件夹里还留着二十多个旧备份，从名字能看出我试过看图、提醒、人设、搜索、重置这些方向。</li>
     </ul>
   </section>
 
   <section class="doc__section reveal">
-    <h2 data-en="Where it stands now">现在是什么样</h2>
-    <p data-en="It is off now. The last line it wrote to its log was on 30 July 2026, and I have not started it since. This time it is not the code: the piece that logged into QQ for me — the protocol client — stopped, and its data went with it. The end of my log is one long run of “connection refused, reconnecting in 5 seconds”: 924 lines of it.">
-      它现在停着。日志里最后一条是 2026 年 7 月 30 日写的，那天之后我就没再启动过。
-      这回不是代码的问题：替我登录 QQ 的那块（协议端）停掉了，连它的数据也一起没了。
-      日志结尾只剩一长串“连接被拒，5 秒后重试”，一共 924 行。
+    <h2 data-en="Why it is offline now">现在为什么停着</h2>
+    <p data-en="It is offline now. The last line in its log was written on 30 July 2026, and I have not started it since. This time it is not the code: the ready-made piece that logged into QQ stopped, and wherever it kept the login details was cleared away with it.">
+      它现在停着。日志的最后一条是 2026 年 7 月 30 日写的，那天之后我就没再启动过。
+      这回不怪代码：替我登录 QQ 的那块现成程序停了，它存登录信息的地方后来也跟着没了。
     </p>
-    <p data-en="Whenever I want it back, I have to run the protocol client again from scratch and scan a QR code with a QQ account once more — the old login is no use now, because the two folders it kept its data in are gone from this machine. What I tried back then is still in the database: 40 lines of conversation from 2 accounts, all crammed into one afternoon in May 2026.">
-      哪天想让它再活过来，我得从头把协议端跑一遍、再扫码登录一次；旧的登录信息已经不能用了，
-      因为它存东西的那两个文件夹被清掉了。我当年试出来的东西还在数据库里：2 个账号、40 条对话，
-      全都挤在 2026 年 5 月的那个下午。
+    <p data-en="The end of the log is one long run of “cannot connect, retrying in 5 seconds” — 924 attempts over about an hour, and then nothing more. The rest is still here, though: the program folder, the chat history, the log. They take up almost no space, so I left them alone.">
+      日志的结尾是一长串“连不上，5 秒后再试”，前后试了 924 次、大约一个多小时，然后就没动静了。
+      别的东西倒都还在：程序文件夹、聊天记录、日志，都没删——占地方很小，我就留着。
+    </p>
+    <p data-en="If I ever want it back, I have to set that piece up again and scan a QR code with a QQ account once more. What it did manage is still saved: 2 accounts and 40 lines of conversation, all crammed into one afternoon in May 2026.">
+      哪天想让它再活过来，我得把登录那块重新装一遍、再拿 QQ 扫一次码。
+      当年真正聊出来的东西还留着：2 个账号、40 句对话，全都挤在 2026 年 5 月的那个下午。
     </p>
     <p class="note"
-       data-en-html="Two things I would tell anyone trying this: <b>use a spare QQ account</b>, because logging in through a third-party client breaks QQ&#39;s terms and the account can be limited or banned; and <b>do not write API keys into the code</b> — mine were hard-coded at first, which is fine only as long as the file never leaves your machine. Environment variables or a separate file with 600 permissions are the easy fix.">
-      想自己做一个的话，有两条要提前知道：<b>用一个备用 QQ 号</b>——用第三方客户端登录是违反 QQ 规则的，
-      账号可能被限制甚至封禁；另外<b>别把接口密钥写死在代码里</b>——我第一版就是写死的，
-      只要这个文件不外流就没事，但更稳妥的做法是放进环境变量，或者单独放一个权限 600 的文件。
+       data-en-html="Two things I would tell anyone trying this: <b>use a spare QQ account</b>, because logging in through a third-party program goes against QQ&#39;s rules and the account can be limited or banned; and <b>do not paste the AI service&#39;s key straight into the code</b> — that key is like a password. Mine was written into the file at first; that is fine as long as the file never leaves your machine, but a safer habit is to keep it in a separate file only you can read.">
+      想自己做一个的话，有两条要先知道：<b>拿一个备用的 QQ 号</b>——用第三方程序登录 QQ 不合它的规矩，
+      号可能被限制甚至封掉；另外<b>别把 AI 服务的密钥直接写在代码里</b>——那串密钥相当于密码。
+      我第一版就是直接写进去的，文件不外流就没事；更稳妥的习惯是单独存一份，只让自己看得见。
     </p>
-  </section>
-
-  <section class="doc__section reveal">
-    <h2 data-en="What I found still on the machine">我在机器上翻到的痕迹</h2>
-    <p data-en="Nearly everything is still there: the project folder, the database, the log, even the container itself. The numbers below are what I dug out one by one, so that I would not end up writing this from memory.">
-      东西几乎都还在：项目文件夹、数据库、日志，连那个容器本身都留着。下面这些数字是我回头一项项翻出来的，
-      免得只凭记忆写错。
-    </p>
-    <table class="spec">
-      <tbody>
-        <tr><th data-en="Protocol client">协议端</th><td data-en-html="The protocol client I used is NapCat, running in Docker — container name <code>napcat</code>, image <code>docker.1ms.run/mlikiowa/napcat-docker:latest</code> (1.36 GB), still on disk">我用的协议端是 NapCat，跑在 Docker 里——容器名 <code>napcat</code>，镜像 <code>docker.1ms.run/mlikiowa/napcat-docker:latest</code>（1.36 GB），现在还在硬盘上</td></tr>
-        <tr><th data-en="Container">容器状态</th><td data-en="I created the container on 17 May 2026, and it was killed on 30 July 2026 (exit code 137); its restart policy is “no”, so it will not come back by itself">容器是我 2026-05-17 建的，2026-07-30 被杀掉（退出码 137）；它的重启策略是“no”，所以不会自己回来</td></tr>
-        <tr><th data-en="Ports">端口</th><td data-en="I mapped three ports into this machine: 3000, 3001 and 6099 — the first two are exactly the addresses my program sends to and listens on">我让它把三个端口映射到本机：3000、3001、6099——前两个正好是我程序里发消息和收消息用的那两个地址</td></tr>
-        <tr><th data-en="Data folders">数据目录</th><td data-en-html="The two folders I had mounted (<code>~/napcat/QQ_data</code> and <code>~/napcat/napcat_config</code>) have been cleared away, so the QQ login went with them">我当初挂载的两个目录（<code>~/napcat/QQ_data</code> 和 <code>~/napcat/napcat_config</code>）已经被清掉了，QQ 的登录信息也跟着没了</td></tr>
-        <tr><th data-en="Startup service">开机服务</th><td data-en-html="The startup service I set up, <code>luna-bot.service</code>, declares <code>Requires=docker.service</code> (Docker has to be running first), restarts the bot automatically, and appends every line it prints to <code>bot.log</code>">我给它配的开机服务 <code>luna-bot.service</code> 里写着 <code>Requires=docker.service</code>（要先有 Docker 才能启动）、自动重启，输出的每一行都追加到 <code>bot.log</code></td></tr>
-        <tr><th data-en="Log file">日志</th><td data-en="My log file is 36 MB and 460,984 lines — that big because every failed connection wrote a line of its own">我那个日志 36 MB、460,984 行——之所以这么大，是因为每失败一次就往里写一行</td></tr>
-      </tbody>
-    </table>
-    <ul>
-      <li data-en-html="<b>458,648 of those lines</b> say the same thing: the port answered, but the handshake never went through. My log does not say why; what I can see is that something was listening on that port the whole time. It only got through the handshake <b>59 times</b>."><b>其中 458,648 行</b>说的是同一件事：端口有人应答，但握手始终没成。日志里没写为什么；我能看到的只是那段时间端口上确实有东西在听。真正连上只有 <b>59 次</b>。</li>
-      <li data-en-html="<b>924 lines</b> are “connection refused”, one every 5 seconds — about 77 minutes in total. That is all my log ends with."><b>924 行</b>是“连接被拒”，每 5 秒一行，正好约 77 分钟——最后那段就只剩这个了。</li>
-      <li data-en-html="<b>138 exceptions and 170 lines of syntax errors</b> all come from the first days when I was editing the code. A batch of them is the same problem: <code>commands.py</code> was not saved as UTF-8 back then, so Python 3 could not read the Chinese in it."><b>138 次报错、170 行语法问题</b>都出在我最早改代码的那几天。其中一批是同一个毛病：<code>commands.py</code> 当时不是 UTF-8 编码，Python 3 读不了里面的中文。</li>
-      <li data-en-html="In all that time only <b>41 messages</b> ever came in, and they all sit near the very beginning of the log — so the bot did not get to talk in a group for long.">那段时间它真正收到过的消息只有 <b>41 条</b>，而且都在日志很靠前的位置——它真正在群里说过话的时间，其实没几天。</li>
-    </ul>
-    <p data-en="Lay those dates out in order and the whole thing is short:">
-      我把这些日子按顺序摆在一起，才发现前后其实只有两个多月：
+    <p data-en="Laid out in order, the whole thing is short:">
+      把这些日子按顺序摆在一起，才发现前后其实只有两个多月：
     </p>
     <ul>
-      <li data-en="17 May 2026 — I set up the NapCat container; that is the day the protocol client came into being.">2026-05-17：我把 NapCat 容器建了起来——协议端就是从这天开始有的。</li>
-      <li data-en="17–23 May 2026 — the days I spent editing the code: first the encoding problem, then trying out a persona, image replies, reminders and search. The backup files in the folder are all from that one week.">2026-05-17～05-23：我改代码的那几天——先解决编码问题，再试人设、看图、提醒、搜索。文件夹里那些备份全都是这一周留下的。</li>
-      <li data-en="23 May 2026 — my database gets its last write: 2 accounts, 40 lines of conversation.">2026-05-23：数据库最后一次写入——2 个账号、40 条对话。</li>
-      <li data-en="30 July 2026, 20:17 — the container is killed. The bot starts retrying every 5 seconds.">2026-07-30 20:17：容器被杀掉，机器人开始每 5 秒重试一次。</li>
-      <li data-en="30 July 2026, 21:34 — 924 retries later my log stops, and nothing has been written to it since.">2026-07-30 21:34：重试了 924 次之后，日志停在这里，之后再没写过。</li>
+      <li data-en="17 May 2026 — I set up the piece that logs into QQ. Luna starts here.">2026-05-17：我把登录 QQ 的那块装了起来——Luna 从这天开始有。</li>
+      <li data-en="17–23 May 2026 — the week I spent editing the code: first fixing a Chinese-text problem, then trying out pictures, reminders, personality and search. The backups in the folder are all from that one week.">2026-05-17～05-23：改代码的那一周——先修好一个中文读不出来的毛病，再试看图、提醒、人设、搜索。文件夹里的备份都是这一周留下的。</li>
+      <li data-en="23 May 2026 — the last time it talked to anyone: 2 accounts, 40 lines.">2026-05-23：它最后一次和人聊天——2 个账号、40 句。</li>
+      <li data-en="30 July 2026, 20:17 — that piece stops, and Luna begins retrying every 5 seconds.">2026-07-30 20:17：登录那块停了，Luna 开始每 5 秒重试一次。</li>
+      <li data-en="30 July 2026, 21:34 — 924 retries later the log stops, and nothing has been written to it since.">2026-07-30 21:34：重试 924 次之后，日志停在这里，之后再没写过。</li>
     </ul>
   </section>
 
