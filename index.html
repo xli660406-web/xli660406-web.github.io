@@ -21,7 +21,7 @@
 </script>
 <!-- ?v= 是"版本号"：改了样式或脚本就把日期加一位，浏览器就会去拿新的，
      不会拿手机里存的旧文件（不然改了也看不到效果） -->
-<link rel="stylesheet" href="assets/style.css?v=20260922f">
+<link rel="stylesheet" href="assets/style.css?v=20260923a">
 </head>
 <body>
 
@@ -239,19 +239,21 @@
 
           <article class="card reveal" style="--d:.18s">
             <div class="card__media">
-              <img src="assets/img/project-aigc.jpg" alt="长曝光式的横向流光，AIGC 视频方向的配图"
-                   data-en-alt="Long horizontal streaks of light, an illustration for the AIGC video card"
+              <img src="assets/img/project-aigc.jpg" alt="AI 生成短片的画面：紫色赛博都市里，一位女武士背对满月站在屋顶上"
+                   data-en-alt="A still from an AI-generated clip: a swordswoman standing on a rooftop with a full moon behind her, in a purple cyberpunk city"
                    width="1200" height="750" loading="lazy" decoding="async">
             </div>
             <div class="card__body">
               <p class="card__meta" data-en="Interest · 2026">兴趣方向 · 2026</p>
-              <h3 class="card__title" data-en="AIGC video">AIGC 视频</h3>
+              <h3 class="card__title"><a href="projects/aigc.html" data-en="AIGC video">AIGC 视频</a></h3>
               <p class="card__desc"
-                 data-en="What I follow: video generation models such as MiniMax, LTX-Video and Tongyi Wanxiang Wan 2.2 — and what kind of footage each of them does best.">
-                关注的方向：MiniMax、LTX-Video、通义万相 Wan 2.2 这类视频生成模型，
-                了解它们各自擅长呈现什么样的画面。
+                 data-en="I make short clips with AI video models: the two 15-second pieces here are a cyberpunk swordswoman in cold purple and a scythe girl under a blood moon, with the sound generated together with the picture. The model is MiniMax H3, running on a rented cloud GPU.">
+                 我用 AI 视频模型自己做短片：这页放的两段 15 秒片子，一段是冷紫色调的赛博朋克武士，
+                 一段是黑红色调的血月镰刀少女，声音和画面一起生成。
+                 模型是 MiniMax H3，跑在租来的云端显卡上。
               </p>
-              <p class="card__tags"><span class="tag tag--sm" data-en="Video generation">视频生成</span><span class="tag tag--sm" data-en="Open-source models">开源模型</span></p>
+              <p class="card__tags"><span class="tag tag--sm" data-en="Video generation">视频生成</span><span class="tag tag--sm">MiniMax H3</span><span class="tag tag--sm">ComfyUI</span></p>
+              <p class="card__more"><a href="projects/aigc.html" data-en="Details: watch both clips and how they were made →">看详情：看两段成片、它们是怎么做出来的 →</a></p>
             </div>
           </article>
 
@@ -485,6 +487,6 @@
   </div>
 </div>
 
-<script src="assets/main.js?v=20260922f" defer></script>
+<script src="assets/main.js?v=20260923a" defer></script>
 </body>
 </html>

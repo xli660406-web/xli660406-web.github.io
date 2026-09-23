@@ -957,6 +957,12 @@ main { position: relative; z-index: 2; }
   background: #0c0c11;
 }
 .doc__figure img { width: 100%; height: auto; }
+/* 详情页里的视频：外框和图片共用 .doc__figure 那一套
+   - 属性里写了 preload="none"：不点播放就不下载，手机上不白耗流量
+   - 播放条用浏览器自带的那条，电脑和手机都认识，不用再写一套按钮 */
+.doc__video { display: block; width: 100%; height: auto; background: #000; }
+/* 分辨率偏小的片子（比如 736×416）：别把它拉到 1080 宽，放大就糊了 */
+.doc__figure--sm { max-width: 760px; }
 .doc__figure figcaption {
   padding: .7rem 1rem;
   border-top: 1px solid var(--line-soft);
