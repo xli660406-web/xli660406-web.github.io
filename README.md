@@ -32,7 +32,7 @@
 | 邮箱 | `lyxicl@qq.com`（出现 3 处：联系区、右下角悬浮按钮、复制按钮指向它） |
 | 备用邮箱与抖音 | 搜索 `xli660406@gmail.com` |
 | GitHub 链接 | `https://github.com/xli660406-web` |
-| 作品卡片的配图 | 图都在 `assets/img/` 文件夹里：`project-aigc.jpg`、`project-site.jpg`、`project-pingpong.jpg` 按 1200×750 做；复刻播放器那张 `project-fakepod.jpg` 是正方形 1200×1200 的**实拍照片**（它在宽卡片里是"图左字右"，正方形才不会裁掉两边）。换图把同名文件覆盖掉就行；原图（未裁剪，1695×1179）留在 `/home/raspberry/Pictures/FAKE_POD_NANO实拍/` |
+| 作品卡片的配图 | 图都在 `assets/img/` 文件夹里：`project-aigc.jpg`、`project-site.jpg`、`project-pingpong.jpg` 按 1200×750 做；复刻播放器那张 `project-fakepod.jpg` 是正方形 1200×1200 的**实拍照片**（它在宽卡片里是"图左字右"，正方形才不会裁掉两边）。换图把同名文件覆盖掉就行；AIGC 那张封面的原图（1260×712，微信传过来的那张赛博武士特写）留在 `/home/raspberry/Pictures/AIGC短片原片/封面特写-微信版-1260x712.jpg`；复刻播放器的原图（未裁剪，1695×1179）留在 `/home/raspberry/Pictures/FAKE_POD_NANO实拍/` |
 | 复刻播放器那张卡片 | 在 `index.html` 里搜 `FAKE_POD_NANO`。它是"整行大卡片"（`card--wide`），内容、注意事项、出处和协议都在这一块里 |
 | 项目详情页 | 在 `projects/` 文件夹里，一页一个项目（现在只有 `projects/fakepod.html`）。首页卡片里的标题、配图、底部那行"看详情"都指向它；详情页顶部有"← 回到项目"能回到首页的项目区 |
 
