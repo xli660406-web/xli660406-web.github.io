@@ -1236,3 +1236,38 @@ body.is-zoomed { overflow: hidden; }
   font-size: .86rem;
   line-height: 1.7;
 }
+
+/* ==========================================================================
+   看板娘（Live2D 角色）
+   1) 平时是隐藏的：只有 assets/mascot.js 判断"屏幕够宽 + 没开减少动效"之后，
+      才会给她加上 .is-on 把她显示出来；手机和窄窗口永远看不到她，也不会下载模型。
+   2) 位置由这里说了算：钉在左下角、不跟着页面滚动。
+   3) 她只做动作（眨眼、视线跟着鼠标、点一下有反应），不说话——
+      所以气泡 #oml2d-tips 和状态条 #oml2d-statusBar 一律藏掉。
+   ========================================================================== */
+#mascot {
+  position: fixed;
+  left: -40px;
+  bottom: 0;
+  width: 260px;
+  height: 560px;
+  z-index: 5;
+  display: none;
+}
+#mascot.is-on { display: block; }
+#oml2d-tips,
+#oml2d-statusBar,
+.oml2d-tips,
+.oml2d-statusBar { display: none !important; }
+#oml2d-stage {
+  position: absolute !important;
+  left: 0 !important;
+  right: auto !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+/* 屏幕上放不下就不显示（和 assets/mascot.js 里的门槛保持一致） */
+@media (max-width: 1399px) {
+  #mascot { display: none !important; }
+}

@@ -21,7 +21,7 @@
 </script>
 <!-- ?v= 是"版本号"：改了样式或脚本就把日期加一位，浏览器就会去拿新的，
      不会拿手机里存的旧文件（不然改了也看不到效果） -->
-<link rel="stylesheet" href="assets/style.css?v=20260923b">
+<link rel="stylesheet" href="assets/style.css?v=20260924a">
 </head>
 <body>
 
@@ -452,6 +452,8 @@
   <div class="wrap footer__inner">
     <span>© <span id="year">2026</span> <span data-en="枫言枫语 (Li Yuxiao)">枫言枫语（李育晓）</span></span>
     <span class="footer__dim" data-en="A static page: no tracking, no ads.">本站为静态页面，无跟踪、无广告。</span>
+    <span class="footer__dim"
+          data-en="The Live2D character (Hiyori) is free sample data by Live2D Inc., used under their sample data terms of use.">左下角的 Live2D 角色「Hiyori」是株式会社 Live2D 的免费示例数据，按其《示例数据使用条件》使用。</span>
   </div>
 </footer>
 
@@ -487,6 +489,13 @@
   </div>
 </div>
 
-<script src="assets/main.js?v=20260923b" defer></script>
+<!-- 看板娘（Live2D 角色）：够宽的屏幕上才会出现，位置和开关见 assets/style.css 末尾，
+     门槛和模型路径见 assets/mascot.js。模型是 Live2D 官方免费示例数据 Hiyori，
+     版权归株式会社 Live2D 所有，遵守官方的《示例数据使用条件》与《免费提供素材使用许可合同》；
+     详见 assets/live2d/README.md。 -->
+<div id="mascot" aria-hidden="true"></div>
+
+<script src="assets/main.js?v=20260924a" defer></script>
+<script src="assets/mascot.js?v=20260924a" defer></script>
 </body>
 </html>
