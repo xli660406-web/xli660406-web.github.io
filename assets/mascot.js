@@ -11,7 +11,7 @@
 (function () {
   var CONFIG = {
     minWidth: 1400,     // 窗口宽度门槛（像素）。低于它就不显示，免得挡住文字
-    scale: 0.07,        // 模型大小（0.14 是她原来的一半，2026-09-24 按用户要求缩小）
+    scale: 0.055,       // 模型大小（0.14 → 0.07 → 0.055，2026-09-24 按用户要求逐步缩小）
     lib: 'assets/live2d/oml2d.min.js',
     model: 'assets/live2d/Hiyori/Hiyori.model3.json'
   };
