@@ -1247,10 +1247,10 @@ body.is-zoomed { overflow: hidden; }
    ========================================================================== */
 #mascot {
   position: fixed;
-  left: -40px;
+  left: -20px;
   bottom: 0;
-  width: 260px;
-  height: 560px;
+  width: 130px;
+  height: 280px;
   z-index: 5;
   display: none;
 }
