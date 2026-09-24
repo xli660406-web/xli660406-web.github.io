@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>看板娘自检</title>
+<!--
+  这一页不是网站内容，只是"为什么看不到看板娘"的自检工具。
+  故意用最老式的写法（var / function），万一浏览器很老也能把检查结果显示出来。
+  里面的检查项和 assets/mascot.js、assets/style.css 里的开关条件一一对应。
+-->
+<style>
+  body {
+    margin: 0; padding: 1.6rem 1.4rem 4rem;
+    background: #08080a; color: #ececee;
+    font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    font-size: 16px; line-height: 1.8;
+  }
+  h1 { font-size: 1.4rem; margin: 0 0 .4rem; }
+  .lead { color: #a3a3ad; margin: 0 0 1.4rem; }
+  .row { display: flex; gap: .6rem; padding: .5rem 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .mark { flex: 0 0 1.6rem; font-size: 1.1rem; }
+  .ok { color: #7ee0a0; }
+  .bad { color: #ff8b8b; }
+  .label { flex: 0 0 auto; }
+  .detail { color: #a3a3ad; word-break: break-all; }
+  .hint { margin: 1.4rem 0; color: #d9c8a1; }
+  button {
+    font: inherit; padding: .6rem 1.1rem; border-radius: 999px; cursor: pointer;
+    border: 1px solid rgba(217,200,161,.6); background: rgba(217,200,161,.12); color: #d9c8a1;
+  }
+  button:disabled { opacity: .5; cursor: default; }
+  #mascot { position: fixed; left: -40px; bottom: 0; width: 260px; height: 560px; z-index: 5; display: none; }
+  #mascot.is-on { display: block; }
+  #oml2d-tips, #oml2d-statusBar, .oml2d-tips, .oml2d-statusBar { display: none !important; }
+  #oml2d-stage {
+    position: absolute !important; left: 0 !important; right: auto !important;
+    bottom: 0 !important; width: 100% !important; height: 100% !important;
+  }
+</style>
+</head>
+<body>
+  <h1>看板娘自检</h1>
+  <p class="lead">这一页只用来查"为什么首页看不到左下角那个 Live2D 角色"，不是网站内容。</p>
+  <div id="out"></div>
+  <p class="hint">↓ 如果下面这几项里有红的，点这个按钮照样能把她调出来试试（不管屏幕宽不宽）。</p>
+  <p><button id="force" type="button">强制把看板娘调出来</button> <span id="forceMsg" class="detail"></span></p>
+  <div id="mascot"></div>
+  <noscript>
+    <p class="detail">你的浏览器禁用了 JavaScript。看板娘和这一页的自检都需要 JavaScript。</p>
+  </noscript>
+
+<script>
+(function () {
+  var out = document.getElementById('out');
+
+  function row(ok, label, detail) {
+    var div = document.createElement('div');
+    div.className = 'row';
+    var mark = document.createElement('div');
+    mark.className = 'mark ' + (ok ? 'ok' : 'bad');
+    mark.textContent = ok ? '✓' : '✗';
+    var text = document.createElement('div');
+    var strong = document.createElement('div');
+    strong.className = 'label';
+    strong.textContent = label;
+    var info = document.createElement('div');
+    info.className = 'detail';
+    info.textContent = detail || '';
+    text.appendChild(strong);
+    text.appendChild(info);
+    div.appendChild(mark);
+    div.appendChild(text);
+    out.appendChild(div);
+  }
+
+  // 1. 窗口宽度（要和 assets/mascot.js 里的 minWidth 一致）
+  var NEED = 1400;
+  row(window.innerWidth >= NEED,
+      '窗口宽度：' + window.innerWidth + ' 像素（需要 ≥ ' + NEED + '）',
+      window.innerWidth >= NEED ? '够宽，她应该会出现。' :
+        '不够宽——这就是看不到她的原因。把窗口最大化，或按 F11 全屏，再刷新一次。');
+
+  // 2. 屏幕本身多大（和窗口宽度不是一回事）
+  row(true, '屏幕尺寸：' + screen.width + '×' + screen.height +
+      '，设备像素比 ' + (window.devicePixelRatio || 1),
+      '注意：屏幕尺寸和"窗口宽度"不是一回事。浏览器窗口没最大化、或者页面被放大（125%、150%），' +
+      '都会让上面那个"窗口宽度"变小。');
+
+  // 3. WebGL —— 看板娘是靠它画出来的
+  var gl = null;
+  try {
+    var c = document.createElement('canvas');
+    gl = c.getContext('webgl2') || c.getContext('webgl') || c.getContext('experimental-webgl');
+  } catch (e) { gl = null; }
+  row(!!gl, 'WebGL（浏览器画 3D 图形的能力）：' + (gl ? '可用' : '不可用'),
+      gl ? '正常，这一项不是问题。' :
+        '不可用。常见原因：浏览器太老、在设置里关掉了"硬件加速"、或者用的是远程桌面/虚拟机。');
+
+  // 4. 系统的"减少动态效果"（开了这个，看板娘不加载）
+  var reduce = false;
+  try {
+    reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  } catch (e) {}
+  row(!reduce, '系统的"减少动态效果"：' + (reduce ? '已开启' : '没开'),
+      reduce ? '开着的话看板娘不加载（这是设计如此）。关掉它就正常了。' : '正常。');
+
+  // 5. 模型文件能不能下载到（证明文件都在、没被拦）
+  var url = 'assets/live2d/Hiyori/Hiyori.model3.json';
+  if (window.fetch) {
+    fetch(url, { method: 'GET' }).then(function (r) {
+      row(r.ok, '模型文件：' + (r.ok ? '能取到' : '取不到（HTTP ' + r.status + '）'),
+          r.ok ? url : '文件路径：' + url + '。可能被网络/公司网/广告拦截插件挡住了。');
+    })['catch'](function (e) {
+      row(false, '模型文件：取不到', String(e && e.message || e));
+    });
+  } else {
+    row(false, '模型文件：没法检测', '这个浏览器没有 fetch 功能，太老了。');
+  }
+
+  // 6. 浏览器是谁（方便判断版本）
+  row(true, '浏览器信息', navigator.userAgent);
+})(),
+
+(function () {
+  var btn = document.getElementById('force');
+  var msg = document.getElementById('forceMsg');
+  var host = document.getElementById('mascot');
+  btn.onclick = function () {
+    btn.disabled = true;
+    msg.textContent = '正在加载（模型 4.8 MB，请稍等）…';
+    var s = document.createElement('script');
+    s.src = 'assets/live2d/oml2d.min.js';
+    s.onerror = function () { msg.textContent = '播放器文件加载失败。'; };
+    s.onload = function () {
+      if (typeof OML2D === 'undefined') { msg.textContent = '播放器脚本没跑起来。'; return; }
+      host.className = 'is-on';
+      try {
+        OML2D.loadOml2d({
+          parentElement: host,
+          models: [{
+            path: 'assets/live2d/Hiyori/Hiyori.model3.json',
+            scale: 0.14, position: [0, 0],
+            stageStyle: { width: '100%', height: '100%' }, volume: 0
+          }],
+          dockedPosition: 'left', mobileDisplay: false, sayHello: false,
+          primaryColor: '#d9c8a1', transitionTime: 800,
+          tips: { idleTips: { message: [] }, welcomeTips: { message: {} }, copyTips: { message: [] } },
+          statusBar: { disable: true }, menus: { disable: true }
+        });
+        msg.textContent = '已加载——她这会儿应该在屏幕左下角（被窗口挡住的话把窗口拉宽点）。';
+      } catch (e) {
+        msg.textContent = '加载出错：' + (e && e.message ? e.message : e);
+      }
+    };
+    document.head.appendChild(s);
+  };
+})();
+</script>
+</body>
+</html>
