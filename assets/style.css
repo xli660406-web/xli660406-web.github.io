@@ -1249,16 +1249,44 @@ body.is-zoomed { overflow: hidden; }
   position: fixed;
   left: -16px;
   bottom: 0;
-  width: 104px;
+  width: 150px;   /* 比模型本身宽：给"休息"按钮留位置，也让鼠标能移到它上面（2026-09-25） */
   height: 224px;
   z-index: 5;
   display: none;
 }
 #mascot.is-on { display: block; }
-#oml2d-tips,
-#oml2d-statusBar,
-.oml2d-tips,
-.oml2d-statusBar { display: none !important; }
+/* 菜单只留"休息"一个：切换衣服/切换模型会报错（仓库里只放了一个模型、一套衣服），
+   关于会跳到外部网站。按 data-name 精准藏掉，其余保持库里原样。 */
+#oml2d-menus .oml2d-menus-item[data-name="SwitchModelClothes"],
+#oml2d-menus .oml2d-menus-item[data-name="SwitchModel"],
+#oml2d-menus .oml2d-menus-item[data-name="About"] { display: none !important; }
+
+/* 库里的气泡/菜单是按"整个大舞台"的百分比排版的，我们的容器只有 150×224，
+   照它的默认值会被挤成一条竖着的小纸条、还会被屏幕左边缘切掉。下面挪到正确位置。
+   （气泡和按钮的竖直位置是量出来的：容器高度算作 0，内容从 bottom 往下长） */
+#oml2d-tips {
+  left: 110px !important;
+  top: auto !important;
+  bottom: 185px !important;
+  transform: none !important;
+  width: 300px !important;
+  min-height: 0 !important;
+  font-size: 15px !important;
+  line-height: 1.65 !important;
+  padding: 10px 14px !important;
+  text-align: left !important;
+  border: none !important;
+  border-radius: 12px !important;
+  color: #26262e !important;        /* 库默认白字，压在香槟金底上根本看不清 */
+  pointer-events: none !important;  /* 气泡只是提示，别挡住底下的内容 */
+}
+#oml2d-menus {
+  left: 110px !important;
+  right: auto !important;
+  bottom: 75px !important;          /* 库默认 bottom:10%（只有 22 像素），按钮会被底边切掉 */
+}
+/* 状态条是从屏幕左边缘滑出来的竖条，往右挪 2 像素，免得白色描边被屏幕切掉 */
+#oml2d-statusBar { left: 2px !important; }
 #oml2d-stage {
   position: absolute !important;
   left: 0 !important;
