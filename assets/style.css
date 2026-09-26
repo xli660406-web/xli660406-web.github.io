@@ -1270,7 +1270,11 @@ body.is-zoomed { overflow: hidden; }
   /* 容器右边缘往屏幕外挪 39 像素；实测她**身体**离屏幕右边缘约 64~68 像素
      （1600 宽 / 1400 宽各量过一次），她在容器里本来就偏左一点，所以这个数不等于 39 */
   right: -39px;
-  bottom: 0;
+  /* 2026-09-26：原来 bottom: 0，她正好站在网页右下角那个常驻的"联系我"按钮上——
+     按钮 z-index 12、她 5，按钮压在她的腿上，两个都难看。
+     现在把整个容器往上抬 96 像素（按钮高约 45、离底 35，共占 80），
+     她的脚就落在按钮上方，留出 16 像素空隙。 */
+  bottom: 96px;
   width: 300px;   /* 2026-09-25 尺寸翻倍：150×224 → 300×448（scale 也跟着 0.055 → 0.11） */
   height: 448px;  /* 比模型本身宽：给"休息"按钮留位置，也让鼠标能移到它上面 */
   z-index: 5;
@@ -1294,9 +1298,16 @@ body.is-zoomed { overflow: hidden; }
    ⚠️ 改 #mascot 的宽高或 mascot.js 里的 scale 之后，这三个数要重新量。 */
 #oml2d-tips {
   left: auto !important;
-  right: 191px !important;
+  /* 2026-09-26 实测：她的身体占 x 1455~1548（1600 宽的窗口），气泡右边缘原来在 1448，
+     离她只剩 7 像素——她一抬手就压上去。191 → 212 是加了 21 像素余量，
+     现在中间空出约 28 像素，她点头、挥手都不会碰到气泡。 */
+  right: 212px !important;
   top: auto !important;
-  bottom: 370px !important;
+  /* 窗口太矮时把它往下压，免得顶到顶部导航栏；正常高度下 min() 取到 370，和以前一样。 */
+  bottom: min(370px, calc(100vh - 280px)) !important;
+  /* 关键：舞台画布的 z-index 是 9998、菜单 9999，气泡原来是 auto（0）——
+     她画在气泡上面，一抬手就把话挡住了。气泡必须比画布高。 */
+  z-index: 10000 !important;
   transform: none !important;
   width: 300px !important;
   min-height: 0 !important;
@@ -1311,7 +1322,7 @@ body.is-zoomed { overflow: hidden; }
 }
 #oml2d-menus {
   left: auto !important;
-  right: 191px !important;
+  right: 212px !important;            /* 和气泡对齐成一列（2026-09-26 一起挪的） */
   bottom: 150px !important;          /* 库默认 bottom:10%（只有 45 像素），按钮会被底边切掉 */
 }
 /* 状态条是从屏幕边缘滑出来的竖条，往里挪 2 像素，免得白色描边被屏幕切掉；
@@ -1327,5 +1338,11 @@ body.is-zoomed { overflow: hidden; }
 }
 /* 屏幕上放不下就不显示（和 assets/mascot.js 里的门槛保持一致） */
 @media (max-width: 1399px) {
+  #mascot { display: none !important; }
+}
+/* 太矮的窗口也不显示（2026-09-26 加）：她 448 高、气泡还要再往上 400 多，
+   窗口不到 640 像素高就顶到顶部导航栏、压住上面的菜单了。门槛和 mascot.js 里的
+   minHeight 是同一个数，改的时候两边一起改。 */
+@media (max-height: 639px) {
   #mascot { display: none !important; }
 }

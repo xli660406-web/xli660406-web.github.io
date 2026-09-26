@@ -1,11 +1,13 @@
 /*!
  * 看板娘（Live2D）加载器
  *
- * 四条规矩：
- *   1. 窗口太窄就不加载（手机、平板、窄窗口既看不到、也不会下载模型文件）
+ * 五条规矩：
+ *   1. 窗口太窄或太矮就不加载（手机、平板、窄窗口既看不到、也不会下载模型文件）；
+ *      一开始不够大，之后把窗口拉大到位，会补加载一次
  *   2. 系统开了"减少动态效果"就不加载
  *   3. 所有文件都在本仓库 assets/live2d/ 里，不连任何外部服务器
  *   4. 气泡、状态条的文字跟全站的中英文切换保持一致
+ *   5. 她站在右下角、气泡摆在她左边，两者的位置都由 style.css 说了算
  *
  * 想换模型 / 改大小 / 改位置，只改下面 CONFIG 这几行即可。
  * 菜单只留"休息"一个按钮，另外三个（切换衣服 / 切换模型 / 关于）由 style.css 藏掉——
@@ -14,16 +16,24 @@
 (function () {
   var CONFIG = {
     minWidth: 1400,     // 窗口宽度门槛（像素）。低于它就不显示，免得挡住文字
-    scale: 0.055,       // 模型大小（0.14 → 0.07 → 0.055，2026-09-24 按用户要求逐步缩小）
+    minHeight: 640,     // 窗口高度门槛（像素）：她 448 高、气泡还要再往上 400 多，
+                        //   矮窗口放不下就会顶到顶部导航栏（2026-09-26 加，和 style.css 里的高度规则一致）
+    scale: 0.11,        // 模型大小（0.14 → 0.07 → 0.055 → 0.11，2026-09-25 用户要求翻倍；
+                        //   改这个数要同时改 style.css 里 #mascot 的宽高，并重新量气泡/菜单那几个数）
     lib: 'assets/live2d/oml2d.min.js',
     model: 'assets/live2d/Hiyori/Hiyori.model3.json'
   };
 
-  if (window.innerWidth < CONFIG.minWidth) return;
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
   var host = document.getElementById('mascot');
   if (!host) return;
+
+  /* 现在这个窗口够不够地方摆她 */
+  var canShow = function () {
+    if (window.innerWidth < CONFIG.minWidth) return false;
+    if (window.innerHeight < CONFIG.minHeight) return false;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+    return true;
+  };
 
   /* ---- 文字。中文那 8 句问候是库自带的原文，照抄回来；英文是我们配的 ---- */
   var TEXT = {
@@ -95,7 +105,7 @@
         stageStyle: { width: '100%', height: '100%' },
         volume: 0
       }],
-      dockedPosition: 'left',
+      dockedPosition: 'right',   // 钉在右下角（2026-09-25 用户要求从左边挪过来）
       mobileDisplay: false,     // 移动端不加载
       sayHello: true,           // 加载完做一次招呼，并说一句问候（2026-09-25 按用户要求加回）
       primaryColor: '#d9c8a1',  // 跟全站的香槟金一致
@@ -130,5 +140,22 @@
       attributes: true, attributeFilter: ['class']
     });
   };
-  document.head.appendChild(script);
+  /* 把脚本挂进页面 = 真正开始下载播放器和模型。只会做一次 */
+  var start = function () {
+    if (!document.head.contains(script)) document.head.appendChild(script);
+  };
+
+  if (canShow()) {
+    start();
+  } else {
+    /* 一开始窗口不够大：模型文件一个都不下载，等她被"腾出地方"再说。
+       2026-09-26：原来是加载时看一眼就定终身——先开小窗再拉大，和直接开大窗，
+       在同一个尺寸下长得不一样（她要么在、要么不在），看着像排版坏了。 */
+    var onResize = function () {
+      if (!canShow()) return;
+      window.removeEventListener('resize', onResize);
+      start();
+    };
+    window.addEventListener('resize', onResize, { passive: true });
+  }
 })();
