@@ -214,6 +214,43 @@ a { color: inherit; text-decoration: none; }
 .spotlight.is-on { opacity: 1; }
 
 /* --------------------------------------------------------------------------
+   点击时的"水波"：从点击的地方扩散出一圈，环扫过的网格亮一下（2026-09-26 加）
+
+   和 .spotlight 用的是**同一张网格**，区别只在遮罩的形状：
+   那边是一个跟着光标跑的圆，这边是一圈不断变大的环。
+   环的圆心和半径由 main.js 每帧写进 --rx / --ry / --r 三个变量。
+
+   两个坑：
+   1. 半径 r 一开始是 0，而环的内边是 r-120 —— 写成 calc() 会算出负数，
+      负长度的渐变是"非法值"，整条遮罩会失效，结果是整屏网格全亮。所以外面必须套 max(0px, …)
+   2. 透明度由 main.js 每帧写（快速亮起、慢慢淡掉），这里只给一个静止时的 0
+   -------------------------------------------------------------------------- */
+.ripple {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, .22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, .22) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255, 255, 255, .45) 1.1px, transparent 1.6px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(circle at var(--rx, 50%) var(--ry, 50%),
+    transparent max(0px, calc(var(--r, 0px) - 120px)),
+    rgba(0, 0, 0, .5) max(0px, calc(var(--r, 0px) - 55px)),
+    #000 var(--r, 0px),
+    rgba(0, 0, 0, .5) calc(var(--r, 0px) + 55px),
+    transparent calc(var(--r, 0px) + 120px));
+  -webkit-mask-image: radial-gradient(circle at var(--rx, 50%) var(--ry, 50%),
+    transparent max(0px, calc(var(--r, 0px) - 120px)),
+    rgba(0, 0, 0, .5) max(0px, calc(var(--r, 0px) - 55px)),
+    #000 var(--r, 0px),
+    rgba(0, 0, 0, .5) calc(var(--r, 0px) + 55px),
+    transparent calc(var(--r, 0px) + 120px));
+}
+
+/* --------------------------------------------------------------------------
    导航
    -------------------------------------------------------------------------- */
 .nav {

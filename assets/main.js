@@ -235,6 +235,41 @@
     setPos(cx, cy);
   }
 
+  /* --- 3b. 点一下鼠标：从点击处扩散一圈"水波"，扫过的网格亮一下 ------------ */
+  /* 这里比光标那束光简单：不用每帧跟着谁跑，点一次走一次，走完就停。
+     手机上（没有光标那束光）也留着——它是一次性的，不会一直重画而拖慢手机。 */
+  var ripple = document.querySelector('.ripple');
+  if (ripple && !reduceMotion) {
+    var RIPPLE_MS = 780;    // 一圈从点击处走到最远要多久
+    var RIPPLE_MAX = 1200;  // 最远扩到多少像素（对角线的量级，之后淡到看不见）
+    var rippleRaf = 0;
+    var rippleStart = 0;
+
+    var drawRipple = function (now) {
+      var p = Math.min((now - rippleStart) / RIPPLE_MS, 1);
+      var eased = 1 - Math.pow(1 - p, 3);          // 先快后慢，像水波推开
+      ripple.style.setProperty('--r', (RIPPLE_MAX * eased).toFixed(1) + 'px');
+      /* 前 12% 快速亮起，之后一路淡下去：
+         亮度按 (1-p) 走，别用固定值——固定值会出现"啪"地一下消失 */
+      ripple.style.opacity = ((1 - p) * (p < 0.12 ? p / 0.12 : 1)).toFixed(3);
+      if (p < 1) {
+        rippleRaf = window.requestAnimationFrame(drawRipple);
+      } else {
+        ripple.style.opacity = 0;
+        rippleRaf = 0;
+      }
+    };
+
+    window.addEventListener('pointerdown', function (e) {
+      if (e.button !== 0) return;                  // 只认左键/单指点按，右键菜单不算
+      ripple.style.setProperty('--rx', e.clientX + 'px');
+      ripple.style.setProperty('--ry', e.clientY + 'px');
+      if (rippleRaf) window.cancelAnimationFrame(rippleRaf);   // 连点就重开一圈
+      rippleStart = performance.now();
+      rippleRaf = window.requestAnimationFrame(drawRipple);
+    }, { passive: true });
+  }
+
   /* --- 4. 打字机：轮流显示几个标签 ----------------------------------------- */
   var typedEl = document.getElementById('typed');
   var phrases = T.phrases[lang];
