@@ -68,6 +68,8 @@ a { color: inherit; text-decoration: none; }
    far  = 最远的大光斑（几乎看不清，最慢）
    mid  = 中景光晕（慢慢飘）
    grid/noise = 最上层的质感，静止
+   光的来向在左上角（.bg 的 radial-gradient），四周另压一层暗角（.bg::after），
+   让视线收进页面中间；整块背景是 fixed 的，滚动时不动，不会拖慢翻页。
    -------------------------------------------------------------------------- */
 .bg {
   position: fixed;
@@ -76,7 +78,7 @@ a { color: inherit; text-decoration: none; }
   pointer-events: none;
   overflow: hidden;
   background:
-    radial-gradient(120% 80% at 50% 0%, #131320 0%, var(--bg) 58%),
+    radial-gradient(115% 85% at 18% -6%, #16162a 0%, #0a0a12 40%, var(--bg) 68%),
     var(--bg);
 }
 
@@ -105,6 +107,7 @@ a { color: inherit; text-decoration: none; }
 .blob--3 {
   width: 52vw; height: 52vw; left: 22vw; bottom: -22vh;
   background: radial-gradient(circle, rgba(86, 70, 150, .34), transparent 70%);
+  opacity: .36;
   animation: drift-c 64s ease-in-out infinite alternate;
 }
 
@@ -136,26 +139,42 @@ a { color: inherit; text-decoration: none; }
   to   { transform: translate3d(-4vw, -7vh, 0) scale(1.1); }
 }
 
-/* 细网格：只在上半屏可见，避免整屏噪 */
+/* 细网格 + 点阵（2026-09-26 改）：
+   原来是一张很淡的网，只盖住首屏上方，往下滚就是一大片空黑，看着平。
+   现在改成 64 像素一格的细线，线交叉处点一个小点，一路铺到页面底部；
+   再用"自上而下由亮到暗"的遮罩收一收，越往下越淡，不跟正文抢注意力。
+   这一层是静止的背景图，不参与任何动画。 */
 .bg__grid {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(to right, var(--line-soft) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--line-soft) 1px, transparent 1px);
-  background-size: 76px 76px;
-  mask-image: radial-gradient(90% 60% at 50% 12%, #000 0%, transparent 78%);
-  -webkit-mask-image: radial-gradient(90% 60% at 50% 12%, #000 0%, transparent 78%);
-  opacity: .55;
+    linear-gradient(to right, rgba(255, 255, 255, .055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, .055) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255, 255, 255, .13) 1px, transparent 1.4px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, .45) 55%, rgba(0, 0, 0, .18) 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, .45) 55%, rgba(0, 0, 0, .18) 100%);
+  opacity: .75;
 }
 
-/* 颗粒质感：让大面积深色不至于"死黑" */
+/* 颗粒质感：让大面积深色不至于"死黑"，也顺手打散渐变的色带（深色渐变最容易
+   出现一圈圈色带，看着就廉价）。
+   2026-09-26：透明度 .035 → .07、混合方式 overlay → soft-light——原来太淡，等于没有。 */
 .bg__noise {
   position: absolute;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: .035;
-  mix-blend-mode: overlay;
+  opacity: .07;
+  mix-blend-mode: soft-light;
+}
+
+/* 暗角：四周压暗、中间留亮，画面立刻有了"打光"的纵深，不再是一块平的深色。
+   它盖在网格和颗粒上面（::after 画在子元素之后），用来收边。 */
+.bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 100% at 50% 40%, transparent 40%, rgba(4, 4, 6, .6) 100%);
 }
 
 /* 跟随鼠标的柔光：制造"打光"的感觉 */
@@ -1241,33 +1260,43 @@ body.is-zoomed { overflow: hidden; }
    看板娘（Live2D 角色）
    1) 平时是隐藏的：只有 assets/mascot.js 判断"屏幕够宽 + 没开减少动效"之后，
       才会给她加上 .is-on 把她显示出来；手机和窄窗口永远看不到她，也不会下载模型。
-   2) 位置由这里说了算：钉在左下角、不跟着页面滚动。
-   3) 她只做动作（眨眼、视线跟着鼠标、点一下有反应），不说话——
-      所以气泡 #oml2d-tips 和状态条 #oml2d-statusBar 一律藏掉。
+   2) 位置由这里说了算：钉在右下角、不跟着页面滚动（2026-09-25 从左边挪过来的）。
+   3) 她会做动作（眨眼、视线跟着鼠标、点一下有反应），也会说话：
+      见面按钟点打招呼、你复制页面文字时提醒一句。气泡和状态条的文字、
+      开关都写在 assets/mascot.js 里，这里只管它们摆在哪。
    ========================================================================== */
 #mascot {
   position: fixed;
-  left: -16px;
+  /* 容器右边缘往屏幕外挪 39 像素；实测她**身体**离屏幕右边缘约 64~68 像素
+     （1600 宽 / 1400 宽各量过一次），她在容器里本来就偏左一点，所以这个数不等于 39 */
+  right: -39px;
   bottom: 0;
-  width: 150px;   /* 比模型本身宽：给"休息"按钮留位置，也让鼠标能移到它上面（2026-09-25） */
-  height: 224px;
+  width: 300px;   /* 2026-09-25 尺寸翻倍：150×224 → 300×448（scale 也跟着 0.055 → 0.11） */
+  height: 448px;  /* 比模型本身宽：给"休息"按钮留位置，也让鼠标能移到它上面 */
   z-index: 5;
   display: none;
 }
 #mascot.is-on { display: block; }
-/* 菜单只留"休息"一个：切换衣服/切换模型会报错（仓库里只放了一个模型、一套衣服），
-   关于会跳到外部网站。按 data-name 精准藏掉，其余保持库里原样。 */
+/* 菜单只留"休息"一个（2026-09-25 实测过另外三个，都没用）：
+   "切换衣服" —— 仓库里只有一套贴图，点了只弹一句"该模型没有其他衣服~"；
+   "切换模型" —— models 里只有她一个，点了等于把同一个模型重新加载一遍
+                 （实测会重新请求 13 个模型文件，她滑出去再滑回来）；
+   "关于"     —— 库写死的 window.open("https://oml2d.com")，把访客带去别人的网站。
+   按 data-name 精准藏掉，其余保持库里原样。 */
 #oml2d-menus .oml2d-menus-item[data-name="SwitchModelClothes"],
 #oml2d-menus .oml2d-menus-item[data-name="SwitchModel"],
 #oml2d-menus .oml2d-menus-item[data-name="About"] { display: none !important; }
 
-/* 库里的气泡/菜单是按"整个大舞台"的百分比排版的，我们的容器只有 150×224，
-   照它的默认值会被挤成一条竖着的小纸条、还会被屏幕左边缘切掉。下面挪到正确位置。
-   （气泡和按钮的竖直位置是量出来的：容器高度算作 0，内容从 bottom 往下长） */
+/* 库里的气泡/菜单是按"整个大舞台"的百分比排版的，我们的容器只有 300×448，
+   照它的默认值会被挤成一条竖着的小纸条、还会被屏幕边缘切掉。下面挪到正确位置。
+   位置是在浏览器里量出来的：元素的下边缘在"容器底边往上 bottom 像素"处，再往上长。
+   她钉在右下角，所以气泡和菜单都摆在她左边（right = 离容器右边缘多远）。
+   ⚠️ 改 #mascot 的宽高或 mascot.js 里的 scale 之后，这三个数要重新量。 */
 #oml2d-tips {
-  left: 110px !important;
+  left: auto !important;
+  right: 191px !important;
   top: auto !important;
-  bottom: 185px !important;
+  bottom: 370px !important;
   transform: none !important;
   width: 300px !important;
   min-height: 0 !important;
@@ -1281,12 +1310,13 @@ body.is-zoomed { overflow: hidden; }
   pointer-events: none !important;  /* 气泡只是提示，别挡住底下的内容 */
 }
 #oml2d-menus {
-  left: 110px !important;
-  right: auto !important;
-  bottom: 75px !important;          /* 库默认 bottom:10%（只有 22 像素），按钮会被底边切掉 */
+  left: auto !important;
+  right: 191px !important;
+  bottom: 150px !important;          /* 库默认 bottom:10%（只有 45 像素），按钮会被底边切掉 */
 }
-/* 状态条是从屏幕左边缘滑出来的竖条，往右挪 2 像素，免得白色描边被屏幕切掉 */
-#oml2d-statusBar { left: 2px !important; }
+/* 状态条是从屏幕边缘滑出来的竖条，往里挪 2 像素，免得白色描边被屏幕切掉；
+   她在右边，所以状态条也跟着挪到右边。 */
+#oml2d-statusBar { right: 2px !important; left: auto !important; }
 #oml2d-stage {
   position: absolute !important;
   left: 0 !important;
