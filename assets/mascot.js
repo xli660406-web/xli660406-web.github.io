@@ -20,6 +20,8 @@
                         //   矮窗口放不下就会顶到顶部导航栏（2026-09-26 加，和 style.css 里的高度规则一致）
     scale: 0.11,        // 模型大小（0.14 → 0.07 → 0.055 → 0.11，2026-09-25 用户要求翻倍；
                         //   改这个数要同时改 style.css 里 #mascot 的宽高，并重新量气泡/菜单那几个数）
+    idleInterval: 30000, // 闲着多久说一句话（毫秒）。库的默认是 10 秒，对看网页的人来说太吵，
+                         //   这里放到 30 秒；嫌少说话就改小，嫌烦就改大（60000 = 一分钟一句）
     lib: 'assets/live2d/oml2d.min.js',
     model: 'assets/live2d/Hiyori/Hiyori.model3.json'
   };
@@ -48,7 +50,24 @@
         lateNight: '已经这么晚了呀，早点休息吧，晚安~',
         weeHours: '这么晚还不睡吗？当心熬夜秃头哦！'
       },
-      copy: '你复制了什么内容呢？记得注明出处哦~',
+      /* 闲着的时候随机说一句（2026-09-26 加）。句子要短：气泡只有 300 像素宽，
+         15 号字一行大约放 19 个字，超过三行就会被截掉。
+         写句子时只说页面里真的有的东西（作品区、音乐墙、右上角切语言、右下角发邮件） */
+      idle: [
+        '往下翻，还有我的作品和音乐墙。',
+        '要不要喝口水？久坐记得起来走两步。',
+        '音乐墙的封面可以点，选你常用的播放器。',
+        '右上角的按钮能切中英文。',
+        '想找我的话，右下角那个按钮能发邮件。',
+        '这个站还在慢慢长，欢迎常来看看。',
+        '页面里藏了几个小细节，慢慢逛。',
+        '最近在琢磨 AI 视频，作品区有成品。'
+      ],
+      copy: [
+        '你复制了什么内容呢？记得注明出处哦~',
+        '复制走啦？希望能帮到你。',
+        '要转载的话，把出处一起带上吧。'
+      ],
       loading: '加载中',
       loaded: '加载成功',
       failed: '加载失败',
@@ -68,7 +87,21 @@
         lateNight: 'It is late — get some rest. Good night.',
         weeHours: 'Still awake? Do not make a habit of it.'
       },
-      copy: 'Copied something? Please credit the source.',
+      idle: [
+        'Keep scrolling — projects and a music wall are below.',
+        'Time for some water? Stand up and stretch.',
+        'Tap an album cover to pick your music app.',
+        'The button top right switches to Chinese.',
+        'Want to reach me? The button at the bottom right opens an email.',
+        'This site is still growing. Drop by again.',
+        'A few small details are hidden here. Take your time.',
+        'I have been tinkering with AI video — see the projects section.'
+      ],
+      copy: [
+        'Copied something? Please credit the source.',
+        'Hope that helped — please credit the source.',
+        'If you repost it, link back to this page.'
+      ],
       loading: 'Loading',
       loaded: 'Ready',
       failed: 'Failed to load',
@@ -111,9 +144,21 @@
       primaryColor: '#d9c8a1',  // 跟全站的香槟金一致
       transitionTime: 1000,
       tips: {
-        idleTips: { message: [] },         // 闲置时不说话（库默认就是空的）
+        /* 闲着的时候从 idle 里随机挑一句（句子和间隔都写在本文件顶部），每句显示 6 秒。
+           这里传的是**函数**而不是数组：库每次要说话都会重新调用它，所以访客当场切
+           中英文时，她也跟着换语言（数组是加载那一刻就定死的）。
+           库的优先级是 welcome/copy = 3、idle = 2，所以她不会拿闲话盖掉问候和复制提醒。 */
+        idleTips: {
+          message: function () {
+            var lines = t().idle;
+            return lines[Math.floor(Math.random() * lines.length)];
+          },
+          interval: CONFIG.idleInterval,
+          duration: 6000
+        },
         welcomeTips: { message: L.greet }, // 按访客当地钟点挑一句
-        copyTips: { message: [L.copy] }    // 访客复制页面文字时说一句
+        copyTips: { message: L.copy }      // 访客复制页面文字时随机说一句
+                                           // （这句库只认数组，所以它按加载时的语言，不跟着切）
       },
       statusBar: {
         disable: false,                    // 加载中/成功/失败那条（2026-09-25 按用户要求加回）
