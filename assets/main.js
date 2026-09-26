@@ -196,22 +196,43 @@
   window.addEventListener('resize', requestScroll, { passive: true });
   onScroll();
 
-  /* --- 3. 跟随鼠标的柔光（仅桌面） ----------------------------------------- */
+  /* --- 3. 跟随光标的"网格手电筒"（仅桌面鼠标） ----------------------------- */
   var spotlight = document.querySelector('.spotlight');
   var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   if (spotlight && finePointer && !reduceMotion && !narrowMQ.matches) {
-    var move = function (x, y) {
+    var tx = window.innerWidth / 2;      // 目标：光标在哪
+    var ty = window.innerHeight * 0.2;
+    var cx = tx;                         // 当前：这束光现在在哪
+    var cy = ty;
+    var rafId = 0;
+
+    var setPos = function (x, y) {
       spotlight.style.setProperty('--mx', x + 'px');
       spotlight.style.setProperty('--my', y + 'px');
     };
+
+    /* 每帧朝目标挪 22%：光会"追上来"而不是粘在光标上。
+       一点滞后反而更像一束真实的、打在墙上的光；追上就停，不做无用的空转。 */
+    var follow = function () {
+      cx += (tx - cx) * 0.22;
+      cy += (ty - cy) * 0.22;
+      if (Math.abs(tx - cx) < 0.4 && Math.abs(ty - cy) < 0.4) {
+        cx = tx; cy = ty; setPos(cx, cy); rafId = 0; return;
+      }
+      setPos(cx, cy);
+      rafId = window.requestAnimationFrame(follow);
+    };
+
     window.addEventListener('pointermove', function (e) {
+      tx = e.clientX; ty = e.clientY;
       spotlight.classList.add('is-on');
-      window.requestAnimationFrame(function () { move(e.clientX, e.clientY); });
+      if (!rafId) rafId = window.requestAnimationFrame(follow);
     }, { passive: true });
     window.addEventListener('pointerleave', function () {
       spotlight.classList.remove('is-on');
     });
+    setPos(cx, cy);
   }
 
   /* --- 4. 打字机：轮流显示几个标签 ----------------------------------------- */

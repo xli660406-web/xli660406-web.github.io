@@ -177,18 +177,38 @@ a { color: inherit; text-decoration: none; }
   background: radial-gradient(120% 100% at 50% 40%, transparent 40%, rgba(4, 4, 6, .6) 100%);
 }
 
-/* 跟随鼠标的柔光：制造"打光"的感觉 */
+/* --------------------------------------------------------------------------
+   跟随光标的"手电筒"：光标附近的网格线和小点会亮起来（2026-09-26 改）
+
+   做法：在背景网格之上，再铺一层**一模一样的网格**（只是线和点更亮），
+   然后用一个跟着光标跑的圆形遮罩把它挡起来——只有遮罩圈里的那部分露得出来。
+   相当于"同一张网格印了两遍，一遍压暗、一遍提亮，提亮那遍用手电筒照"。
+
+   三个必须注意的细节：
+   1. 格子大小和起点要和 .bg__grid 完全一致（64px，都从视口左上角算），
+      不然两层网格会错开几个像素，看着就是"重影"，比不加还难看
+   2. 遮罩的边要分三四段淡出：只写"实心 → 透明"两段，会看出一圈生硬的圆边
+   3. 位置从 --mx / --my 两个变量来，由 main.js 每帧更新（她会比光标慢一点点）
+   -------------------------------------------------------------------------- */
 .spotlight {
   position: fixed;
   inset: 0;
   z-index: 1;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 1.2s var(--ease);
-  background: radial-gradient(
-    420px circle at var(--mx, 50%) var(--my, 20%),
-    rgba(217, 200, 161, .07),
-    transparent 62%
+  transition: opacity .5s var(--ease);
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, .22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, .22) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255, 255, 255, .45) 1.1px, transparent 1.6px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(
+    340px circle at var(--mx, 50%) var(--my, 20%),
+    #000 0%, rgba(0, 0, 0, .55) 38%, rgba(0, 0, 0, .18) 62%, transparent 78%
+  );
+  -webkit-mask-image: radial-gradient(
+    340px circle at var(--mx, 50%) var(--my, 20%),
+    #000 0%, rgba(0, 0, 0, .55) 38%, rgba(0, 0, 0, .18) 62%, transparent 78%
   );
 }
 .spotlight.is-on { opacity: 1; }
